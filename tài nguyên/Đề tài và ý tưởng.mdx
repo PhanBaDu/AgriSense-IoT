@@ -1,45 +1,94 @@
 # 🧠 1. Đề tài
 
-**Tên đề tài:**
-
-> **Thiết kế hệ thống tưới cây tự động đơn giản sử dụng IoT (ESP32 + MQTT + Node-RED)**
+> **Thiết kế và triển khai hệ thống IoT giám sát đất và không khí, điều khiển tưới tiêu theo thời gian thực**
 
 ---
 
-# 🎯 2. Ý tưởng cốt lõi
+# 🎯 2. Mục tiêu hệ thống
 
-Xây dựng một **chậu cây thông minh** có khả năng:
+Xây dựng hệ thống IoT có khả năng:
 
-- Đọc độ ẩm đất
-- Tự động bật/tắt bơm nước
-- Hiển thị trạng thái trên dashboard
-
-👉 Mục tiêu: đơn giản – dễ triển khai – tập trung vào IoT cơ bản
-
----
-
-# 📦 3. Phần cứng (Wokwi - mô phỏng)
-
-
-::contentReference[oaicite:0]{index=0}
-
-
-| Linh kiện       | Vai trò                         |
-|----------------|---------------------------------|
-| ESP32          | Vi điều khiển chính             |
-| DHT22          | Đo nhiệt độ + độ ẩm không khí   |
-| Potentiometer  | Giả lập độ ẩm đất               |
-| LED xanh       | Giả lập máy bơm nước            |
-| Buzzer         | Cảnh báo đất quá khô            |
-
-❌ Đã loại bỏ: LDR, OLED, relay, quạt (không cần thiết)
+- Giám sát:
+  - Độ ẩm đất (soil moisture)
+  - Nhiệt độ và độ ẩm không khí (DHT22)
+- Điều khiển:
+  - Bật/tắt máy bơm (mô phỏng qua LED)
+  - Bật/tắt chế độ tưới tự động
+- Hiển thị:
+  - Dashboard thời gian thực (Node-RED Dashboard)
+- Cảnh báo:
+  - Buzzer khi đất quá khô (< 20%)
+  - Thông báo khi đất khô cần tưới (< 30%)
 
 ---
 
-# 📡 4. MQTT Topics
+# 📦 3. Kiến trúc hệ thống
 
-Chỉ sử dụng **2 topic đơn giản**:
+Hệ thống gồm 3 lớp:
+
+### 1. Device Layer
+- ESP32 đọc dữ liệu từ cảm biến (DHT22 + Potentiometer mô phỏng độ ẩm đất)
+
+### 2. Network Layer
+- MQTT (HiveMQ Cloud) - TLS/SSL
+  - Topic `iot/farm/env` — gửi dữ liệu cảm biến
+  - Topic `iot/farm/control` — nhận lệnh điều khiển bơm
+
+### 3. Application Layer
+- Node-RED + Dashboard (giám sát + điều khiển)
+
+---
+
+# 🔌 4. Phần cứng (Wokwi)
+
+| Linh kiện       | Chân ESP32 | Vai trò                          |
+|----------------|-----------|----------------------------------|
+| ESP32          | -         | Vi điều khiển chính             |
+| DHT22          | GPIO 4    | Đo nhiệt độ + độ ẩm không khí   |
+| Potentiometer  | GPIO 34   | Giả lập độ ẩm đất               |
+| LED (xanh)     | GPIO 5    | Mô phỏng máy bơm               |
+| Buzzer         | GPIO 27   | Cảnh báo khi đất quá khô       |
+
+---
+
+# 📡 5. MQTT Topics
 
 ```json
+// Gửi dữ liệu cảm biến (ESP32 -> Node-RED)
 iot/farm/env
+{
+  "device": "AgriSense-01",
+  "temperature": 25.5,
+  "humidity": 60.2,
+  "soilMoisture": 45.0,
+  "pumpStatus": false,
+  "timestamp": 123456
+}
+
+// Nhận lệnh điều khiển (Node-RED -> ESP32)
 iot/farm/control
+{
+  "pump": true,
+  "duration": 5
+}
+```
+
+---
+
+# ⚙️ 6. Ngưỡng cảnh báo
+
+| Ngưỡng        | Hành động                                    |
+|--------------|----------------------------------------------|
+| Độ ẩm đất < 30% | Toast thông báo "Đất khô - cần tưới"     |
+| Độ ẩm đất < 20% | Buzzer bíp 5 lần + cảnh báo nghiêm trọng   |
+| Nhiệt độ > 35°C | Toast cảnh báo nhiệt độ cao                |
+
+---
+
+# 📊 7. Dashboard Node-RED
+
+Giao diện gồm 3 nhóm chính:
+
+1. **Đất & Tưới**: Gauge độ ẩm đất + biểu đồ line + trạng thái tưới + cảnh báo
+2. **Không khí**: Gauge nhiệt độ + Gauge độ ẩm KK + biểu đồ nhiệt độ
+3. **Điều khiển**: Nút bật/tắt bơm + công tắc tưới tự động
