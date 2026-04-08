@@ -1,0 +1,1897 @@
+% =============================================================================
+%  BÁO CÁO BÀI TẬP LỚN
+%  Hệ thống giám sát môi trường và điều khiển thiết bị qua giao thức MQTT
+%  (ESP8266 + DHT11 + OLED (SH1106) + Node-RED Dashboard)
+% =============================================================================
+\documentclass[13pt,a4paper]{article}
+% -----------------------------------------------------------------------------
+% 1. BỘ MÃ & NGÔN NGỮ
+% -----------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+% T5 (tiếng Việt) phải là encoding mặc định — phần tử CUỐI trong danh sách fontenc.
+% [T5,T1] khiến T1 là mặc định → lỗi \UHORN, \OHORN... (Overleaf có thể timeout vì hàng nghìn lỗi).
+\usepackage[T1,T5]{fontenc}
+\usepackage{amsmath}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+% -----------------------------------------------------------------------------
+% 2. MARGIN & PAGE
+% -----------------------------------------------------------------------------
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm]{geometry}
+\raggedbottom % tránh flushbottom giãn dọc quá đà khi trang ít nội dung
+\setlength{\intextsep}{10pt plus 3pt minus 2pt}
+\setlength{\textfloatsep}{11pt plus 3pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\usepackage{indentfirst}
+\setlength{\parindent}{1cm}
+\usepackage{setspace}
+% Không dùng \spacing{...} trong preamble (setspace: tránh trong preamble — gây lỗi "package in group" trên LaTeX mới)
+\setstretch{1.5}
+% -----------------------------------------------------------------------------
+% 3. ĐỊNH DẠNG SECTION
+% -----------------------------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}[block]
+  {\fontsize{17}{21}\selectfont\bfseries\centering}
+  {}{0em}{}
+\titleformat{\subsection}
+  {\fontsize{15}{19}\selectfont\bfseries}
+  {\thesubsection}{0.75em}{}
+\titleformat{\subsubsection}
+  {\fontsize{13}{17}\selectfont\bfseries\itshape}
+  {\thesubsubsection}{0.75em}{}
+% Khoảng cách section (gọn hơn mặc định titlesec)
+\titlespacing*{\section}{0pt}{2ex plus .2ex minus .1ex}{1.35ex plus .15ex}
+\titlespacing*{\subsection}{0pt}{1.65ex plus .15ex}{1.05ex plus .1ex}
+\titlespacing*{\subsubsection}{0pt}{1.35ex plus .1ex}{0.85ex plus .08ex}
+\setcounter{secnumdepth}{3} % hiện số mục 3.2.1, 3.2.2 cho \subsubsection
+% \tableofcontents gọi \section* — không dùng [block] giống section có số (tránh 2 tiêu đề + khoảng trắng khổng lồ)
+\renewcommand{\contentsname}{MỤC LỤC}
+\titleformat{name=\section,numberless}[block]
+  {\fontsize{15}{18}\selectfont\bfseries\centering}{}{0em}{}
+\titlespacing*{name=\section,numberless}{0pt}{0.35\baselineskip}{0.65\baselineskip}
+% -----------------------------------------------------------------------------
+% 4. BẢNG BIỂU
+% -----------------------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{seqsplit}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{float} % [H] — chèn hình đúng vị trí trong trang (tránh float trôi xa khỏi mục 3.2.1)
+\usepackage{placeins} % \FloatBarrier — xả hết float chờ trước mục quan trọng
+% Tất cả ảnh (logo, hình kết quả) đặt trong thư mục \file{images/} --- giống cấu trúc Overleaf chuẩn.
+\graphicspath{{./images/}}
+% Cấu hình bảng mặc định
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}m{#1}}
+% Cột co giãn theo \textwidth, căn trái (hostname/URL dài trong bảng)
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+% -----------------------------------------------------------------------------
+% 5. MÃ NGUỒN (xcolor [table] trước listings — \rowcolor trong listings; bảng chỉ dùng \textbf cho hàng tiêu đề)
+% -----------------------------------------------------------------------------
+\PassOptionsToPackage{table}{xcolor}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+\usepackage{listings}
+% Màu sắc
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{keywordcolor}{rgb}{0.2,0.2,0.6}
+\definecolor{stringcolor}{rgb}{0.58,0,0.82}
+\definecolor{commentcolor}{rgb}{0.4,0.4,0.4}
+\lstdefinestyle{cppcode}{
+    language=C++,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{commentcolor}\ttfamily,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    stringstyle=\color{stringcolor}\ttfamily,
+    numberstyle=\tiny\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    frameround=ttt,
+    numbers=left,
+    numbersep=5pt,
+    stepnumber=1,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    abovecaptionskip=8pt,
+    belowcaptionskip=4pt,
+    xleftmargin=10pt
+}
+\lstdefinestyle{bashcode}{
+    language=bash,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{commentcolor}\ttfamily,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{stringcolor}\ttfamily,
+    numberstyle=\tiny\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    frameround=ttt,
+    numbers=none,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=10pt
+}
+\lstdefinestyle{jsoncode}{
+    language=Java,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{commentcolor}\ttfamily,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen}\ttfamily,
+    numberstyle=\tiny\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    frameround=ttt,
+    numbers=left,
+    numbersep=5pt,
+    stepnumber=1,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=10pt
+}
+\lstdefinestyle{flowcode}{
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=none,
+    numbers=none,
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=0pt,
+}
+\lstdefinestyle{appendixcode}{
+    language=C++,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{commentcolor}\ttfamily,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    stringstyle=\color{stringcolor}\ttfamily,
+    numberstyle=\tiny\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    frameround=ttt,
+    numbers=left,
+    numbersep=5pt,
+    stepnumber=1,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    abovecaptionskip=8pt,
+    belowcaptionskip=4pt,
+    xleftmargin=10pt
+}
+\lstdefinestyle{appendixjson}{
+    language=Java,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{commentcolor}\ttfamily,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen}\ttfamily,
+    numberstyle=\tiny\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    frameround=ttt,
+    numbers=left,
+    numbersep=5pt,
+    stepnumber=1,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=10pt
+}
+% Serial / console: nền giống khối mã (cppcode), không tô cú pháp
+\lstdefinestyle{serialog}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    frameround=ttt,
+    rulecolor=\color{codegray},
+    numbers=none,
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=10pt,
+    keepspaces=true,
+}
+\lstset{style=flowcode}
+% -----------------------------------------------------------------------------
+% 6. BOX & HIGHLIGHT (chỉ gọi mdframed một lần — tránh lỗi "package in group")
+% -----------------------------------------------------------------------------
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{
+    backgroundcolor=gray!10,
+    linecolor=gray!40,
+    linewidth=0.5pt,
+    roundcorner=4pt,
+    innertopmargin=6pt,
+    innerbottommargin=6pt,
+    innerleftmargin=8pt,
+    innerrightmargin=8pt
+}
+% -----------------------------------------------------------------------------
+% 7. CÁC GÓI CÒN LẠI (hyperref phải gần cuối preamble — tránh lỗi trên Overleaf)
+% -----------------------------------------------------------------------------
+\usepackage{pifont} % \ding{51} thay $\checkmark$ (không cần amssymb)
+\usepackage[shortlabels,inline]{enumitem}
+\setlist{topsep=0.4em, itemsep=0.22em, parsep=0pt, partopsep=0pt}
+\setlist[enumerate]{topsep=0.45em, itemsep=0.22em}
+\setlist[itemize]{topsep=0.4em, itemsep=0.2em}
+\usepackage[nottoc,notlof,notlot]{tocbibind} % không liệt kê TOC/LoF/LoT trong mục lục (tránh dòng "Contents" thừa)
+\usepackage{fancyhdr}
+\usepackage{xurl}
+\usepackage[unicode,bookmarks=true,hypertexnames=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue, citecolor=black}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+% Chỉ hiện số trang một lần (tránh trùng header + footer)
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[R]{\thepage}}
+% -----------------------------------------------------------------------------
+% 8. MISC
+% -----------------------------------------------------------------------------
+% Định nghĩa shortcut
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\textbf{\texttt{#1}}}
+% Chuỗi dài (hostname, v.v.) trong ô bảng: cho phép ngắt dòng, vẫn \texttt
+\newcommand{\codebreak}[1]{\texttt{\seqsplit{#1}}}
+% Logo trường: không dùng \urldef trong \href (dễ TeX capacity exceeded). URL gõ \% và \_ để an toàn với LaTeX.
+\newcommand{\HueLogoURL}{https://upload.wikimedia.org/wikipedia/vi/thumb/3/33/Logo\_Tr\%C6\%B0\%E1\%BB\%9Dng\_\%C4\%90\%E1\%BA\%A1i\_h\%E1\%BB\%8Dc\_Khoa\_h\%E1\%BB\%8Dc\%2C\_\%C4\%90\%E1\%BA\%A1i\_h\%E1\%BB\%8Dc\_Hu\%E1\%BA\%BF.svg/250px-Logo\_Tr\%C6\%B0\%E1\%BB\%9Dng\_\%C4\%90\%E1\%BA\%A1i\_h\%E1\%BB\%8Dc\_Khoa\_h\%E1\%BB\%8Dc\%2C\_\%C4\%90\%E1\%BA\%A1i\_h\%E1\%BB\%8Dc\_Hu\%E1\%BA\%BF.svg.png}
+\newcommand{\HueLogoFile}{logo_hueuni.png} % trong \file{images/} (Overleaf: tạo thư mục \file{images}, upload logo vào đó)
+% Ảnh mạch: \file{11_B.jpg} = sơ đồ EasyEDA | \file{11_A.jpg} = ảnh PCB/mạch thật
+\newcommand{\FigEasyedaSchematic}{11_B.jpg}
+\newcommand{\FigPcbPhoto}{11_A.jpg}
+\newcommand{\FigSerial}{22.jpg}
+\newcommand{\FigOled}{33.jpg}
+\newcommand{\FigNodeRed}{44.png}
+\newcommand{\FigDashboard}{55.png}
+\newcommand{\FigToast}{toast.png}
+\newcommand{\FigLedUi}{slider.png}
+\newcommand{\FigEspBoard}{esp8266.png}
+\newcommand{\FigHwDht}{dht11.png}
+\newcommand{\FigHwOled}{oled.png}
+\newcommand{\FigHwLed}{led.png}
+% =============================================================================
+% ========================  NỘI DUNG TÀI LIỆU  ================================
+% =============================================================================
+\begin{document}
+% =============================================================================
+% TRANG BÌA
+% =============================================================================
+\thispagestyle{empty}
+\begin{center}
+    \fontsize{18}{22}\selectfont\bfseries
+    TRƯỜNG ĐẠI HỌC KHOA HỌC HUẾ\\
+    \vspace{0.45cm}
+    \href{\HueLogoURL}{\includegraphics[width=4.6cm]{\HueLogoFile}}\\
+    \vspace{0.5cm}
+\end{center}
+
+\begin{center}
+    \fontsize{20}{24}\selectfont\bfseries
+    KIỂM TRA GIỮA KỲ IOT\\
+    \vspace{0.35cm}
+    \fontsize{16}{20}\selectfont\bfseries
+    ĐỀ TÀI: XÂY DỰNG WEBSITE ĐO NHIỆT ĐỘ, ĐỘ ẨM\\
+    CỦA KHU VỰC VÀ ĐIỀU KHIỂN TẮT BẬT ĐÈN\\
+    \vspace{0.35cm}
+    \fontsize{14}{18}\selectfont
+    (ESP8266 + DHT11 + OLED (SH1106) + Node-RED Dashboard)\\
+\end{center}
+
+\vspace{1.1cm}
+
+\begin{center}
+    \fontsize{13}{16}\selectfont
+    \begin{tabular}{@{}ll@{}}
+        \textbf{Giảng viên hướng dẫn:} & Lê Hữu Bình \\
+        \textbf{Nhóm học phần:} & Phát triển ứng dụng IoT - Nhóm 9 \\
+        \textbf{Mã lớp học phần:} & 2025-2026.2.TIN4024.009 \\
+        \textbf{Nhóm sinh viên thực hiện:} & Nhóm 6 \\[0.55em]
+        Phan Bá Đủ & --- 22T1020073 \\
+        Nguyễn Thị Huyền & --- 22T1020161 \\
+        Nguyễn Hữu Việt & --- 22T1020796 \\
+    \end{tabular}
+\end{center}
+
+\vspace{0.9cm}
+\begin{center}
+    \fontsize{13}{16}\selectfont
+    Huế, Ngày 27 Tháng 03 Năm 2026
+\end{center}
+
+\newpage
+% =============================================================================
+% MỤC LỤC
+% =============================================================================
+\pagenumbering{roman}
+\thispagestyle{empty}
+\vspace*{0.35\baselineskip}
+{\setstretch{1}\normalsize
+    \tableofcontents
+}
+\newpage
+% =============================================================================
+% LỜI CẢM ƠN
+% =============================================================================
+\thispagestyle{empty}
+\vspace*{0.4cm}
+\begin{center}
+    \fontsize{19}{24}\selectfont\bfseries\LOTO{CẢM ƠN}\par
+    \vspace{0.25ex}
+    \rule{0.30\textwidth}{1.8pt}
+\end{center}
+\vspace{0.85cm}
+
+\phantomsection
+\addcontentsline{toc}{section}{LỜI CẢM ƠN}
+
+\parindent=1.1cm
+\setlength{\parskip}{0.6ex plus 0.2ex}
+Trong quá trình thực hiện bài tiểu luận này, em đã nhận được sự hỗ trợ, giúp đỡ tận tình từ thầy cô, bạn bè và gia đình. Em xin chân thành gửi lời cảm ơn sâu sắc đến:
+
+\textbf{Trước hết}, em xin bày tỏ lòng biết ơn đến Thầy TS.Lê Hữu Bình người đã tận tình chỉ dẫn, góp ý và đồng hành cùng em trong suốt quá trình nghiên cứu và hoàn thiện bài viết. Sự hướng dẫn quý báu của thầy là nguồn động lực và định hướng quan trọng giúp em hoàn thành tốt bài niên luận này.
+
+\textbf{Em cũng xin gửi lời cảm ơn} đến quý thầy cô trong khoa Công Nghệ Thông Tin những người đã truyền đạt kiến thức nền tảng và tạo điều kiện thuận lợi để em có thể áp dụng vào quá trình thực tập và viết niên luận.
+
+Mặc dù đã cố gắng hoàn thiện bài viết trong khả năng của mình, nhưng chắc chắn không thể tránh khỏi những thiếu sót. Em rất mong nhận được sự góp ý từ quý thầy cô để bài viết được hoàn thiện hơn.
+
+Một lần nữa, em xin chân thành cảm ơn và luôn mong nhận được sự đóng góp của Quý thầy cô. Em xin kính chúc các thầy cô trong Khoa Công nghệ thông tin dồi dào sức khỏe, niềm tin để tiếp tục thực hiện sứ mệnh cao đẹp của mình là truyền đạt kiến thức cho thế hệ mai sau.
+
+Em xin chân thành cảm ơn!
+
+\parindent=0pt
+\parskip=0pt
+\vspace{0.8cm}
+\hfill\begin{minipage}[t]{7cm}
+    \fontsize{13}{16}\selectfont
+    \begin{flushright}
+        \textbf{Nhóm sinh viên thực hiện}\\
+        Nhóm 6 --- Lớp TIN4024.009\\
+        Phan Bá Đủ, Nguyễn Thị Huyền,\\
+        Nguyễn Hữu Việt\\[0.5em]
+        Huế, tháng 03 năm 2026
+    \end{flushright}
+\end{minipage}
+
+\newpage
+% =============================================================================
+% DANH MỤC TỪ VIẾT TẮT
+% =============================================================================
+\thispagestyle{empty}
+\vspace*{0.4cm}
+\begin{center}
+    \fontsize{19}{24}\selectfont\bfseries\LOTO{DANH MỤC TỪ VIẾT TẮT}\par
+    \vspace{0.25ex}
+    \rule{0.45\textwidth}{1.8pt}
+\end{center}
+\vspace{0.65cm}
+
+\phantomsection
+\addcontentsline{toc}{section}{DANH MỤC TỪ VIẾT TẮT}
+
+\noindent
+\begingroup
+\renewcommand{\arraystretch}{1.18}%
+\begin{tabularx}{\textwidth}{@{}
+    >{\centering\arraybackslash}m{2.35cm}
+    >{\raggedright\arraybackslash}X
+    >{\raggedright\arraybackslash}X
+@{}}
+    \toprule
+    \textbf{Ký hiệu} & \textbf{Tiếng Anh} & \textbf{Tiếng Việt} \\
+    \midrule
+    \textbf{API}   & Application Programming Interface   & Giao diện lập trình ứng dụng \\
+    \textbf{DHT}   & Digital Humidity and Temperature   & Cảm biến nhiệt độ \& độ ẩm số \\
+    \textbf{GPIO}  & General Purpose Input/Output       & Chân vào/ra đa mục đích \\
+    \textbf{HTTP}  & HyperText Transfer Protocol       & Giao thức truyền siêu văn bản \\
+    \textbf{I$^2$C} & Inter-Integrated Circuit          & Giao thức truyền thông hai dây \\
+    \textbf{JSON}  & JavaScript Object Notation        & Ký hiệu đối tượng JavaScript --- định dạng chuỗi dữ liệu \\
+    \textbf{LED}   & Light-Emitting Diode               & Điốt phát quang \\
+    \textbf{MQTT}  & Message Queuing Telemetry Transport & Giao thức truyền thông điệp theo mô hình pub/sub \\
+    \textbf{NRD}   & Node-RED Dashboard                 & Giao diện dashboard của Node-RED \\
+    \textbf{NTP}   & Network Time Protocol               & Giao thức đồng bộ thời gian qua mạng \\
+    \textbf{OLED}  & Organic Light-Emitting Diode        & Màn hình diod phát quang hữu cơ \\
+    \textbf{PWM}   & Pulse Width Modulation              & Điều chế độ rộng xung \\
+    \textbf{SDK}   & Software Development Kit            & Bộ công cụ phát triển phần mềm \\
+    \textbf{TLS}   & Transport Layer Security            & Giao thức bảo mật tầng truyền tải \\
+    \textbf{URL}   & Uniform Resource Locator           & Bộ định vị tài nguyên thống nhất \\
+    \bottomrule
+\end{tabularx}
+\endgroup
+
+\newpage
+% =============================================================================
+% 1. ĐẶT VẤN ĐỀ
+% =============================================================================
+\pagenumbering{arabic}
+\thispagestyle{fancy}
+\section{Đặt vấn đề}
+\label{sec:datvandde}
+\index{datvande}
+
+Internet of Things (IoT) là xu hướng kết nối các thiết bị vật lý với mạng internet, cho phép thu thập dữ liệu từ cảm biến và điều khiển thiết bị từ xa. Trong thực tế, nhu cầu giám sát nhiệt độ, độ ẩm trong phòng lab, kho hoặc không gian nhỏ là rất thiết thực: người dùng cần biết thông số môi trường hiện tại, được cảnh báo khi vượt ngưỡng an toàn, và có thể bật/tắt hoặc điều chỉnh độ sáng thiết bị (ví dụ đèn LED) từ giao diện trình duyệt mà không cần có mặt tại chỗ.
+
+Đề tài xây dựng một hệ thống IoT hoàn chỉnh gồm ba thành phần chính:
+
+\begin{itemize}
+    \item \textbf{Thiết bị đầu cuối (Edge):} Vi điều khiển \textbf{ESP8266 (Wemos D1 Mini)} kết nối với \textbf{cảm biến DHT11} (nhiệt độ \& độ ẩm), \textbf{LED} có điều khiển PWM, và \textbf{màn hình OLED (SH1106) 128x64} hiển thị thông tin cục bộ.
+    \item \textbf{Tầng trung gian (Middleware):} \textbf{MQTT Broker} \textbf{HiveMQ Cloud} (TLS, port 8883) làm trung tâm truyền tin giữa thiết bị và giao diện.
+    \item \textbf{Tầng ứng dụng (Application):} \textbf{NRD} (Node-RED Dashboard) cung cấp giao diện giám sát trực quan (gauge, biểu đồ), cảnh báo (toast notification), điều khiển đèn (switch, slider), và đồng bộ trạng thái hai chiều hoàn toàn qua trình duyệt.
+\end{itemize}
+
+% =============================================================================
+% 2. NỘI DUNG THỰC HIỆN
+% =============================================================================
+\section{Nội dung thực hiện}
+\label{sec:noidung}
+\index{noidungthuchien}
+
+% -----------------------------------------------------------------------------
+\subsection{Thu thập dữ liệu môi trường (Cảm biến DHT11)}
+\label{sec:thudulieu}
+\index{thuthapdulieu}
+
+\textbf{Cảm biến:} DHT11 --- đo nhiệt độ ($^\circ$C) và độ ẩm tương đối (\%) không khí.\\
+\textbf{Chân kết nối trên ESP8266:} GPIO 0 (\code{DHT\_PIN} trong sketch).\\
+\textbf{Chu kỳ đọc:} Mỗi \code{INTERVAL\_DHT = 20000} mili-giây (20 giây), được quản lý bằng timer \code{lastDHT} trong \code{loop()}.
+
+\textbf{Luồng xử lý trong firmware:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Gọi \code{dht.readTemperature()} và \code{dht.readHumidity()} để đọc nhiệt độ \& độ ẩm từ DHT11.
+    \item Kiểm tra \code{isnan()} --- nếu lỗi thì bỏ qua chu kỳ này.
+    \item Cập nhật biến toàn cục \code{temperature}, \code{humidity}.
+    \item So sánh với 4 ngưỡng: \code{TEMP\_MAX = 38.0}$^\circ$C, \code{TEMP\_MIN = 18.0}$^\circ$C, \code{HUMI\_MAX = 80.0\%}, \code{HUMI\_MIN = 30.0\%} --- tạo 4 cờ: \code{tempHighFlag}, \code{tempLowFlag}, \code{humiHighFlag}, \code{humiLowFlag}.
+    \item Ghi log ra Serial (\code{Serial.printf}) với định dạng:
+\end{enumerate}
+
+\begin{lstlisting}[style=flowcode, caption={Serial log khi đọc DHT11}, label={lst:dhtlog}]
+[DHT] T:28.0C  H:65.0%
+       [CANH BAO] Nhiet do qua thap: 28.0C < 18.0C
+\end{lstlisting}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm, resume]
+    \item Đóng gói \textbf{JSON} bằng \code{snprintf} với định dạng:
+\end{enumerate}
+
+\begin{center}
+    \includegraphics[width=0.42\textwidth]{\FigHwDht}\\[0.35em]
+    {\footnotesize\textit{Ảnh minh họa module cảm biến DHT11 (VCC, DATA \texttt{out}, GND).}}
+\end{center}
+\vspace{0.45em}
+
+\begin{lstlisting}[style=jsoncode, caption={JSON payload gửi lên topic iot/env/data}, label={lst:dhtjson}]
+{
+  "temperature": 28.0,
+  "humidity": 65.0,
+  "tempAlertHigh": false,
+  "tempAlertLow": false,
+  "humiAlertHigh": false,
+  "humiAlertLow": false,
+  "message": "Moi truong binh thuong"
+}
+\end{lstlisting}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm, resume]
+    \item Gọi \code{mqtt.publish(mqtt\_env, buf)} --- topic \code{iot/env/data}.
+    \item Gọi \code{publishLedStatusIfNeeded()} để đồng bộ trạng thái LED (nếu có thay đổi).
+    \item Gọi \code{displayOLED()} để cập nhật màn hình OLED ngay lập tức.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Hiển thị OLED (SH1106)}
+\label{sec:oled}
+\index{hienthioled}
+
+Màn hình \textbf{OLED (SH1106) 128x64 I2C} hiển thị thông tin cục bộ ngay trên thiết bị, giúp người dùng quan sát nhanh mà không cần mở Dashboard.
+
+\begin{center}
+    \includegraphics[width=0.58\textwidth]{\FigHwOled}\\[0.35em]
+    {\footnotesize\textit{Ảnh màn hình OLED thực tế: nhiệt độ, độ ẩm, trạng thái đèn (tương ứng dữ liệu gửi qua MQTT).}}
+\end{center}
+\vspace{0.35em}
+
+\textbf{Thông số kỹ thuật:}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Thông số kỹ thuật OLED (SH1106)}
+    \label{tbl:oled}
+    \begin{tabular}{|L{4cm}|C{5cm}|}
+        \hline
+        \textbf{Thông số} & \textbf{Giá trị} \\
+        \hline
+        Giao thức & I2C \\
+        \hline
+        Chân SCL & GPIO 4 (D2) \\
+        \hline
+        Chân SDA & GPIO 5 (D1) \\
+        \hline
+        Độ phân giải & 128 $\times$ 64 pixel \\
+        \hline
+        Thư viện & U8G2lib \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Bố cục 3 dòng trên màn hình:}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Bố cục hiển thị OLED (SH1106)}
+    \label{tbl:oledlayout}
+    \begin{tabular}{|C{2cm}|C{5cm}|C{5cm}|}
+        \hline
+        \textbf{Dòng} & \textbf{Nội dung bình thường} & \textbf{Nội dung khi cảnh báo} \\
+        \hline
+        Dòng 1 & \code{T:28.0$^\circ$C 18-38$^\circ$C} & \code{T:28.0$^\circ$C Cao!} hoặc \code{T:28.0$^\circ$C Thap!} \\
+        \hline
+        Dòng 2 & \code{H:65.0\% 30-80\%} & \code{H:65.0\% Cao!} hoặc \code{H:65.0\% Thap!} \\
+        \hline
+        Dòng 3 & \code{Den: TAT 0\%} hoặc \code{Den: BAT 100\%} & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+OLED được cập nhật ngay lập tức mỗi khi có thao tác LED (MQTT callback) hoặc mỗi chu kỳ DHT (20 giây).
+
+% -----------------------------------------------------------------------------
+\subsection{Truyền dữ liệu qua MQTT (HiveMQ Cloud)}
+\label{sec:mqtt}
+\index{truyendulieu}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Cấu hình MQTT}
+    \label{tbl:mqtt}
+    \begin{tabularx}{\textwidth}{|L{4.8cm}|Y|}
+        \hline
+        \textbf{Thông số} & \textbf{Giá trị} \\
+        \hline
+        \textbf{Broker} & HiveMQ Cloud (hostname báo cáo: \code{****}) \\
+        \hline
+        \textbf{Port} & \textbf{8883} --- TLS \\
+        \hline
+        \textbf{Protocol} & \textbf{MQTT v3.1.1} qua \code{WiFiClientSecure} + \code{PubSubClient} \\
+        \hline
+        \textbf{Topic gửi dữ liệu môi trường} & \code{iot/env/data} --- ESP8266 publish \\
+        \hline
+        \textbf{Topic điều khiển LED} & \code{iot/led/power/set} --- ESP8266 subscribe \\
+        \hline
+        \textbf{Topic trạng thái LED} & \code{iot/led/status} --- ESP8266 publish \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\textbf{Vai trò ESP8266 trong MQTT:}
+\begin{itemize}
+    \item Là \textbf{publisher} trên topic \code{iot/env/data} --- gửi dữ liệu cảm biến định kỳ (20 giây).
+    \item Là \textbf{publisher} trên topic \code{iot/led/status} --- gửi trạng thái LED sau khi thay đổi (tránh feedback loop với slider).
+    \item Là \textbf{subscriber} trên topic \code{iot/led/power/set} --- nhận lệnh điều khiển LED từ Node-RED.
+\end{itemize}
+
+\textbf{Trong firmware:}
+\code{connectMQTT()} tạo \code{clientId} ngẫu nhiên (\code{"esp8266-nhom6-xxxx"}), gọi \code{mqtt.connect(clientId, mqtt\_user, mqtt\_pass)}. Khi kết nối thành công $\rightarrow$ subscribe \code{mqtt\_led} và in log: \code{MQTT connected!}. MQTT TLS dùng \code{espClient.setInsecure()} (bỏ qua xác thực certificate --- phù hợp demo, cần cải thiện bảo mật ở phiên bản production).
+
+% -----------------------------------------------------------------------------
+\subsection{Xử lý dữ liệu bằng Node-RED}
+\label{sec:nodered}
+\index{xulydulieu}
+
+Node-RED nhận message từ MQTT, parse JSON và phân luồng xử lý.
+
+\textbf{Cấu trúc flow chính:} theo tab \texttt{MQTT} trong \file{node-red.json}. Topic \texttt{iot/env/data} mang JSON do \code{publishEnvData} (trong \file{iot.txt}) tạo: \code{temperature}, \code{humidity}, các cờ \code{tempAlert*} / \code{humiAlert*} và \code{message}. Node \texttt{HandleData} vẫn tách đủ 4 nhánh; nhánh \textbf{ledState} chỉ có tác dụng khi object có trường \code{ledState} (còn không thì function trả \code{null}). Đồng bộ đèn từ thiết bị thật chủ yếu qua \texttt{iot/led/status} (Hình~\ref{fig:flow2}).
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        font=\scriptsize,
+        >=Latex,
+        mqttn/.style={draw=black!55, rounded corners=2pt, fill=green!14, inner sep=6pt, align=center, minimum width=2.85cm},
+        fn/.style={draw=black!55, rounded corners=2pt, fill=yellow!12, inner sep=6pt, align=center},
+        uin/.style={draw=black!55, rounded corners=2pt, fill=blue!9, inner sep=6pt, align=center, text width=2.65cm},
+        dbg/.style={draw=black!45, dashed, rounded corners=2pt, fill=gray!10, inner sep=5pt, align=center, text width=1.9cm},
+    ]
+        % Cột x (4 nhánh) — cùng phong cách Hình~\ref{fig:flow2}
+        \def\xa{-4.85} \def\xb{-1.62} \def\xc{1.62} \def\xd{4.85}
+        \node[mqttn] (m1) at (0,0) {\textbf{mqtt in}\\\texttt{iot/env/data}};
+        \node[dbg] (dbg) at (-6.1,0) {\textbf{debug}\\\tiny sidebar};
+        \draw[->, thick, dashed] (m1.west) -- (dbg.east);
+        \node[fn, text width=9.6cm] (hd) at (0,-2.35) {\textbf{HandleData} (function)\\[2pt]\texttt{JSON.parse} nếu string $\rightarrow$ \textbf{4 output} song song (cùng payload)};
+        \draw[->, thick] (m1) -- (hd);
+        \foreach \x/\lab in {-4.85/temperature, -1.62/humidity, 1.62/alert, 4.85/ledState}
+            \node[fn, text width=2.05cm, minimum width=2.1cm] (\lab) at (\x,-4.55) {\textbf{\lab}};
+        \coordinate (S) at (0,-3.38);
+        \draw[->, thick] (hd.south) -- (S);
+        \foreach \lab in {temperature, humidity, alert, ledState}
+            \draw[->, thick] (S) -| (\lab.north);
+        \node[uin] (u1) at (\xa,-6.95) {\textbf{ui\_gauge} + \textbf{ui\_chart}\\\tiny Nhiệt độ hiện tại, Biểu đồ nhiệt độ};
+        \node[uin] (u2) at (\xb,-6.95) {\textbf{ui\_gauge} + \textbf{ui\_chart}\\\tiny Độ ẩm hiện tại, Biểu đồ độ ẩm};
+        \node[uin] (u3) at (\xc,-6.95) {\textbf{ui\_toast}\\\tiny Cảnh báo môi trường};
+        \node[uin] (u4) at (\xd,-6.95) {\textbf{ui\_switch}\\\tiny đồng bộ (Bật/Tắt đèn)};
+        \draw[->, thick] (temperature) -- (u1);
+        \draw[->, thick] (humidity) -- (u2);
+        \draw[->, thick] (alert) -- (u3);
+        \draw[->, thick] (ledState) -- (u4);
+    \end{tikzpicture}
+    \caption{Luồng MQTT chính trong Node-RED: \texttt{mqtt in} \texttt{iot/env/data} song song với \texttt{debug}; \texttt{HandleData} tách bốn nhánh tới các function rồi tới Dashboard (đúng nối dây trong \file{node-red.json}).}
+    \label{fig:flow1}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        font=\scriptsize,
+        >=Latex,
+        mqttn/.style={draw=black!55, rounded corners=2pt, fill=green!14, inner sep=6pt, align=center, minimum width=3cm},
+        fn/.style={draw=black!55, rounded corners=2pt, fill=yellow!12, inner sep=6pt, align=center},
+        uin/.style={draw=black!55, rounded corners=2pt, fill=blue!9, inner sep=6pt, align=center, text width=2.8cm},
+    ]
+        \node[mqttn] (m2) {\textbf{mqtt in}\\\texttt{iot/led/status}};
+        \node[fn, text width=5.35cm] (sync) at (0,-2.3) {\textbf{Sync slider + switch} (function)\\[2pt]đồng bộ từ trạng thái LED thật --- 2 output};
+        \draw[->, thick] (m2) -- (sync);
+        % Hai nhánh hẹp + lệch xa trục giữa (tránh chồng khối do text width lớn)
+        \node[fn, text width=2.05cm, minimum width=2.15cm] (br) at (-3.35,-4.6) {\textbf{brightness}};
+        \node[fn, text width=2.05cm, minimum width=2.15cm] (ls) at (3.35,-4.6) {\textbf{ledState}};
+        \coordinate (S2) at (0,-3.35);
+        \draw[->, thick] (sync.south) -- (S2);
+        \draw[->, thick] (S2) -| (br.north);
+        \draw[->, thick] (S2) -| (ls.north);
+        \node[uin] (sl) at (-3.35,-6.3) {\textbf{ui\_slider}\\\tiny đồng bộ slider};
+        \node[uin] (sw) at (3.35,-6.3) {\textbf{ui\_switch}\\\tiny đồng bộ switch};
+        \draw[->, thick] (br) -- (sl);
+        \draw[->, thick] (ls) -- (sw);
+    \end{tikzpicture}
+    \caption{Luồng đồng bộ LED status}
+    \label{fig:flow2}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \footnotesize
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \textbf{(a) Nhánh từ Slider}\\[0.35em]
+        \begin{tikzpicture}[
+            font=\scriptsize,
+            >=Latex,
+            uin/.style={draw=black!55, rounded corners=2pt, fill=blue!6, inner sep=5pt, align=center, text width=2.5cm},
+            fn/.style={draw=black!55, rounded corners=2pt, fill=yellow!12, inner sep=5pt, align=center, text width=2.05cm},
+            mqttn/.style={draw=black!55, rounded corners=2pt, fill=green!14, inner sep=5pt, align=center, text width=2.5cm},
+        ]
+            \node[uin] (uis) at (0,0) {\textbf{ui\_slider}\\Điều chỉnh độ sáng};
+            \node[fn, text width=3.2cm] (setpl) at (0,-1.9) {\textbf{Set LED State Payload}\\2 output};
+            \draw[->, thick] (uis) -- (setpl);
+            \node[fn, minimum width=2.15cm] (bj) at (-2.35,-3.7) {\texttt{brightness} JSON};
+            \node[fn, minimum width=2.15cm] (lb) at (2.35,-3.7) {\texttt{ledState} bool};
+            \coordinate (S3) at (0,-2.75);
+            \draw[->, thick] (setpl.south) -- (S3);
+            \draw[->, thick] (S3) -| (bj.north);
+            \draw[->, thick] (S3) -| (lb.north);
+            \node[fn, minimum width=2.15cm] (s2m) at (-2.35,-5.3) {\textbf{slider2mqtt001}};
+            \node[uin] (usw1) at (2.35,-5.3) {\textbf{ui\_switch}\\\tiny đồng bộ};
+            \draw[->, thick] (bj) -- (s2m);
+            \draw[->, thick] (lb) -- (usw1);
+            \node[mqttn] (out1) at (0,-7) {\textbf{mqtt out}\\\texttt{iot/led/power/set}};
+            \draw[->, thick] (s2m.south) -- ++(0,-0.35) -| (out1.north);
+        \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \textbf{(b) Nhánh từ Switch}\\[0.35em]
+        \begin{tikzpicture}[
+            font=\scriptsize,
+            >=Latex,
+            uin/.style={draw=black!55, rounded corners=2pt, fill=blue!6, inner sep=5pt, align=center, text width=2.5cm},
+            fn/.style={draw=black!55, rounded corners=2pt, fill=yellow!12, inner sep=5pt, align=center, text width=2.05cm},
+            mqttn/.style={draw=black!55, rounded corners=2pt, fill=green!14, inner sep=5pt, align=center, text width=2.5cm},
+        ]
+            \node[uin] (uisw) at (0,0) {\textbf{ui\_switch}\\Bật / tắt đèn};
+            \node[fn, text width=3.2cm] (fmt) at (0,-1.9) {\textbf{Format LED State}\\2 output};
+            \draw[->, thick] (uisw) -- (fmt);
+            \node[fn, minimum width=2.15cm] (lj) at (-2.35,-3.7) {\texttt{\{ledState\}}};
+            \node[fn, minimum width=2.15cm] (zv) at (2.35,-3.7) {\texttt{0} / \texttt{100}};
+            \coordinate (S4) at (0,-2.75);
+            \draw[->, thick] (fmt.south) -- (S4);
+            \draw[->, thick] (S4) -| (lj.north);
+            \draw[->, thick] (S4) -| (zv.north);
+            \node[mqttn] (out2) at (-2.35,-5.3) {\textbf{mqtt out}\\\texttt{iot/led/power/set}};
+            \node[uin] (usl2) at (2.35,-5.3) {\textbf{ui\_slider}\\\tiny đồng bộ};
+            \draw[->, thick] (lj) -- (out2);
+            \draw[->, thick] (zv) -- (usl2);
+        \end{tikzpicture}
+    \end{minipage}
+    \caption{Luồng điều khiển LED từ Dashboard}
+    \label{fig:flow3}
+\end{figure}
+
+\textbf{Chi tiết các node function:}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Các node function trong Node-RED}
+    \label{tbl:nodes}
+    \begin{tabular}{|L{4.5cm}|C{6cm}|C{3.5cm}|}
+        \hline
+        \textbf{Tên node} & \textbf{Mã xử lý (logic chính)} & \textbf{Đầu ra} \\
+        \hline
+        \code{HandleData} & \code{JSON.parse(msg.payload)} nếu là string; trả về 4 bản sao cho 4 nhánh & 4 output \\
+        \hline
+        \code{temperature} & \code{msg.payload = msg.payload.temperature; return msg;} & Gauge + Chart \\
+        \hline
+        \code{humidity} & \code{msg.payload = msg.payload.humidity; return msg;} & Gauge + Chart \\
+        \hline
+        \code{alert} & Kiểm tra \code{tempAlertHigh/Low}, \code{humiAlertHigh/Low} $\rightarrow$ gán message tương ứng & Toast \\
+        \hline
+        \code{ledState} & \code{msg.payload = msg.payload.ledState} nếu có, ngược lại \code{return null} & Switch đồng bộ \\
+        \hline
+        \code{Sync slider + switch} & Tách \code{brightness} $\rightarrow$ output 0 (slider), \code{ledState} $\rightarrow$ output 1 (switch) & 2 output \\
+        \hline
+        \code{Set LED State Payload} & \code{[0]} $\rightarrow$ \code{\{brightness: x\}} cho MQTT, \code{[1]} $\rightarrow$ \code{b > 0} cho switch & 2 output \\
+        \hline
+        \code{Format LED State} & \code{[0]} $\rightarrow$ \code{\{ledState: true/false\}} cho MQTT, \code{[1]} $\rightarrow$ \code{100/0} cho slider & 2 output \\
+        \hline
+        \code{slider2mqtt001} & Change node: đặt \code{topic = iot/led/power/set}, xóa \code{ledState} khỏi msg & mqtt out \\
+        \hline
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\subsection{Hiển thị dữ liệu trên Dashboard}
+\label{sec:dashboard}
+\index{hienthidulieu}
+
+\textbf{Giao diện NRD} (tab \textbf{Trang Chủ}, nhóm \textbf{Nhiệt Độ}, \textbf{Độ Ẩm}, \textbf{Đèn}):
+
+\begin{center}
+    \includegraphics[width=0.95\textwidth]{\FigDashboard}\\[0.35em]
+    {\footnotesize\textit{Giao diện Dashboard thực tế: gauge \& biểu đồ nhiệt độ/độ ẩm; slider độ sáng và switch bật/tắt đèn (nhóm \textbf{Đèn}).}}
+\end{center}
+\vspace{0.4em}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Các thành phần Dashboard}
+    \label{tbl:dashboard}
+    \begin{tabular}{|L{4cm}|C{2.5cm}|C{6cm}|}
+        \hline
+        \textbf{Thành phần} & \textbf{Loại} & \textbf{Mô tả} \\
+        \hline
+        Nhiệt độ hiện tại & \code{ui\_gauge} & Kim chỉ giá trị nhiệt độ ($^\circ$C), min=0, max=50 \\
+        \hline
+        Biểu đồ nhiệt độ & \code{ui\_chart} & Đồ thị đường theo thời gian thực (line, HH:mm:ss) \\
+        \hline
+        Độ ẩm hiện tại & \code{ui\_gauge} & Kim chỉ giá trị độ ẩm (\%), min=0, max=100 \\
+        \hline
+        Biểu đồ độ ẩm & \code{ui\_chart} & Đồ thị đường theo thời gian thực \\
+        \hline
+        Điều chỉnh độ sáng (\%) & \code{ui\_slider} & Slider 0--100\%, bước 1 \\
+        \hline
+        Bật đèn / Tắt đèn & \code{ui\_switch} & Toggle bật/tắt hoàn toàn \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Gauge nhiệt độ dùng ba vùng màu: xanh ($\le$vùng an toàn), vàng (trung gian), đỏ (nguy hiểm). Biểu đồ tự động xóa điểm cũ sau 1 giờ (\code{removeOlderUnit: 3600}).
+
+% -----------------------------------------------------------------------------
+\subsection{Cảnh báo môi trường}
+\label{sec:canhbao}
+\index{canhbao}
+
+\textbf{Cơ chế:} Khi ESP8266 phát hiện nhiệt độ $> 38^\circ$C, $< 18^\circ$C, độ ẩm $> 80\%$ hoặc $< 30\%$, firmware đặt 4 cờ tương ứng và gắn chuỗi \code{message} trong JSON.
+
+\textbf{Luồng cảnh báo trên Node-RED:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item JSON từ ESP8266 chứa \code{"tempAlertHigh":true}, \code{"tempAlertLow":true}, \code{"humiAlertHigh":true}, \code{"humiAlertLow":true} (hoặc kết hợp).
+    \item Node function \textbf{\code{alert}} kiểm tra lần lượt: nếu đúng $\rightarrow$ gán \code{msg.payload} thành chuỗi cảnh báo, gửi xuống node \textbf{\code{ui\_toast}}.
+    \item Toast hiển thị ở \textbf{góc dưới bên trái} trong 3 giây (\code{displayTime: 3}).
+\end{enumerate}
+
+\begin{center}
+    \includegraphics[width=0.72\textwidth]{\FigToast}\\[0.35em]
+    {\footnotesize\textit{Ví dụ \textbf{ui\_toast} trên Dashboard: thông báo cảnh báo nhiệt độ (\texttt{CB Nhiet do!} --- viết tắt cảnh báo), cùng ngữ cảnh biểu đồ và nhóm \textbf{Đèn}.}}
+\end{center}
+\vspace{0.4em}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Bốn loại cảnh báo môi trường}
+    \label{tbl:alerts}
+    \begin{tabular}{|C{3.5cm}|C{3.5cm}|C{5cm}|}
+        \hline
+        \textbf{Cờ} & \textbf{Ngưỡng} & \textbf{Message} \\
+        \hline
+        \code{tempAlertHigh} & $> 38^\circ$C & "Nhiet do qua cao!" \\
+        \hline
+        \code{tempAlertLow} & $< 18^\circ$C & "Nhiet do qua thap!" \\
+        \hline
+        \code{humiAlertHigh} & $> 80\%$ & "Do am qua cao!" \\
+        \hline
+        \code{humiAlertLow} & $< 30\%$ & "Do am qua thap!" \\
+        \hline
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\subsection{Điều khiển đèn từ xa qua MQTT}
+\label{sec:dieukhien}
+\index{dieukhien}
+
+Người dùng thao tác trên Dashboard (nhóm \textbf{Đèn}) để gửi lệnh LED qua MQTT.
+
+\begin{center}
+    \includegraphics[width=0.78\textwidth]{\FigLedUi}\\[0.35em]
+    {\footnotesize\textit{Giao diện nhóm \textbf{Đèn}: \textbf{ui\_slider} (\textit{Độ sáng \%}) và \textbf{ui\_switch} (\textit{Bật đèn / Tắt đèn}) --- lệnh được gửi qua \code{mqtt out} tới topic \code{iot/led/power/set}.}}
+\end{center}
+\vspace{0.4em}
+
+\textbf{Bật / Tắt đèn (Switch):}
+
+\begin{itemize}
+    \item Node \textbf{\code{ui\_switch}} gửi giá trị \code{true} (bật) hoặc \code{false} (tắt).
+    \item Function \textbf{\code{Format LED State}} đóng gói thành JSON: \code{\{"ledState": true\}} hoặc \code{\{"ledState": false\}}.
+    \item Output thứ 2: \code{100} (bật) hoặc \code{0} (tắt) $\rightarrow$ gửi về slider để đồng bộ.
+    \item Node \textbf{\code{mqtt out}} publish lên \textbf{\code{iot/led/power/set}} (QoS 1).
+\end{itemize}
+
+\textbf{Điều chỉnh độ sáng (Slider):}
+
+\begin{itemize}
+    \item \textbf{\code{ui\_slider}} trả giá trị số nguyên \textbf{0--100\%}.
+    \item Function \textbf{\code{Set LED State Payload}} đóng gói output 0: \code{\{"brightness": 70\}}.
+    \item Change node \textbf{\code{slider2mqtt001}} đặt \code{topic = iot/led/power/set} và xóa \code{ledState} để tránh feedback loop.
+    \item Output thứ 2: \code{true/false} $\rightarrow$ gửi về switch để đồng bộ.
+    \item Node \textbf{\code{mqtt out}} publish lên \textbf{\code{iot/led/power/set}}.
+\end{itemize}
+
+\textbf{Xử lý trên ESP8266 (\code{mqttCallback}):}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Các nhánh xử lý trong mqttCallback}
+    \label{tbl:callback}
+    \begin{tabular}{|L{2.5cm}|C{4cm}|C{3.5cm}|C{3cm}|}
+        \hline
+        \textbf{Nhánh} & \textbf{Điều kiện} & \textbf{Ví dụ payload} & \textbf{Hành động} \\
+        \hline
+        JSON (ưu tiên 1) & Có \code{brightness} & \code{\{"brightness":70\}} & PWM 0--255 \\
+        \hline
+        JSON (ưu tiên 2) & Có \code{ledState} & \code{\{"ledState":true\}} & brightness=100 hoặc 0 \\
+        \hline
+        Số thuần & Toàn chữ số & \code{70} & PWM tỉ lệ \\
+        \hline
+        Chuỗi text & \code{true/on/false/off} & \code{true} & brightness=100 hoặc 0 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Hàm xử lý PWM:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item \code{brightness = constrain(brightness, 0, 100)} --- giới hạn phạm vi.
+    \item \code{analogWrite(LED\_PIN, map(brightness, 0, 100, 0, 255))} --- xuất PWM ra \textbf{GPIO 12 (D6)}.
+    \item \code{ledState = (brightness > 0)} --- cập nhật trạng thái logic.
+    \item \code{lastBrightness = brightness} --- lưu để khôi phục khi bật lại.
+    \item \code{lastManualTime = millis()} --- đánh dấu thao tác tay.
+    \item Log ra Serial: \code{[LED] brightness: 70\%}.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Đồng bộ trạng thái thiết bị}
+\label{sec:dongbo}
+\index{dongbotrthai}
+
+\textbf{Mục tiêu thiết kế:} Khi trạng thái LED thay đổi (do người dùng điều khiển từ Dashboard), switch và slider trên giao diện phải phản ánh đúng trạng thái thực của thiết bị --- tạo cảm giác đồng bộ hai chiều.
+
+\textbf{Phân tích hệ thống:}
+
+\begin{itemize}
+    \item \textbf{Phía ESP8266:} Biến \code{ledState} và \code{brightness} được cập nhật mỗi khi nhận lệnh từ MQTT (trong \code{mqttCallback}).
+    \item \textbf{Phía firmware publish:} Hàm \code{publishLedStatusIfNeeded()} gửi JSON lên \code{iot/led/status} \textbf{chỉ khi} giá trị thay đổi so với lần gửi trước (\code{lastLedStateSent}, \code{lastBrightnessPublished}).
+    \item \textbf{Phía Node-RED:} Flow \code{LED Status Listener} nhận từ \code{iot/led/status} $\rightarrow$ tách thành \code{brightness} (slider) và \code{ledState} (switch) $\rightarrow$ cập nhật UI.
+    \item \textbf{Phía JSON \code{iot/env/data}:} \textbf{Không bao gồm} \code{brightness} hay \code{ledState} để tránh feedback loop giữa slider và flow chính.
+\end{itemize}
+
+\textbf{Kết quả:} Switch và slider luôn phản ánh trạng thái thực của LED, kể cả khi ESP8266 thay đổi trạng thái (ví dụ: chế độ tự động theo giờ).
+
+% -----------------------------------------------------------------------------
+\subsection{Tự động bật/tắt đèn theo giờ (NTP)}
+\label{sec:schedule}
+\index{tudongtheogio}
+
+\textbf{Đồng bộ thời gian qua NTP:}
+
+\begin{itemize}
+    \item Server: \code{pool.ntp.org}
+    \item Múi giờ: \textbf{UTC+7} (Việt Nam), \code{configTime(25200, 0, NTP\_SERVER)}
+    \item Chu kỳ đồng bộ lại: \textbf{1 giờ} (\code{INTERVAL\_NTP = 3600000ms})
+    \item Flag \code{ntpSynced} đảm bảo schedule chỉ chạy khi giờ đã chính xác.
+\end{itemize}
+
+\textbf{Luật tự động:}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Luật tự động bật/tắt đèn theo giờ}
+    \label{tbl:schedule}
+    \begin{tabular}{|C{5cm}|C{7cm}|}
+        \hline
+        \textbf{Thời gian} & \textbf{Hành động} \\
+        \hline
+        \textbf{18:00 -- 05:59} (18h tối -- 6h sáng) & Bật đèn (khôi phục \code{lastBrightness} hoặc 100\%) \\
+        \hline
+        \textbf{06:00 -- 17:59} (6h sáng -- 18h chiều) & Tắt đèn (lưu \code{lastBrightness} trước khi tắt) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Chế độ thủ công vs tự động:}
+
+\begin{itemize}
+    \item Sau mỗi thao tác LED từ MQTT, \code{lastManualTime = millis()}.
+    \item Trong vòng \textbf{60 phút} (\code{MANUAL\_WINDOW = 60 * 60 * 1000ms}) không có thao tác tay $\rightarrow$ chuyển sang chế độ tự động.
+    \item \textbf{First boot} (\code{lastManualTime == 0}): bật/tắt đèn ngay theo giờ hiện tại, không cần đợi 60 phút.
+\end{itemize}
+
+\begin{lstlisting}[style=flowcode, caption={Serial log khi tự động}]
+[SCHEDULE] Tu dong bat den (18h-6h)
+[SCHEDULE] Tu dong tat den (6h-18h)
+\end{lstlisting}
+
+% =============================================================================
+% 3. THIẾT KẾ MẠCH IoT
+% =============================================================================
+\section{Thiết kế mạch IoT}
+\label{sec:thietke}
+\index{thietke}
+
+Hệ thống được thiết kế trên \textbf{EasyEDA} (sơ đồ nguyên lý), in/lắp \textbf{mạch thật} và nạp firmware trong Phụ lục A. Không dùng mô phỏng Wokwi. Mục này bám cấu trúc yêu cầu báo cáo: \textit{linh kiện thực tế} $\rightarrow$ \textit{sơ đồ logic} $\rightarrow$ \textit{kết nối \& mạch vật lý} $\rightarrow$ \textit{giải thích linh kiện}; luồng xử lý chi tiết nằm ở mục~\ref{sec:nguyenly}.
+
+% -----------------------------------------------------------------------------
+\subsection{Thành phần phần cứng}
+\label{sec:phanmem}
+\index{phanmem}
+
+\textbf{Ảnh minh họa linh kiện thực tế} (tương ứng bốn dòng trong Bảng~\ref{tbl:hardware}) --- mỗi hàng một ảnh để tránh vỡ trang khi ảnh lớn:
+
+\begin{center}
+    \includegraphics[width=0.82\textwidth]{\FigEspBoard}\\[0.3em]
+    {\footnotesize\textit{Bo mạch ESP8266 (NodeMCU / dòng tương đương Wemos D1 Mini --- cùng họ chip ESP8266).}}\\[1.0em]
+    \includegraphics[width=0.55\textwidth]{\FigHwDht}\\[0.3em]
+    {\footnotesize\textit{Module cảm biến DHT11 (VCC, DATA, GND).}}\\[1.0em]
+    \includegraphics[width=0.72\textwidth]{\FigHwOled}\\[0.3em]
+    {\footnotesize\textit{Màn hình OLED SH1106 128$\times$64 (I$^2$C).}}\\[1.0em]
+    \includegraphics[width=0.5\textwidth]{\FigHwLed}\\[0.3em]
+    {\footnotesize\textit{Module LED đơn (điều khiển PWM qua GPIO12).}}
+\end{center}
+\vspace{0.55em}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Danh sách thành phần phần cứng}
+    \label{tbl:hardware}
+    \begin{tabular}{|C{1cm}|L{4.5cm}|C{6.5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Thành phần} & \textbf{Mô tả} \\
+        \hline
+        1 & \textbf{ESP8266 (Wemos D1 Mini)} & Vi điều khiển chính --- Wi-Fi, GPIO, analogWrite PWM \\
+        \hline
+        2 & \textbf{Cảm biến DHT11} & Đo nhiệt độ (0--50$^\circ$C, $\pm2^\circ$C) và độ ẩm (20--90\% RH, $\pm5\%$ RH) \\
+        \hline
+        3 & \textbf{OLED (SH1106) 128x64 I2C} & Màn hình hiển thị thông tin cục bộ \\
+        \hline
+        4 & \textbf{LED đơn (màu đỏ)} & Hiển thị trạng thái / thí nghiệm PWM \\
+        \hline
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\FloatBarrier % xả float từ §2 (Node-RED, v.v.) — tránh ảnh GPIO bị đẩy nhầm trang
+\subsection{Kết nối phần cứng (GPIO)}
+\label{sec:ketnoi}
+\index{ketnoi}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Bảng kết nối GPIO ESP8266}
+    \label{tbl:gpio}
+    \begin{tabular}{|L{4.5cm}|C{5cm}|C{4cm}|}
+        \hline
+        \textbf{Chân ESP8266 (GPIO)} & \textbf{Nối đến} & \textbf{Ghi chú} \\
+        \hline
+        \textbf{3.3V} & DHT11 VCC, OLED VCC & Nguồn cho cảm biến và OLED \\
+        \hline
+        \textbf{GND} & DHT11 GND, OLED GND, LED Cathode & Chân nối đất chung \\
+        \hline
+        \textbf{GPIO 0 (D3)} & DHT11 DATA & Bus dữ liệu 1 dây --- trùng \code{DHT\_PIN} \\
+        \hline
+        \textbf{GPIO 4 (D2)} & OLED SCL & Clock I2C \\
+        \hline
+        \textbf{GPIO 5 (D1)} & OLED SDA & Data I2C \\
+        \hline
+        \textbf{GPIO 12 (D6)} & LED Anode (A) qua điện trở hạn dòng (220--330$\Omega$) & PWM output --- trùng \code{LED\_PIN} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Ghi chú sơ đồ EasyEDA và firmware:} Trên sơ đồ nguyên lý ở \textbf{mục~\ref{sec:gpio-easyeda}}, OLED có thể được vẽ SCL$\rightarrow$D1 (GPIO5), SDA$\rightarrow$D2 (GPIO4) và điện trở LED 220$\Omega$ theo bản vẽ EasyEDA. Bảng~\ref{tbl:gpio} và mã trong Phụ lục A (\code{OLED\_SCL}=4, \code{OLED\_SDA}=5) mô tả đúng \textbf{cấu hình đang chạy} trên thiết bị; khi làm mạch mới cần thống nhất giữa sơ đồ và mã nguồn. \textbf{Ảnh mạch thực tế} (mặt PCB sau khi hàn) xem \textbf{mục~\ref{sec:gpio-pcb-photo}} (Hình~\ref{fig:gpio-pcb}).
+
+\subsubsection{Sơ đồ logic EasyEDA}
+\label{sec:gpio-easyeda}
+\index{sodologicEasyEDA}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{\FigEasyedaSchematic}
+    \caption{Sơ đồ nguyên lý vẽ trên EasyEDA: NodeMCU ESP8266, DHT11, OLED (SH1106, I$^2$C), LED và điện trở hạn dòng.}
+    \label{fig:gpio-schematic}
+\end{figure}
+
+\subsubsection{Mạch vật lý --- ảnh mạch in thực tế}
+\label{sec:gpio-pcb-photo}
+\index{machvatly}
+
+Ảnh dưới đây là mạch in thực tế sau khi hàn: mặt hàn linh kiện, module nguồn (buck), các mối nối tới ESP8266 và ngoại vi.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{\FigPcbPhoto}
+    \caption{Ảnh mạch in thực tế: mặt hàn linh kiện, module nguồn, mối hàn tới ESP8266 và ngoại vi.}
+    \label{fig:gpio-pcb}
+\end{figure}
+
+\FloatBarrier % tách rõ khối GPIO khỏi float phía dưới (§3.3)
+
+% -----------------------------------------------------------------------------
+\subsection{Giải thích các linh kiện}
+\label{sec:linhkien}
+\index{linhkien}
+
+\textbf{1) ESP8266 (Wemos D1 Mini)}
+
+\begin{center}
+    \includegraphics[width=0.48\textwidth]{\FigEspBoard}\\[0.3em]
+    {\footnotesize\textit{Bo mạch phát triển ESP8266 (NodeMCU / tương đương Wemos D1 Mini): Wi-Fi, nạp code qua USB, các chân GPIO dùng cho DHT11, I$^2$C OLED và PWM LED.}}
+\end{center}
+\vspace{0.35em}
+
+Vi điều khiển single-core Tensilica LX106, tích hợp Wi-Fi 802.11 b/g/n. Trong project này, ESP8266 đảm nhiệm: kết nối Wi-Fi, giao tiếp MQTT qua TLS, đọc cảm biến DHT11, điều khiển PWM LED thông qua \code{analogWrite()} (không dùng LEDC như ESP32), giao tiếp I2C với OLED (SH1106), và đồng bộ thời gian NTP.
+
+\textbf{2) Cảm biến DHT11}
+
+\begin{center}
+    \includegraphics[width=0.38\textwidth]{\FigHwDht}\\[0.3em]
+    {\footnotesize\textit{Module DHT11: chân nguồn, DATA (1-wire), GND --- nối GPIO0 theo Bảng~\ref{tbl:gpio}.}}
+\end{center}
+\vspace{0.35em}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Thông số kỹ thuật DHT11}
+    \label{tbl:dht11}
+    \begin{tabular}{|L{4cm}|C{5cm}|}
+        \hline
+        \textbf{Thông số} & \textbf{Giá trị} \\
+        \hline
+        Nguồn cấp & 3.3 V -- 5 V \\
+        \hline
+        Dải nhiệt độ & 0$^\circ$C -- +50$^\circ$C \\
+        \hline
+        Sai số nhiệt độ & $\pm2^\circ$C \\
+        \hline
+        Dải độ ẩm & 20 -- 90\% RH \\
+        \hline
+        Sai số độ ẩm & $\pm5\%$ RH \\
+        \hline
+        Giao tiếp & Single-wire (1-wire), chuẩn giao thức DHT của Aosong \\
+        \hline
+    \end{tabular}
+\end{table}
+
+DHT11 trả dữ liệu theo định dạng số 40-bit: 16 bit cho độ ẩm, 16 bit cho nhiệt độ, 8 bit checksum. Thư viện \code{DHT.h} trong Arduino IDE đã lo phần giải mã.
+
+\textbf{3) OLED (SH1106) 128x64 I2C}
+
+\begin{center}
+    \includegraphics[width=0.52\textwidth]{\FigHwOled}\\[0.3em]
+    {\footnotesize\textit{OLED 128$\times$64 I2C trên mạch: hiển thị nhiệt độ, độ ẩm, trạng thái đèn --- song song với dữ liệu gửi MQTT.}}
+\end{center}
+\vspace{0.35em}
+
+Màn hình OLED đơn sắc giao tiếp qua I2C, không có chân reset (dùng \code{U8X8\_PIN\_NONE}). Thư viện \code{U8G2lib} cung cấp API vẽ chuỗi, hỗ trợ nhiều font. Địa chỉ I2C mặc định của SH1106 là \code{0x3C}.
+
+\textbf{4) LED đơn + điện trở hạn dòng}
+
+\begin{center}
+    \includegraphics[width=0.4\textwidth]{\FigHwLed}\\[0.3em]
+    {\footnotesize\textit{Module LED đơn (màu đỏ): điều khiển độ sáng PWM qua GPIO12 và điện trở hạn dòng.}}
+\end{center}
+\vspace{0.35em}
+
+LED đỏ có điện áp hoạt động khoảng 1.8--2.2V và dòng tối đa 20mA. Điện trở \textbf{220$\Omega$} trên sơ đồ EasyEDA hoặc \textbf{330$\Omega$} trên mạch thử nghiệm đều dùng để giới hạn dòng. ESP8266 dùng \code{analogWrite()} trên GPIO 12 để điều khiển PWM 8-bit (0--255).
+
+% -----------------------------------------------------------------------------
+\subsection{Luồng hoạt động (tóm tắt theo chức năng)}
+\label{sec:tomtatluong-thietke}
+\index{tomtatluongthietke}
+
+Theo yêu cầu mô tả \textit{flow theo từng chức năng} (cảm biến $\rightarrow$ chân VĐK $\rightarrow$ xử lý $\rightarrow$ topic MQTT $\rightarrow$ \ldots), nhóm tóm tắt bốn luồng chính; \textbf{chi tiết từng bước và lưu đồ} ở mục~\ref{sec:nguyenly}.
+
+\begin{itemize}
+    \item \textbf{Giám sát môi trường:} DHT11 (DATA $\rightarrow$ GPIO0) $\rightarrow$ ESP8266 đọc, so ngưỡng $\rightarrow$ đóng gói JSON $\rightarrow$ \code{mqtt.publish} topic \code{iot/env/data} $\rightarrow$ Node-RED (\code{HandleData}) $\rightarrow$ gauge, chart, toast.
+    \item \textbf{Hiển thị cục bộ:} Cùng dữ liệu DHT \& trạng thái LED $\rightarrow$ \code{displayOLED()} qua I$^2$C (theo \code{OLED\_SCL}/\code{OLED\_SDA} trong Phụ lục A).
+    \item \textbf{Điều khiển LED từ xa:} Dashboard (slider/switch) $\rightarrow$ \code{mqtt out} topic \code{iot/led/power/set} $\rightarrow$ \code{mqttCallback} $\rightarrow$ PWM GPIO12 $\rightarrow$ \code{publishLedStatusIfNeeded} topic \code{iot/led/status} $\rightarrow$ đồng bộ giao diện.
+    \item \textbf{Lịch theo giờ (NTP):} \code{loop()} + \code{isEveningPeriod}/\code{isMorningOffPeriod} $\rightarrow$ bật/tắt LED $\rightarrow$ publish \code{iot/led/status} như trên.
+\end{itemize}
+
+% =============================================================================
+% 4. NGUYÊN LÝ HOẠT ĐỘNG
+% =============================================================================
+\section{Nguyên lý hoạt động}
+\label{sec:nguyenly}
+\index{nguyenlyhoatdong}
+
+% -----------------------------------------------------------------------------
+\subsection{Sơ đồ luồng hệ thống (System Flow Diagram)}
+\label{sec:sodoluong}
+\index{sodoluong}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        font=\footnotesize,
+        >={Latex[length=2.2mm]},
+        box/.style={draw=black!65, rounded corners=2.5pt, inner sep=7pt, align=center},
+        peripheral/.style={box, fill=blue!7, text width=0.19\textwidth},
+        core/.style={box, fill=blue!11, text width=0.52\textwidth, minimum height=2.8cm},
+        cloud/.style={box, fill=orange!14, text width=0.88\textwidth},
+        nodered/.style={box, fill=green!9, text width=0.88\textwidth},
+        arrlab/.style={font=\scriptsize, fill=white, inner sep=2pt, outer sep=1pt},
+    ]
+        % Tầng phần cứng + firmware (nhãn mũi tên đặt dưới đường nối để không đè chữ trong ô ESP)
+        \node[peripheral] (dht) {\textbf{DHT11}\\[3pt]\scriptsize Cảm biến nhiệt độ, độ ẩm\\[2pt]GPIO0 (D3)};
+        \node[core, right=5mm of dht] (esp) {\textbf{ESP8266 (Wemos D1 Mini)}\\[4pt]
+            \raggedright\scriptsize
+            Wi-Fi / TLS: \texttt{WiFi.begin},\ \texttt{WiFiClientSecure}\\[3pt]
+            MQTT / hiển thị: \texttt{PubSubClient},\ \texttt{U8g2}\\[3pt]
+            Luồng chính: \texttt{publishEnvData},\ \texttt{mqttCallback},\ \texttt{displayOLED}\\[3pt]
+            LED (PWM): \texttt{analogWrite} $\rightarrow$ GPIO12 (D6)};
+        \node[peripheral, right=5mm of esp] (oled) {\textbf{OLED (SH1106)}\\[3pt]\scriptsize Bus I$^2$C \texttt{0x3C}\\[2pt]SCL: GPIO4\\SDA: GPIO5};
+        \draw[->, thick] (dht.east) -- (esp.west)
+            node[midway, below=3.5mm, arrlab] {GPIO0};
+        \draw[->, thick] (oled.west) -- (esp.east)
+            node[midway, below=3.5mm, arrlab] {I$^2$C};
+        % Broker
+        \node[cloud, below=9mm of esp] (mq) {\textbf{MQTT Broker — HiveMQ Cloud}\quad (TLS, cổng 8883)\\[4pt]
+            \raggedright\scriptsize
+            \textbf{ESP $\rightarrow$ broker:}\ \texttt{iot/env/data} (JSON môi trường),\ \texttt{iot/led/status} (đồng bộ UI)\\[3pt]
+            \textbf{Broker $\rightarrow$ ESP:}\ \texttt{iot/led/power/set} (điều khiển LED)};
+        \draw[<->, thick] (esp.south) -- (mq.north)
+            node[midway, right=1mm, arrlab] {MQTT};
+        % Node-RED
+        \node[nodered, below=8mm of mq] (nr) {\textbf{Node-RED + Dashboard}\\[4pt]
+            \raggedright\scriptsize
+            \texttt{mqtt in} (\texttt{iot/env/data}) $\rightarrow$ \texttt{HandleData} (parse JSON)\\[2pt]
+            $\rightarrow$ nhánh nhiệt độ / độ ẩm / cảnh báo / trạng thái LED $\rightarrow$ Gauge, Chart, Toast, Switch, Slider\\[4pt]
+            \texttt{mqtt in} (\texttt{iot/led/status}) $\rightarrow$ đồng bộ Slider \& Switch\\[2pt]
+            $\rightarrow$ \texttt{mqtt out} (\texttt{iot/led/power/set}) $\rightarrow$ về ESP8266};
+        \draw[<->, thick] (mq.south) -- (nr.north);
+    \end{tikzpicture}
+    \caption{Sơ đồ luồng hệ thống tổng quan}
+    \label{fig:systemflow}
+\end{figure}
+
+% -----------------------------------------------------------------------------
+\subsection{Luồng giám sát: Cảm biến $\rightarrow$ Dashboard}
+\label{sec:luong1}
+\index{luonggiamsat}
+
+\textbf{Bước 1 -- Đo:} DHT11 đo nhiệt độ \& độ ẩm tại chân \textbf{GPIO 0}.
+
+\textbf{Bước 2 -- Đọc:} \code{loop()} kiểm tra timer \code{lastDHT}; đủ 20000ms $\rightarrow$ gọi \code{dht.readTemperature()} và \code{dht.readHumidity()}.
+
+\textbf{Bước 3 -- Xử lý:} Tính 4 cờ cảnh báo, log Serial, đóng gói JSON.
+
+\textbf{Bước 4 -- Gửi MQTT:} \code{mqtt.publish("iot/env/data", jsonBuffer)} $\rightarrow$ HiveMQ Cloud.
+
+\textbf{Bước 5 -- Node-RED nhận:} node \code{mqtt in} nhận payload, \code{HandleData} parse JSON.
+
+\textbf{Bước 6 -- Tách luồng:} HandleData trả 4 bản sao msg, mỗi bản qua function chuyên biệt $\rightarrow$ gauge, chart, toast, switch.
+
+\textbf{Bước 7 -- Hiển thị:} Dashboard cập nhật gauge, biểu đồ tự động vẽ điểm mới theo thời gian. Đồng thời OLED (SH1106) cũng được cập nhật.
+
+% -----------------------------------------------------------------------------
+\subsection{Luồng điều khiển: Dashboard $\rightarrow$ ESP8266 $\rightarrow$ LED}
+\label{sec:luong2}
+\index{luongdieukhien}
+
+\textbf{Bước 1 -- Thao tác:} Người dùng gạt \textbf{Switch} (bật/tắt) hoặc kéo \textbf{Slider} (0--100\%) trên Dashboard.
+
+\textbf{Bước 2 -- Đóng gói:} Function node tương ứng tạo JSON (\code{\{"ledState":true\}} hoặc \code{\{"brightness":70\}}).
+
+\textbf{Bước 3 -- Gửi MQTT:} node \code{mqtt out} publish lên \textbf{\code{iot/led/power/set}} (QoS 1).
+
+\textbf{Bước 4 -- ESP8266 nhận:} \code{mqtt.loop()} kích hoạt \code{mqttCallback(char*, byte*, unsigned int)}.
+
+\textbf{Bước 5 -- Xử lý callback:} Kiểm tra topic, ghép payload, xử lý 3 nhánh (JSON / số / chuỗi) $\rightarrow$ \code{analogWrite()}.
+
+\textbf{Bước 6 -- Điều khiển PWM:} \code{analogWrite(GPIO12, map(brightness,0,100,0,255))} $\rightarrow$ LED sáng/tắt/tối theo mức. Đồng thời \code{displayOLED()} cập nhật màn hình OLED.
+
+\textbf{Bước 7 -- Log \& publish status:} Serial in ra \code{[LED] brightness: 70\%}. \code{publishLedStatusIfNeeded()} gửi \code{\{"ledState":true,"brightness":70\}} lên \code{iot/led/status} (nếu giá trị thay đổi).
+
+% -----------------------------------------------------------------------------
+\subsection{Luồng đồng bộ trạng thái LED}
+\label{sec:luong3}
+\index{luongdongbo}
+
+\textbf{Bước 1 -- ESP8266 publish} \code{\{"ledState":true,"brightness":70\}} lên \code{iot/led/status} sau mỗi thay đổi LED.
+
+\textbf{Bước 2 -- Node-RED \code{LED Status Listener}} nhận từ \code{mqtt in: iot/led/status}.
+
+\textbf{Bước 3 -- \code{Sync slider + switch tu LED status}} tách:
+\begin{itemize}
+    \item Output 0: \code{\{payload: 70\}} $\rightarrow$ \textbf{\code{ui\_slider}} (đồng bộ giá trị slider về 70\%)
+    \item Output 1: \code{\{payload: true\}} $\rightarrow$ \textbf{\code{ui\_switch}} (đồng bộ switch sang bật)
+\end{itemize}
+
+\textbf{Kết quả:} Dù LED thay đổi do người dùng Dashboard hay do chế độ tự động theo giờ, giao diện luôn hiển thị đúng trạng thái thực.
+
+% -----------------------------------------------------------------------------
+\subsection{Luồng tự động theo giờ}
+\label{sec:luong4}
+\index{luongtudong}
+
+\textbf{Điều kiện:} \code{ntpSynced == true} và \code{elapsed >= MANUAL\_WINDOW} (hoặc first boot).
+
+\textbf{Mỗi vòng loop:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item \code{elapsed = millis() - lastManualTime} --- tính thời gian không thao tác.
+    \item Nếu \code{lastManualTime == 0} (first boot) hoặc \code{elapsed >= 60 phút}:
+    \begin{itemize}
+        \item \code{isEveningPeriod()} (18h--6h): bật đèn, \code{analogWrite(255)}, \code{ledState=true}.
+        \item \code{isMorningOffPeriod()} (6h--18h): tắt đèn, \code{analogWrite(0)}, \code{ledState=false}.
+    \end{itemize}
+    \item Sau khi thay đổi $\rightarrow$ \code{publishLedStatusIfNeeded()} $\rightarrow$ gửi \code{iot/led/status} $\rightarrow$ Dashboard tự động đồng bộ.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Luồng duy trì kết nối}
+\label{sec:luong5}
+\index{luongketnoi}
+
+\textbf{Wi-Fi:}
+
+\begin{lstlisting}[style=cppcode, caption={Kiểm tra và kết nối lại Wi-Fi}, label={lst:wifi}]
+// loop()
+if (WiFi.status() != WL_CONNECTED) {
+    connectWiFi(); // WiFi.begin() + cho WL_CONNECTED
+    ntpSynced = false; // Mat WiFi -> can dong bo NTP lai
+}
+\end{lstlisting}
+
+\textbf{MQTT reconnect:}
+
+\begin{lstlisting}[style=cppcode, caption={Kiểm tra và kết nối lại MQTT}, label={lst:mqtt}]
+// loop()
+if (!mqtt.connected()) {
+    if (millis() - lastMQTT > 5000) { // Cho 5s
+        lastMQTT = millis();
+        connectMQTT(); // Tao clientId, mqtt.connect, subscribe LED topic
+    }
+}
+mqtt.loop(); // Xu ly keep-alive, goi callback
+\end{lstlisting}
+
+\textbf{NTP định kỳ:}
+
+\begin{lstlisting}[style=cppcode, caption={Đồng bộ NTP định kỳ}, label={lst:ntp}]
+// loop()
+if (WiFi.status() == WL_CONNECTED) {
+    if (millis() - lastNTPSync >= INTERVAL_NTP) { // 1 gio
+        syncTime();
+    }
+}
+\end{lstlisting}
+
+Timer \code{lastMQTT} tránh spam reconnect liên tục (thử lại mỗi 5 giây). \code{mqtt.loop()} luôn được gọi mỗi vòng loop để duy trì session MQTT và nhận callback kịp thời.
+
+% =============================================================================
+% 5. CÀI ĐẶT HỆ THỐNG
+% =============================================================================
+\section{Cài đặt hệ thống}
+\label{sec:cai-dat}
+\index{caidathe thong}
+
+Hướng dẫn từng bước để thiết lập môi trường phát triển, nạp firmware và chạy toàn bộ hệ thống. Làm theo thứ tự từ trên xuống dưới để có một hệ thống chạy hoàn chỉnh.
+
+% -----------------------------------------------------------------------------
+\subsection{Yêu cầu phần mềm}
+\label{sec:yeucau}
+\index{yeucau}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Yêu cầu phần mềm}
+    \label{tbl:software}
+    \begin{tabular}{|L{5cm}|C{3cm}|C{4.5cm}|}
+        \hline
+        \textbf{Phần mềm / công cụ} & \textbf{Phiên bản} & \textbf{Ghi chú} \\
+        \hline
+        \textbf{Arduino IDE} & 1.8.x trở lên & Nạp firmware ESP8266 \\
+        \hline
+        \textbf{Board ESP8266} (Board Manager) & 3.x & Hỗ trợ Wemos D1 Mini \\
+        \hline
+        \textbf{Node.js} & 18.x LTS trở lên & Chạy Node-RED \\
+        \hline
+        \textbf{Node-RED} & 3.x & Xử lý flow \& Dashboard \\
+        \hline
+        \textbf{node-red-dashboard} & 3.6.x & Giao diện giám sát \& điều khiển \\
+        \hline
+        \textbf{Git} & Bất kỳ & Clone repo \\
+        \hline
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\subsection{Cài đặt Arduino IDE + thư viện}
+\label{sec:arduino}
+\index{caiđat}
+
+\textbf{Bước 1 -- Cài Arduino IDE:}
+
+Truy cập \url{https://www.arduino.cc/en/software}, tải và cài đặt bản phù hợp hệ điều hành.
+
+\textbf{Bước 2 -- Cài board ESP8266:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Mở \textbf{File $\rightarrow$ Preferences}.
+    \item Thêm URL board: \code{http://arduino.esp8266.com/stable/package\_esp8266com\_index.json} vào ô \textbf{Additional Boards Manager URLs}.
+    \item Mở \textbf{Tools $\rightarrow$ Board $\rightarrow$ Boards Manager\ldots}
+    \item Tìm \textbf{\code{esp8266}} $\rightarrow$ bấm \textbf{Install} (cần internet, có thể mất 5--10 phút).
+\end{enumerate}
+
+\textbf{Bước 3 -- Chọn board Wemos D1 Mini:}
+
+\textbf{Tools $\rightarrow$ Board $\rightarrow$ ESP8266 Boards $\rightarrow$ LOLIN(WEMOS) D1 R2 \& mini}.
+
+\textbf{Bước 4 -- Cài thư viện Arduino:}
+
+Mở \textbf{Sketch $\rightarrow$ Include Library $\rightarrow$ Manage Libraries\ldots}, tìm và cài:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Danh sách thư viện Arduino}
+    \label{tbl:libs}
+    \begin{tabular}{|L{5cm}|C{4cm}|}
+        \hline
+        \textbf{Thư viện} & \textbf{Phiên bản} \\
+        \hline
+        \textbf{PubSubClient} & 2.8.x \\
+        \hline
+        \textbf{DHT sensor library} & 1.4.x \\
+        \hline
+        \textbf{U8g2} & 2.x \\
+        \hline
+        \textbf{ArduinoJson} & 6.x \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Bước 5 -- Cài driver USB--UART:}
+
+Nếu máy tính không nhận Wemos D1 Mini qua USB, cài driver CH340 theo hướng dẫn trên mạng phù hợp hệ điều hành.
+
+% -----------------------------------------------------------------------------
+\subsection{Cấu hình thông tin Wi-Fi \& MQTT}
+\label{sec:config}
+\index{caidat}
+
+Sao chép đoạn mã firmware từ \textbf{Phụ lục A} vào Arduino IDE (tạo sketch mới hoặc thay nội dung hiện có), sau đó chỉnh sửa các thông tin sau cho phù hợp:
+
+\textbf{Wi-Fi:}
+
+\begin{lstlisting}[style=cppcode, caption={Cấu hình Wi-Fi trong firmware (Phụ lục A)}, label={lst:wificfg}]
+const char *ssid     = "Ten_WiFi_cua_ban";
+const char *password = "Mat_khau_WiFi";
+\end{lstlisting}
+
+\textbf{MQTT (HiveMQ Cloud):}
+
+\begin{lstlisting}[style=cppcode, caption={Cấu hình MQTT trong firmware (Phụ lục A)}, label={lst:mqttcfg}]
+const char *mqtt_server = "b1c8f2cc5cd4416fb74b671a407dc0ff.s1.eu.hivemq.cloud";
+const int   mqtt_port   = 8883;
+const char *mqtt_user   = "****";    // Thay bang tai khoan HiveMQ that
+const char *mqtt_pass   = "****";    // Thay bang mat khau HiveMQ that
+\end{lstlisting}
+
+% -----------------------------------------------------------------------------
+\subsection{Build, nạp firmware và Serial Monitor}
+\label{sec:build}
+\index{build}
+
+\textbf{Bước 1 -- Build firmware:}
+
+Trong Arduino IDE: \textbf{Sketch $\rightarrow$ Verify/Compile} (\code{Ctrl+R}).
+
+\textbf{Bước 2 -- Nạp firmware vào ESP8266:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Cắm Wemos D1 Mini vào máy tính qua cáp USB.
+    \item Chọn đúng \textbf{port} trong \textbf{Tools $\rightarrow$ Port} (ví dụ \code{COM3} trên Windows, \code{/dev/cu.SLAB\_USBtoUART} trên macOS).
+    \item Nhấn \textbf{Sketch $\rightarrow$ Upload} (\code{Ctrl+U}) hoặc biểu tượng Upload.
+\end{enumerate}
+
+\textbf{Bước 3 -- Mở Serial Monitor:}
+
+Nhấn biểu tượng \textbf{Serial Monitor} hoặc \code{Ctrl+Shift+M}. Đặt baud rate \textbf{115200}.
+
+\textbf{Kết quả mong đợi trên Serial Monitor:}
+
+\begin{lstlisting}[style=serialog, caption={Serial Monitor output khi khởi động}, label={lst:serial}]
+Dang ket noi WiFi.
+WiFi connected! IP: 192.168.x.x
+Dang lay gio tu NTP...
+[TIME] Gio HN: 14:30:00 | Ngay: 29/03/2026
+Dong ho sync thanh cong!
+MQTT connected!
+=== ESP8266 IoT Nhom 6 - Khoi tao xong ===
+[DHT] T:28.0C  H:65.0%
+[LED] brightness: 100%
+[SCHEDULE] Tu dong bat den (18h-6h)
+\end{lstlisting}
+
+% -----------------------------------------------------------------------------
+\subsection{Cài đặt Node.js \& Node-RED}
+\label{sec:noderedinstall}
+\index{caiđatnodered}
+
+\textbf{Bước 1 -- Cài Node.js:}
+
+Tải và cài \textbf{Node.js LTS} từ \url{https://nodejs.org/}.
+
+\begin{lstlisting}[style=bashcode, caption={Kiểm tra cài đặt Node.js}, label={lst:node}]
+node --version
+npm --version
+\end{lstlisting}
+
+\textbf{Bước 2 -- Cài Node-RED toàn cục:}
+
+\begin{lstlisting}[style=bashcode, caption={Cài đặt Node-RED}, label={lst:nr}]
+npm install -g --unsafe-perm node-red
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashcode, caption={Kiểm tra phiên bản Node-RED}, label={lst:nrver}]
+node-red --version
+\end{lstlisting}
+
+\textbf{Bước 3 -- Chạy Node-RED:}
+
+\begin{lstlisting}[style=bashcode, caption={Chạy Node-RED}, label={lst:nrrun}]
+node-red
+\end{lstlisting}
+
+Khi khởi động thành công, terminal hiển thị:
+
+\begin{lstlisting}[style=flowcode, caption={Output khi khởi động Node-RED}, label={lst:nrlog}]
+Welcome to Node-RED
+...
+29 Mar xx:xx:xx - [info] Server now running at http://127.0.0.1:1880/
+\end{lstlisting}
+
+Mở trình duyệt tại \textbf{http://127.0.0.1:1880}.
+
+% -----------------------------------------------------------------------------
+\subsection{Cài đặt node-red-dashboard}
+\label{sec:dashboardinstall}
+\index{caiđatdashboard}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Trong giao diện Node-RED, nhấn \textbf{☰ (menu) $\rightarrow$ Manage Palette $\rightarrow$ Install}.
+    \item Tìm: \textbf{\code{node-red-dashboard}}.
+    \item Bấm \textbf{Install} $\rightarrow$ chờ cài đặt (cần internet).
+    \item Sau khi cài xong, bấm \textbf{Deploy}.
+\end{enumerate}
+
+Phiên bản flow trong \file{node-red.json} tương thích với \textbf{node-red-dashboard 3.6.x}.
+
+% -----------------------------------------------------------------------------
+\subsection{Import Node-RED Flow từ Phụ lục B}
+\label{sec:import}
+\index{importflow}
+
+Để triển khai flow, cần nạp nội dung Node-RED từ \textbf{Phụ lục B} (file \file{node-red.json} ở cùng thư mục với báo cáo này).
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Mở \file{node-red.json} (Phụ lục B) $\rightarrow$ \code{Ctrl+A} $\rightarrow$ \code{Ctrl+C}.
+    \item Trong Node-RED: nhấn \textbf{☰ $\rightarrow$ Import}.
+    \item Chọn thẻ \textbf{Clipboard}.
+    \item Paste nội dung đã copy vào ô.
+    \item Bấm \textbf{Import}.
+    \item Flow \code{MQTT} xuất hiện trong editor --- bấm \textbf{Deploy} (nút đỏ trên góc phải).
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Cấu hình MQTT Broker trong Node-RED}
+\label{sec:broker}
+\index{caidatbroker}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Trong editor Node-RED, tìm node \textbf{mqtt-broker} (trong danh sách node bên trái hoặc trong flow).
+    \item Nhấn đúp để mở cấu hình.
+    \item Điền các trường:
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Cấu hình MQTT broker trong Node-RED}
+    \label{tbl:broker}
+    \begin{tabularx}{\textwidth}{|L{3.4cm}|Y|}
+        \hline
+        \textbf{Trường} & \textbf{Giá trị} \\
+        \hline
+        \textbf{Server} & \codebreak{b1c8f2cc5cd4416fb74b671a407dc0ff.s1.eu.hivemq.cloud} \\
+        \hline
+        \textbf{Port} & \code{8883} \\
+        \hline
+        \textbf{TLS} & Use TLS (bật trong giao diện Node-RED) \quad \ding{51} \\
+        \hline
+        \textbf{Username} & \code{****} (tài khoản HiveMQ thật) \\
+        \hline
+        \textbf{Password} & \code{****} (mật khẩu HiveMQ thật) \\
+        \hline
+        \textbf{Protocol Level} & MQTT v3.1.1 (4) \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm, resume]
+    \item Bấm \textbf{Update} $\rightarrow$ \textbf{Deploy}.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Truy cập Dashboard \& kiểm tra kết nối}
+\label{sec:test}
+\index{kiemtra}
+
+\textbf{Mở Dashboard:}
+
+\begin{itemize}
+    \item Cách 1: Trong Node-RED, nhấn nút \textbf{Dashboard} (biểu tượng grid/gauge ở góc phải thanh bên).
+    \item Cách 2: Truy cập trực tiếp \textbf{http://127.0.0.1:1880/ui}.
+\end{itemize}
+
+\textbf{Kiểm tra kết nối:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Đảm bảo ESP8266 đang chạy và kết nối MQTT thành công (\code{MQTT connected!} trên Serial Monitor).
+    \item Trên Dashboard, kiểm tra:
+    \begin{itemize}
+        \item \textbf{Gauge nhiệt độ} và \textbf{độ ẩm} cập nhật mỗi $\sim$20 giây.
+        \item \textbf{Biểu đồ} vẽ đường theo thời gian.
+    \end{itemize}
+    \item Thử kéo \textbf{Slider} độ sáng $\rightarrow$ LED trên mạch thay đổi độ sáng.
+    \item Thử gạt \textbf{Switch} $\rightarrow$ LED bật/tắt hoàn toàn.
+    \item Thử tạo nhiệt độ cao ($>38^\circ$C) hoặc thấp ($<18^\circ$C) $\rightarrow$ \textbf{Toast cảnh báo} xuất hiện.
+    \item Quan sát \textbf{OLED (SH1106)} hiển thị thông tin cục bộ cùng lúc.
+\end{enumerate}
+
+% =============================================================================
+% 6. KẾT QUẢ THỰC HIỆN
+% =============================================================================
+\FloatBarrier
+\section{Kết quả thực hiện}
+\label{sec:ketqua}
+\index{ketqua}
+
+% -----------------------------------------------------------------------------
+\subsection{Các hình ảnh minh họa}
+\label{sec:hinh}
+\index{hinh}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item \textbf{Sơ đồ nguyên lý và mạch thật.} Sơ đồ nguyên lý (EasyEDA): \textbf{mục~\ref{sec:gpio-easyeda}}, Hình~\ref{fig:gpio-schematic}. Ảnh mạch in thực tế: \textbf{mục~\ref{sec:gpio-pcb-photo}}, Hình~\ref{fig:gpio-pcb}. Tóm tắt kết nối theo firmware: DHT11 (DATA$\rightarrow$GPIO0 / D3), LED+R330 ($\rightarrow$GPIO12 / D6), OLED (SH1106) I$^2$C (SCL$\rightarrow$GPIO4 / D2, SDA$\rightarrow$GPIO5 / D1), 3V3 \& GND.
+
+    \item \textbf{Serial Monitor.} Log nhiệt độ, độ ẩm, cảnh báo ngưỡng; có thể có MQTT, LED, NTP, schedule khi firmware chạy ổn định.
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.92\textwidth]{\FigSerial}
+        \caption{Serial Monitor (Arduino IDE / VS Code): log runtime từ ESP8266.}
+        \label{fig:res-serial}
+    \end{figure}
+
+    \item \textbf{OLED (SH1106).} Hiển thị nhiệt độ, độ ẩm, trạng thái đèn, ngưỡng/cảnh báo cục bộ.
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.55\textwidth]{\FigOled}
+        \caption{Màn hình OLED (SH1106) trên mạch thật.}
+        \label{fig:res-oled}
+    \end{figure}
+
+    \item \textbf{Node-RED flow.} Tab MQTT: \texttt{mqtt in} $\rightarrow$ \texttt{HandleData} $\rightarrow$ bốn nhánh $\rightarrow$ Dashboard; khu vực đồng bộ LED / \texttt{LED Status Listener}.
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.92\textwidth]{\FigNodeRed}
+        \caption{Giao diện editor Node-RED: luồng xử lý \& điều khiển LED.}
+        \label{fig:res-nr}
+    \end{figure}
+
+    \item \textbf{NRD.} Trang Chủ: gauge nhiệt độ/độ ẩm, biểu đồ, slider độ sáng, switch bật/tắt đèn.
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.92\textwidth]{\FigDashboard}
+        \caption{Dashboard trên trình duyệt: giám sát \& điều khiển.}
+        \label{fig:res-dash}
+    \end{figure}
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Phân tích luồng hoạt động thực tế}
+\label{sec:phantich}
+\index{luongthucte}
+
+\textbf{Kịch bản 1 -- Giám sát nhiệt độ \& độ ẩm (bình thường):}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item DHT11 đo được nhiệt độ 28.0$^\circ$C, độ ẩm 65.0\%.
+    \item ESP8266 đóng gói JSON: \code{\{"temperature":28.0,"humidity":65.0,"tempAlertHigh":false,...,"message":"Moi truong binh thuong"\}}.
+    \item Publish lên \code{iot/env/data}.
+    \item Node-RED nhận $\rightarrow$ \code{HandleData} parse $\rightarrow$ nhánh \code{temperature} trích giá trị 28.0 $\rightarrow$ cập nhật gauge và thêm điểm vào chart.
+    \item Dashboard hiển thị ngay lập tức. OLED cũng hiển thị \code{T:28.0C 18-38C}. Chu kỳ lặp lại mỗi 20 giây.
+\end{enumerate}
+
+\textbf{Kịch bản 2 -- Cảnh báo khi vượt ngưỡng:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item DHT11 đo nhiệt độ 39.5$^\circ$C ($> 38^\circ$C).
+    \item ESP8266 đặt \code{"tempAlertHigh":true}, \code{"message":"Nhiet do qua cao!"}.
+    \item Nhánh \code{temperature} $\rightarrow$ gauge đổi màu (vùng đỏ), chart vẽ điểm cao.
+    \item Nhánh \code{alert} $\rightarrow$ kiểm tra \code{tempAlertHigh===true} $\rightarrow$ lấy message $\rightarrow$ \code{ui\_toast} bật lên: \textbf{"Nhiet do qua cao!"}.
+    \item Toast hiển thị ở góc dưới bên trái trong 3 giây. OLED hiển thị \code{T:39.5C Cao!}.
+\end{enumerate}
+
+\textbf{Kịch bản 3 -- Điều khiển LED từ Dashboard:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Người dùng kéo \textbf{Slider} độ sáng về 70\%.
+    \item \code{Set LED State Payload} đóng gói output 0: \code{\{"brightness":70\}}.
+    \item \code{slider2mqtt001} đặt \code{topic = iot/led/power/set}, xóa \code{ledState}.
+    \item \code{mqtt out} publish lên \code{iot/led/power/set}.
+    \item ESP8266 nhận $\rightarrow$ \code{mqttCallback} kiểm tra: payload là JSON, có \code{brightness} $\rightarrow$ \code{brightness=70}.
+    \item \code{analogWrite(12, map(70,0,100,0,255)=178)}. Serial in: \code{[LED] brightness: 70\%}.
+    \item \code{publishLedStatusIfNeeded()} gửi \code{\{"ledState":true,"brightness":70\}} lên \code{iot/led/status}.
+    \item \code{Sync slider + switch} nhận $\rightarrow$ output 1: \code{\{payload: true\}} $\rightarrow$ \code{ui\_switch} đồng bộ sang bật.
+\end{enumerate}
+
+\textbf{Kịch bản 4 -- Tự động bật đèn lúc 18h:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Đồng hồ chỉ 18:00. \code{ntpSynced = true}.
+    \item \code{elapsed >= MANUAL\_WINDOW} (60 phút không thao tác).
+    \item \code{isEveningPeriod()} $\rightarrow$ \code{true}.
+    \item ESP8266: \code{brightness = lastBrightness (hoặc 100)}, \code{analogWrite(255)}, \code{ledState=true}.
+    \item \code{publishLedStatusIfNeeded()} $\rightarrow$ \code{\{"ledState":true,"brightness":100\}} lên \code{iot/led/status}.
+    \item \code{ui\_slider} đồng bộ về 100\%, \code{ui\_switch} đồng bộ sang bật.
+    \item Serial: \code{[SCHEDULE] Tu dong bat den (18h-6h)}.
+\end{enumerate}
+
+% =============================================================================
+% 7. KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
+% =============================================================================
+\section{Kết luận và hướng phát triển}
+\label{sec:ketluan}
+\index{ketluan}
+
+% -----------------------------------------------------------------------------
+\subsection{Các công việc đã hoàn thành}
+\label{sec:hoanthanh}
+\index{congviece}
+
+Hệ thống IoT hoàn chỉnh gồm ba tầng đã được triển khai và kiểm chứng trên thiết bị thật:
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item \textbf{Thu thập dữ liệu môi trường} --- ESP8266 đọc DHT11 định kỳ 20 giây, xử lý 4 ngưỡng (cao/thấp nhiệt độ \& độ ẩm), đóng gói JSON chứa nhiệt độ, độ ẩm, 4 cờ cảnh báo và thông điệp.
+    \item \textbf{Hiển thị OLED cục bộ} --- Màn hình SH1106 128x64 I2C hiển thị nhiệt độ, độ ẩm, trạng thái đèn và ngưỡng/cảnh báo ngay trên thiết bị.
+    \item \textbf{Truyền dữ liệu qua MQTT} --- HiveMQ Cloud (TLS 8883), ESP8266 vừa là publisher (telemetry + LED status) vừa là subscriber (điều khiển LED). Tự động reconnect Wi-Fi, MQTT và đồng bộ NTP định kỳ.
+    \item \textbf{Xử lý và hiển thị} --- NRD với gauge nhiệt độ/độ ẩm, biểu đồ thời gian thực, toast cảnh báo khi vượt ngưỡng.
+    \item \textbf{Điều khiển thiết bị} --- Switch bật/tắt + Slider 0--100\% độ sáng LED qua PWM (\code{analogWrite}, 8-bit). Firmware xử lý 3 dạng payload tương thích nhiều nguồn điều khiển.
+    \item \textbf{Đồng bộ hai chiều} --- ESP8266 publish \code{iot/led/status} sau mỗi thay đổi LED (kể cả tự động theo giờ), Node-RED đồng bộ slider và switch về đúng trạng thái thực.
+    \item \textbf{Tự động theo giờ} --- Chế độ tự động bật đèn 18h--6h, tắt đèn 6h--18h dựa trên NTP. Chế độ thủ công 60 phút cho phép người dùng tạm quên schedule khi cần.
+    \item \textbf{Hướng dẫn triển khai đầy đủ} --- Từ cài Arduino IDE + thư viện, cấu hình, build/nạp, Node-RED, đến chạy thực tế.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Công việc chưa thực hiện}
+\label{sec:chualam}
+\index{congviecchuathuchien}
+
+Các hạng mục sau \textbf{chưa} được triển khai trong phạm vi đồ án (đưa vào mục riêng theo yêu cầu báo cáo); phần \textbf{hướng xử lý} tóm tắt ở Bảng~\ref{tbl:limitations}.
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Xác thực chứng chỉ TLS đầy đủ (\code{setCACert}), không dùng \code{setInsecure()}.
+    \item Lưu trữ dữ liệu lịch sử (database, export CSV) ngoài chart real-time trên Dashboard.
+    \item Relay / tải 220V và cảm biến mở rộng (ánh sáng, khí gas, \ldots).
+    \item Xác thực người dùng trên Node-RED Dashboard (\code{adminAuth} hoặc tương đương).
+    \item OTA cập nhật firmware từ xa.
+    \item Web server tĩnh trên ESP8266 (song song với NRD).
+    \item Nâng cấp độ chính xác đo (ví dụ DHT22) nếu yêu cầu thực tế cao hơn.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+\subsection{Hạn chế và hướng phát triển tiếp theo}
+\label{sec:gioi}
+\index{hanche}
+
+\begin{longtable}{|L{4cm}|L{6cm}|L{3.5cm}|}
+    \caption{Hạn chế và hướng phát triển tiếp theo}
+    \label{tbl:limitations} \\
+    \hline
+    \textbf{Hạn chế / Hướng phát triển} & \textbf{Mô tả} & \textbf{Ghi chú} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Hạn chế / Hướng phát triển} & \textbf{Mô tả} & \textbf{Ghi chú} \\
+    \hline
+    \endhead
+    \hline
+    \endfoot
+    \textbf{Bảo mật TLS} & Đang dùng \code{setInsecure()} --- bỏ qua xác thực certificate. & Thay bằng \code{espClient.setCACert()} để production-ready. \\
+    \hline
+    \textbf{Lưu trữ dữ liệu dài hạn} & Dữ liệu gauge/chart chỉ hiển thị real-time; không lưu database, không export CSV. & Có thể thêm node \code{influxdb}, \code{mysql} vào flow. \\
+    \hline
+    \textbf{Mở rộng phần cứng} & Chưa có relay (điều khiển thiết bị 220V), chưa có cảm biến khác (ánh sáng, khí gas…). & Chỉ bổ sung khi có phần cứng thật. \\
+    \hline
+    \textbf{Xác thực NRD} & NRD mặc định không có login. & Bật \code{adminAuth} trong \code{settings.js}. \\
+    \hline
+    \textbf{OTA Update} & Chưa triển khai cập nhật firmware từ xa qua Wi-Fi. & Có thể dùng \code{ESPhttpUpdate} hoặc \code{ArduinoOTA}. \\
+    \hline
+    \textbf{Web server ESP8266} & Chưa triển khai trang HTML/JS tĩnh chạy trên ESP8266. & Tạo thêm handler WiFiManager. \\
+    \hline
+    \textbf{Độ chính xác DHT11} & DHT11 có sai số cao hơn DHT22 ($\pm2^\circ$C, $\pm5\%$ RH). & Nâng cấp lên DHT22 nếu cần. \\
+    \hline
+\end{longtable}
+
+% =============================================================================
+% PHỤ LỤC A — MÃ NGUỒN
+% =============================================================================
+\appendix
+\phantomsection
+\section*{Phụ lục A --- Mã nguồn chương trình Arduino (ESP8266)}
+\addcontentsline{toc}{section}{Phụ lục A --- Mã nguồn chương trình Arduino (ESP8266)}
+\label{sec:code}
+\index{manguon}
+
+\textbf{Các bước thực hiện:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Mở phần mềm \textbf{Arduino IDE}.
+    \item Tạo một sketch mới: \textbf{File $\rightarrow$ New}.
+    \item Copy toàn bộ đoạn code phía dưới và dán vào sketch vừa tạo.
+    \item Cắm ESP8266 (ví dụ NodeMCU) vào máy tính qua cáp USB.
+    \item Chọn đúng Board: \textbf{Tools $\rightarrow$ Board $\rightarrow$ NodeMCU 1.0 (ESP-12E Module)}.
+    \item Chọn đúng Port: \textbf{Tools $\rightarrow$ Port $\rightarrow$ COMX} (tùy máy).
+    \item Nhấn nút \textbf{Upload} ($\rightarrow$) để nạp firmware.
+    \item Sau khi nạp thành công, mở \textbf{Serial Monitor} (115200 baud) để kiểm tra kết nối Wi-Fi và MQTT.
+\end{enumerate}
+
+\textbf{Lưu ý:} Trước khi nạp, hãy kiểm tra và cập nhật các thông số sau trong code cho phù hợp với môi trường của bạn:
+\begin{itemize}[leftmargin=0.7cm]
+    \itemsep0em
+    \item \code{const char* ssid} --- tên Wi-Fi của bạn.
+    \item \code{const char* password} --- mật khẩu Wi-Fi.
+    \item \code{const char* mqtt\_server} --- địa chỉ broker MQTT.
+    \item \code{const char* mqtt\_user} / \code{const char* mqtt\_pass} --- username và password MQTT.
+\end{itemize}
+
+\IfFileExists{iot.txt}{%
+  \lstinputlisting[
+    style=appendixcode,
+    caption={Firmware ESP8266},
+    label={lst:appendix-arduino}
+  ]{iot.txt}%
+}{%
+  \begin{mdframed}[backgroundcolor=yellow!20, linecolor=yellow!60]
+    \textbf{Lỗi:} Không tìm thấy \file{iot.txt}. Đặt file này cùng thư mục với \file{main.tex}.
+  \end{mdframed}
+}
+
+% =============================================================================
+% PHỤ LỤC B — Node-RED Flow
+% =============================================================================
+\phantomsection
+\section*{Phụ lục B --- Mã nguồn Node-RED (JSON flow)}
+\addcontentsline{toc}{section}{Phụ lục B --- Mã nguồn Node-RED (JSON flow)}
+\label{sec:flow}
+\index{flow}
+
+\textbf{Các bước thực hiện:}
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+    \item Mở giao diện Node-RED trên trình duyệt (thường là \url{http://localhost:1880}).
+    \item Nhấn \textbf{☰} (Menu) $\rightarrow$ \textbf{Import}.
+    \item Copy toàn bộ nội dung JSON phía dưới, dán vào ô \textbf{Clipboard}.
+    \item Chọn \textbf{Import} để thêm flow vào workspace.
+    \item Nhấn \textbf{Deploy} ($\rightarrow$) để lưu và chạy flow.
+\end{enumerate}
+
+\textbf{Lưu ý:} Sau khi import, hãy kiểm tra và cập nhật cấu hình các node cho phù hợp:
+\begin{itemize}[leftmargin=0.7cm]
+    \itemsep0em
+    \item Node \code{mqtt-broker}: cập nhật địa chỉ server, username và password MQTT.
+    \item Các node khác: kiểm tra lại topic MQTT, dashboard URL nếu cần.
+\end{itemize}
+
+Không có mã nguồn web HTML/JS/CSS riêng --- giao diện Dashboard hoàn toàn do \textbf{NRD} sinh ra từ flow JSON.
+
+Ảnh chụp editor Node-RED và Dashboard: xem Hình~\ref{fig:res-nr} và Hình~\ref{fig:res-dash} (mục \textbf{Kết quả thực hiện}).
+
+\textbf{Toàn bộ mã JSON Node-RED:}
+
+\IfFileExists{node-red.json}{%
+  \lstinputlisting[
+    style=appendixjson,
+    caption={Node-RED Flow (JSON)},
+    label={lst:appendix-nodered}
+  ]{node-red.json}%
+}{%
+  \begin{mdframed}[backgroundcolor=yellow!20, linecolor=yellow!60]
+    \textbf{Lỗi:} Không tìm thấy \file{node-red.json}. Đặt file này cùng thư mục với \file{main.tex}.
+  \end{mdframed}
+}
+
+% =============================================================================
+% PHỤ LỤC C — KHÁC (NẾU CÓ)
+% =============================================================================
+\phantomsection
+\section*{Phụ lục C --- Các nội dung khác (nếu có)}
+\addcontentsline{toc}{section}{Phụ lục C --- Các nội dung khác (nếu có)}
+\label{sec:phuluc-c}
+\index{phuluckhac}
+
+Không có phần bổ sung ngoài mã nguồn firmware (Phụ lục A) và JSON Node-RED (Phụ lục B).
+
+% =============================================================================
+% TÀI LIỆU THAM KHẢO
+% =============================================================================
+\addcontentsline{toc}{section}{TÀI LIỆU THAM KHẢO}
+\begin{thebibliography}{99}
+    \fontsize{13}{16}\selectfont
+    \bibitem{esp8266} ESP8266 Community Forum. \textit{ESP8266 Arduino Core Documentation}. Truy cap: \url{https://arduino-esp8266.readthedocs.io/}.
+    \bibitem{nodered} Node-RED. \textit{Node-RED Documentation}. IBM \& others. Truy cap: \url{https://nodered.org/docs/}.
+    \bibitem{hivemq} HiveMQ. \textit{HiveMQ Cloud}. Truy cap: \url{https://www.hivemq.com/cloud/}.
+    \bibitem{u8g2}olikraus. \textit{U8g2 Library Reference}. Truy cap: \url{https://github.com/olikraus/u8g2}.
+    \bibitem{dht}Adafruit. \textit{DHT sensor library for Arduino}. Truy cap: \url{https://github.com/adafruit/DHT-sensor-library}.
+    \bibitem{pubsub}Nick O'Leary. \textit{PubSubClient for Arduino}. Truy cap: \url{https://github.com/knolleary/pubsubclient}.
+    \bibitem{dashboard}Node-RED. \textit{node-red-dashboard}. Truy cap: \url{https://flows.nodered.org/node/node-red-dashboard}.
+\end{thebibliography}
+
+% =============================================================================
+\end{document}

@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PlatformIO: Upload (esp32dev)",
+      "type": "shell",
+      "command": "${env:HOME}/.platformio/penv/bin/pio",
+      "args": ["run", "-e", "esp32dev", "-t", "upload"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PATH": "${env:HOME}/.platformio/penv/bin:${env:PATH}"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "PlatformIO: Build (esp32dev)",
+      "type": "shell",
+      "command": "${env:HOME}/.platformio/penv/bin/pio",
+      "args": ["run", "-e", "esp32dev"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PATH": "${env:HOME}/.platformio/penv/bin:${env:PATH}"
+        }
+      },
+      "group": "build",
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}

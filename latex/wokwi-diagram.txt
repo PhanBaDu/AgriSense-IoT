@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "author": "Smart Farm",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -50,
+      "left": 280,
+      "attrs": {
+        "temperature": "25",
+        "humidity": "55"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 110,
+      "left": -100,
+      "attrs": {
+        "color": "green"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_dht",
+      "top": -60,
+      "left": 210,
+      "attrs": {
+        "value": "10000"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led",
+      "top": 100,
+      "left": -170,
+      "attrs": {
+        "value": "220"
+      }
+    }
+  ],
+  "connections": [
+    ["esp:TX", "$serialMonitor:RX", "", []],
+    ["esp:RX", "$serialMonitor:TX", "", []],
+    ["esp:3V3", "dht1:VCC", "red", []],
+    ["esp:GND.2", "dht1:GND", "black", []],
+    ["esp:3V3", "r_dht:1", "red", []],
+    ["r_dht:2", "dht1:SDA", "orange", []],
+    ["dht1:SDA", "esp:4", "yellow", []],
+    ["esp:5", "r_led:1", "green", []],
+    ["r_led:2", "led1:A", "green", []],
+    ["esp:GND.2", "led1:C", "black", []]
+  ],
+  "dependencies": {}
+}

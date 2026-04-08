@@ -1,0 +1,45 @@
+# 🧠 1. Đề tài
+
+**Tên đề tài:**
+
+> **Thiết kế hệ thống tưới cây tự động đơn giản sử dụng IoT (ESP32 + MQTT + Node-RED)**
+
+---
+
+# 🎯 2. Ý tưởng cốt lõi
+
+Xây dựng một **chậu cây thông minh** có khả năng:
+
+- Đọc độ ẩm đất
+- Tự động bật/tắt bơm nước
+- Hiển thị trạng thái trên dashboard
+
+👉 Mục tiêu: đơn giản – dễ triển khai – tập trung vào IoT cơ bản
+
+---
+
+# 📦 3. Phần cứng (Wokwi - mô phỏng)
+
+
+::contentReference[oaicite:0]{index=0}
+
+
+| Linh kiện       | Vai trò                         |
+|----------------|---------------------------------|
+| ESP32          | Vi điều khiển chính             |
+| DHT22          | Đo nhiệt độ + độ ẩm không khí   |
+| Potentiometer  | Giả lập độ ẩm đất               |
+| LED xanh       | Giả lập máy bơm nước            |
+| Buzzer         | Cảnh báo đất quá khô            |
+
+❌ Đã loại bỏ: LDR, OLED, relay, quạt (không cần thiết)
+
+---
+
+# 📡 4. MQTT Topics
+
+Chỉ sử dụng **2 topic đơn giản**:
+
+```json
+iot/farm/env
+iot/farm/control

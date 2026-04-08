@@ -1,0 +1,22 @@
+% =============================================================================
+%  FILE: luu-do-thuat-toan.png
+%  MO TA: Luu do thuat toan (flowchart) tren ESP32
+%  GO: Ve bang draw.io / Lucidchart / Microsoft Visio
+%       Muc luc: Muc 3.2 (Thiet ke va trien khai > Luu do thuat toan)
+%       Caption: "Luu do thuat toan tren ESP32"
+%       Label: fig:luudo
+%  KICH THUOC DE XUAT: 650 x 500 px, dinh dang .png
+% =============================================================================
+%
+% Huong dan ve luu do:
+%   1. Bat dau (Start)
+%   2. Khoi tao (WiFi, MQTT, DHT, LED)
+%   3. Loop: Kiem tra WiFi → reconnect neu mat
+%   4. Loop: Kiem tra MQTT → reconnect neu mat
+%   5. Doc DHT22 (nhiet do, do am)
+%   6. Dong goi JSON → Publish farm/sensor
+%   7. Delay 5s → Lap lai buoc 3
+%   Dung draw.io, Lucidchart, hoac Microsoft Visio de ve
+%
+% Sau khi co anh, dat vao: latex/images/luu-do-thuat-toan.png
+% Roi bo comment % o dong \includegraphics trong main.tex

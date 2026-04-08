@@ -1,0 +1,468 @@
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+#include <WiFiClientSecure.h>
+#include <DHT.h>
+#include <Wire.h>
+#include <U8g2lib.h>
+#include <ArduinoJson.h>
+
+
+#define DHT_PIN     0
+#define OLED_SCL    4
+#define OLED_SDA    5
+#define LED_PIN    12
+#define DHTTYPE    DHT11
+
+
+const char *ssid     = "Quy Dong";
+const char *password = "12345678";
+
+
+const char *mqtt_server = "b1c8f2cc5cd4416fb74b671a407dc0ff.s1.eu.hivemq.cloud";
+const int   mqtt_port   = 8883;
+const char *mqtt_user   = "hivemq.webclient.1774528740272";
+const char *mqtt_pass   = "&SG7@O0px!A3Iju6w%aD";
+
+const char *mqtt_env     = "iot/env/data";
+const char *mqtt_led     = "iot/led/power/set";
+const char *mqtt_led_sts = "iot/led/status";
+
+
+WiFiClientSecure espClient;
+PubSubClient mqtt(espClient);
+DHT dht(DHT_PIN, DHTTYPE);
+
+U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+
+
+bool ledState   = false;
+int  brightness = 0;
+float temperature = 0.0f;
+float humidity    = 0.0f;
+
+bool tempHighFlag = false;
+bool tempLowFlag  = false;
+bool humiHighFlag = false;
+bool humiLowFlag  = false;
+
+
+bool lastLedStateSent       = false;
+int  lastBrightnessPublished = -1;
+
+
+int lastBrightness = 100;
+
+unsigned long lastManualTime   = 0;
+const unsigned long MANUAL_WINDOW = 60UL * 60UL * 1000UL;
+
+
+unsigned long lastDHT = 0;
+unsigned long lastMQTT = 0;
+unsigned long lastNTPSync = 0;
+
+const unsigned long INTERVAL_DHT = 20000UL;
+
+const unsigned long INTERVAL_NTP = 3600000UL;
+
+
+const float TEMP_MAX = 38.0f;
+const float TEMP_MIN = 18.0f;
+const float HUMI_MAX = 80.0f;
+const float HUMI_MIN = 30.0f;
+
+
+const char *NTP_SERVER = "pool.ntp.org";
+const long  GMT_OFFSET_SEC_VIETNAM = 7L * 3600L;
+
+bool ntpSynced = false;
+
+
+void syncTime()
+{
+  configTime(GMT_OFFSET_SEC_VIETNAM, 0, NTP_SERVER);
+
+  Serial.println("Đang lấy giờ từ NTP...");
+  time_t now = time(nullptr);
+  int wait = 0;
+
+  while (now < 8 * 3600 * 2 && wait < 10) {
+    delay(500);
+    Serial.print(".");
+    now = time(nullptr);
+    wait++;
+  }
+  Serial.println();
+
+  if (now > 8 * 3600 * 2) {
+    struct tm *t = localtime(&now);
+    Serial.printf("[TIME] Giờ HN: %02d:%02d:%02d | Ngày: %02d/%02d/%04d\n",
+                  t->tm_hour, t->tm_min, t->tm_sec,
+                  t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+    Serial.println("Đồng hồ sync thành công!");
+    ntpSynced = true;
+    lastNTPSync = millis();
+  } else {
+    Serial.println("Đồng hồ chưa sync được.");
+  }
+}
+
+
+bool isEveningPeriod()
+{
+  time_t now = time(nullptr);
+  struct tm *t = localtime(&now);
+  int h = t->tm_hour;
+  return (h >= 18 || h < 6);
+}
+
+
+bool isMorningOffPeriod()
+{
+  time_t now = time(nullptr);
+  struct tm *t = localtime(&now);
+  int h = t->tm_hour;
+  return (h >= 6 && h < 18);
+}
+
+
+void publishLedStatusIfNeeded()
+{
+  if (!mqtt.connected())
+    return;
+
+  if (ledState == lastLedStateSent && brightness == lastBrightnessPublished)
+    return;
+
+  lastLedStateSent       = ledState;
+  lastBrightnessPublished = brightness;
+
+  char ledBuf[64];
+  snprintf(ledBuf, sizeof(ledBuf),
+           "{\"ledState\":%s,\"brightness\":%d}",
+           ledState ? "true" : "false",
+           brightness);
+
+  mqtt.publish(mqtt_led_sts, ledBuf);
+}
+
+
+void mqttCallback(char *topic, byte *payload, unsigned int len)
+{
+  if (String(topic) != mqtt_led)
+    return;
+
+  String msg;
+  for (unsigned int i = 0; i < len; i++)
+    msg += (char)payload[i];
+
+  if (msg.startsWith("{")) {
+    DynamicJsonDocument doc(256);
+    DeserializationError err = deserializeJson(doc, msg);
+
+    if (!err) {
+      if (doc.containsKey("brightness")) {
+        brightness = doc["brightness"].as<int>();
+        brightness = constrain(brightness, 0, 100);
+        analogWrite(LED_PIN, map(brightness, 0, 100, 0, 255));
+        ledState = (brightness > 0);
+        lastBrightness = brightness;
+        lastManualTime = millis();
+        Serial.printf("[LED] brightness: %d%%\n", brightness);
+        displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+      }
+      else if (doc.containsKey("ledState")) {
+        if (doc["ledState"].as<bool>()) {
+          brightness = 100;
+          analogWrite(LED_PIN, 255);
+          ledState = true;
+          lastBrightness = 100;
+          lastManualTime = millis();
+          Serial.println("[LED] ON");
+          displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+        } else {
+          brightness = 0;
+          analogWrite(LED_PIN, 0);
+          ledState = false;
+          lastBrightness = 0;
+          lastManualTime = millis();
+          Serial.println("[LED] OFF");
+          displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+        }
+      }
+    }
+    publishLedStatusIfNeeded();
+    return;
+  }
+
+  bool onlyDigits = msg.length() > 0;
+  for (unsigned int i = 0; i < msg.length(); i++) {
+    if (!isdigit((unsigned char)msg[i])) {
+      onlyDigits = false;
+      break;
+    }
+  }
+  if (onlyDigits) {
+    brightness = msg.toInt();
+    brightness = constrain(brightness, 0, 100);
+    analogWrite(LED_PIN, map(brightness, 0, 100, 0, 255));
+    ledState = (brightness > 0);
+    lastBrightness = brightness;
+    lastManualTime = millis();
+    Serial.printf("[LED] brightness (raw): %d%%\n", brightness);
+    publishLedStatusIfNeeded();
+    displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+    return;
+  }
+
+  bool on = (msg == "true" || msg == "on");
+  if (!on && msg != "false" && msg != "off")
+    return;
+
+  brightness = on ? 100 : 0;
+  analogWrite(LED_PIN, on ? 255 : 0);
+  ledState = on;
+  lastBrightness = brightness;
+  lastManualTime = millis();
+  Serial.println(on ? "[LED] ON" : "[LED] OFF");
+
+  publishLedStatusIfNeeded();
+  displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+}
+
+
+void connectWiFi()
+{
+  WiFi.begin(ssid, password);
+  Serial.print("Đang kết nối WiFi");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println();
+  Serial.println("WiFi connected! IP: " + WiFi.localIP().toString());
+}
+
+
+void connectMQTT()
+{
+  String clientId = "esp8266-nhom6-" + String(random(1000, 9999));
+
+  if (mqtt.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+    Serial.println("MQTT connected!");
+    mqtt.subscribe(mqtt_led);
+  } else {
+    Serial.print("MQTT thất bại, rc=");
+    Serial.println(mqtt.state());
+  }
+}
+
+
+void publishEnvData(bool tempHigh, bool tempLow, bool humiHigh, bool humiLow)
+{
+  char buf[300];
+  const char *msg;
+
+  if (tempHigh)       msg = "Nhiệt độ quá cao!";
+  else if (tempLow)  msg = "Nhiệt độ quá thấp!";
+  else if (humiHigh) msg = "Độ ẩm quá cao!";
+  else if (humiLow)  msg = "Độ ẩm quá thấp!";
+  else               msg = "Môi trường bình thường";
+
+  snprintf(buf, sizeof(buf),
+           "{\"temperature\":%.1f,\"humidity\":%.1f,"
+           "\"tempAlertHigh\":%s,\"tempAlertLow\":%s,"
+           "\"humiAlertHigh\":%s,\"humiAlertLow\":%s,"
+           "\"message\":\"%s\"}",
+           temperature, humidity,
+           tempHigh  ? "true" : "false",
+           tempLow   ? "true" : "false",
+           humiHigh  ? "true" : "false",
+           humiLow   ? "true" : "false",
+           msg);
+
+  mqtt.publish(mqtt_env, buf);
+  publishLedStatusIfNeeded();
+}
+
+
+#define OLED_FONT u8g2_font_8x13_tf
+
+static const uint8_t OLED_Y_ROW1 = 14;
+static const uint8_t OLED_Y_ROW2 = 28;
+static const uint8_t OLED_Y_ROW3 = 42;
+
+void displayOLED(bool tempHigh, bool tempLow, bool humiHigh, bool humiLow)
+{
+  char buf[40];
+
+  u8g2.clearBuffer();
+  u8g2.setFont(OLED_FONT);
+
+  if (!tempHigh && !tempLow) {
+    sprintf(buf, "T:%.1f%cC %d-%d%cC", temperature, 0xB0,
+            (int)TEMP_MIN, (int)TEMP_MAX, 0xB0);
+    u8g2.drawStr(0, OLED_Y_ROW1, buf);
+  } else {
+    sprintf(buf, "T:%.1f%cC", temperature, 0xB0);
+    u8g2.drawStr(0, OLED_Y_ROW1, buf);
+    u8g2.drawStr(72, OLED_Y_ROW1, tempHigh ? "Cao!" : "Thap!");
+  }
+
+  if (!humiHigh && !humiLow) {
+    sprintf(buf, "H:%.1f%% %d-%d%%", humidity, (int)HUMI_MIN, (int)HUMI_MAX);
+    u8g2.drawStr(0, OLED_Y_ROW2, buf);
+  } else {
+    sprintf(buf, "H:%.1f%%", humidity);
+    u8g2.drawStr(0, OLED_Y_ROW2, buf);
+    u8g2.drawStr(72, OLED_Y_ROW2, humiHigh ? "Cao!" : "Thap!");
+  }
+
+  sprintf(buf, "Den: %s %d%%", ledState ? "BAT" : "TAT", brightness);
+  u8g2.drawStr(0, OLED_Y_ROW3, buf);
+
+  u8g2.sendBuffer();
+}
+
+
+void setup()
+{
+  Serial.begin(115200);
+  delay(500);
+
+  pinMode(LED_PIN, OUTPUT);
+  analogWrite(LED_PIN, 0);
+
+  dht.begin();
+
+  u8g2.begin();
+  u8g2.clearBuffer();
+  u8g2.setFont(OLED_FONT);
+  u8g2.drawStr(0, 20, "Đang khởi tạo...");
+  u8g2.drawStr(0, 36, "WiFi + Asia/HN...");
+  u8g2.sendBuffer();
+
+  connectWiFi();
+  syncTime();
+
+  espClient.setInsecure();
+  mqtt.setServer(mqtt_server, mqtt_port);
+  mqtt.setCallback(mqttCallback);
+  randomSeed(micros());
+
+  Serial.println("=== ESP8266 IoT Nhom 6 - Khoi tao xong ===");
+
+  displayOLED(false, false, false, false);
+}
+
+
+void loop()
+{
+  if (WiFi.status() != WL_CONNECTED) {
+    connectWiFi();
+    ntpSynced = false;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    if (millis() - lastNTPSync >= INTERVAL_NTP) {
+      Serial.println("[NTP] Đồng bộ lại...");
+      syncTime();
+    }
+  }
+
+  if (!mqtt.connected()) {
+    if (millis() - lastMQTT > 5000) {
+      lastMQTT = millis();
+      connectMQTT();
+    }
+  }
+  mqtt.loop();
+
+  unsigned long elapsed = (millis() >= lastManualTime)
+    ? (millis() - lastManualTime)
+    : 0;
+
+  if (ntpSynced) {
+    if (lastManualTime == 0) {
+      if (isEveningPeriod() && !ledState) {
+        brightness = (lastBrightness > 0) ? lastBrightness : 100;
+        analogWrite(LED_PIN, map(brightness, 0, 100, 0, 255));
+        ledState = true;
+        Serial.println("[SCHEDULE] First boot: bat den (18h-6h)");
+        publishLedStatusIfNeeded();
+        displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+      } else if (isMorningOffPeriod() && ledState) {
+        lastBrightness = brightness;
+        brightness = 0;
+        analogWrite(LED_PIN, 0);
+        ledState = false;
+        Serial.println("[SCHEDULE] First boot: tat den (6h-18h)");
+        publishLedStatusIfNeeded();
+        displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+      }
+    } else if (elapsed >= MANUAL_WINDOW) {
+      if (isEveningPeriod() && !ledState) {
+        brightness = (lastBrightness > 0) ? lastBrightness : 100;
+        analogWrite(LED_PIN, map(brightness, 0, 100, 0, 255));
+        ledState = true;
+        Serial.println("[SCHEDULE] Tu dong bat den (18h-6h)");
+        publishLedStatusIfNeeded();
+        displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+      } else if (isMorningOffPeriod() && ledState) {
+        lastBrightness = brightness;
+        brightness = 0;
+        analogWrite(LED_PIN, 0);
+        ledState = false;
+        Serial.println("[SCHEDULE] Tu dong tat den (6h-18h)");
+        publishLedStatusIfNeeded();
+        displayOLED(tempHighFlag, tempLowFlag, humiHighFlag, humiLowFlag);
+      }
+    }
+  }
+
+  if (millis() - lastDHT >= INTERVAL_DHT) {
+    lastDHT = millis();
+
+    temperature = dht.readTemperature();
+    humidity    = dht.readHumidity();
+
+    if (isnan(temperature) || isnan(humidity)) {
+      Serial.println("[ERR] Đọc DHT11 thất bại!");
+    } else {
+      Serial.printf("[DHT] T:%.1fC  H:%.1f%%\n", temperature, humidity);
+    }
+
+    bool tempHigh = !isnan(temperature) && (temperature > TEMP_MAX);
+    bool tempLow  = !isnan(temperature) && (temperature < TEMP_MIN);
+    bool humiHigh = !isnan(humidity)    && (humidity > HUMI_MAX);
+    bool humiLow  = !isnan(humidity)    && (humidity < HUMI_MIN);
+
+    tempHighFlag = tempHigh;
+    tempLowFlag  = tempLow;
+    humiHighFlag = humiHigh;
+    humiLowFlag  = humiLow;
+
+    if (tempHigh) {
+      Serial.printf("       [CANH BAO] Nhiệt độ quá cao: %.1fC > %.1fC\n",
+                    temperature, TEMP_MAX);
+    }
+    if (tempLow) {
+      Serial.printf("       [CANH BAO] Nhiệt độ quá thấp: %.1fC < %.1fC\n",
+                    temperature, TEMP_MIN);
+    }
+    if (humiHigh) {
+      Serial.printf("       [CANH BAO] Độ ẩm quá cao: %.1f%% > %.1f%%\n",
+                    humidity, HUMI_MAX);
+    }
+    if (humiLow) {
+      Serial.printf("       [CANH BAO] Độ ẩm quá thấp: %.1f%% < %.1f%%\n",
+                    humidity, HUMI_MIN);
+    }
+
+    if (mqtt.connected()) {
+      publishEnvData(tempHigh, tempLow, humiHigh, humiLow);
+    }
+    displayOLED(tempHigh, tempLow, humiHigh, humiLow);
+  }
+}

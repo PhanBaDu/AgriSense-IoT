@@ -1,0 +1,715 @@
+% =============================================================================
+%  TIỂU LUẬN
+%  Thiết kế hệ thống tưới cây tự động sử dụng IoT
+%  (ESP32 + DHT22 + MQTT + Node-RED Dashboard)
+%  Sinh viên: Nguyễn Thị Huyền — MSSV: 22T1020161
+% =============================================================================
+\documentclass[13pt, a4paper]{article}
+
+% =============================================================================
+% 1. TIẾNG VIỆT (XeLaTeX)
+% =============================================================================
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{vietnamese}
+\setotherlanguage{english}
+
+\setmainfont{Times New Roman}
+
+% =============================================================================
+% 2. MARGIN & PAGE
+% =============================================================================
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  top    = 2.0cm,
+  bottom = 2.0cm,
+  left   = 3.0cm,
+  right  = 2.0cm
+}
+
+\usepackage{setspace}
+\onehalfspacing
+
+% =============================================================================
+% 3. TIỆN ÍCH
+% =============================================================================
+\usepackage{hyperref}
+\usepackage{graphicx}
+% Overleaf/Linux phân biệt hoa thường: thử cả images/ và Images/
+\graphicspath{{images/}{Images/}}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+% Cột căn giữa / trái (dùng trong tabular, tabularx)
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{longtable}
+\usepackage{seqsplit}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{ifthen}
+\usepackage{amssymb}
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+
+% Cấu hình listings (mã nguồn)
+\lstset{
+  basicstyle   = \ttfamily\small,
+  keywordstyle = \color{blue}\bfseries,
+  commentstyle = \color{gray}\itshape,
+  stringstyle  = \color{orange},
+  breaklines   = true,
+  frame        = single,
+  numbers      = left,
+  numberstyle  = \tiny\color{gray},
+  captionpos   = b
+}
+
+\lstdefinestyle{ccode}{
+    language=C++,
+    backgroundcolor=\color{white},
+    commentstyle=\color{gray}\itshape,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{orange},
+    numberstyle=\tiny\color{gray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numbersep=5pt,
+    stepnumber=1,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=10pt
+}
+
+% JSON (và flow Node-RED): language=Java để listings nhận dạng chuỗi;
+% tránh \color{green} (xanh lá chói trên nền trắng) — dùng xanh đậm / tím than.
+\lstdefinestyle{jcode}{
+    language=Java,
+    backgroundcolor=\color{white},
+    commentstyle=\color{gray}\itshape,
+    keywordstyle=\color{violet!55!black}\bfseries,
+    stringstyle=\color{blue!35!black},
+    numberstyle=\tiny\color{gray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numbersep=5pt,
+    stepnumber=1,
+    tabsize=4,
+    keepspaces=true,
+    showstringspaces=false,
+    captionpos=b,
+    xleftmargin=10pt
+}
+
+% =============================================================================
+% 4. SỐ TRANG
+% =============================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\hypersetup{
+  unicode    = true,
+  colorlinks = true,
+  linkcolor  = black,
+  citecolor  = black,
+  urlcolor   = blue
+}
+
+% =============================================================================
+% 5. ĐỊNH NGHĨA MACRO
+% =============================================================================
+% \detokenize: cho phép _, {, } trong định danh (vd. WIFI_SSID) mà không gây lỗi math mode
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\file}[1]{\textbf{\texttt{\detokenize{#1}}}}
+\newcommand{\codebreak}[1]{\texttt{\seqsplit{#1}}}
+\renewcommand{\contentsname}{MỤC LỤC}
+
+% =============================================================================
+% 6. MACRO ĐÓNG KHUNG VĂN BẢN (theo Nguyễn Thái Sơn)
+% =============================================================================
+% \khung{độ rộng}{nội dung} — vẽ khung bao quanh đoạn văn bản.
+% Ví dụ: \khung{.8\textwidth}{Nội dung cần đóng khung}
+\newcommand{\khung}[2]{%
+  \hspace*{-.6cm}%
+  \begin{tabular}{|l|}
+    \hline
+    \parbox{#1}{\vphantom{\tiny i}#2} \\
+    \hline
+  \end{tabular}%
+}
+
+% =============================================================================
+% ========================  NỘI DUNG TÀI LIỆU  ============================
+% =============================================================================
+\begin{document}
+
+% =============================================================================
+% TRANG BÌA
+% =============================================================================
+\thispagestyle{empty}
+\begin{center}
+  \fontsize{18}{22}\selectfont\bfseries
+  ĐẠI HỌC HUẾ\\
+  TRƯỜNG ĐẠI HỌC KHOA HỌC\\[0.4cm]
+  \includegraphics[width=4.5cm]{logo.png}\\[0.45cm]
+  \rule{\linewidth}{0.5pt}\\[1cm]
+  {\LARGE\bfseries THIẾT KẾ HỆ THỐNG TƯỚI CÂY TỰ ĐỘNG\\ SỬ DỤNG IoT (ESP32 + MQTT + Node-RED)}\\[1cm]
+  {\large Học phần: Phát triển ứng dụng IoT}\\
+  {\large Mã học phần: TIN4024}\\[2cm]
+  {\large Sinh viên thực hiện: Nguyễn Thị Huyền}\\
+  {\large MSSV: 22T1020161}\\
+  {\large Lớp: TIN4024.009}\\[2cm]
+  {\large Giảng viên hướng dẫn: Lê Hữu Bình}\\[3cm]
+  {\large Huế, Ngày 08 Tháng 04 Năm 2026}
+\end{center}
+
+\newpage
+
+% =============================================================================
+% LỜI CẢM ƠN
+% =============================================================================
+\thispagestyle{empty}
+\vspace*{0.4cm}
+\begin{center}
+  \fontsize{17}{21}\selectfont\bfseries LỜI CẢM ƠN\par
+  \vspace{0.2ex}
+  \rule{0.28\textwidth}{1.8pt}
+\end{center}
+\vspace{0.6cm}
+
+\parindent=1.1cm
+\setlength{\parskip}{0.55ex plus 0.2ex}
+
+Trong quá trình thực hiện tiểu luận này, em đã nhận được sự hỗ trợ, giúp đỡ tận tình từ thầy cô, bạn bè và gia đình. Em xin chân thành gửi lời cảm ơn sâu sắc đến:
+
+\textbf{Trước hết}, em xin bày tỏ lòng biết ơn đến Thầy Lê Hữu Bình, người đã tận tình chỉ dẫn, góp ý và đồng hành cùng em trong suốt quá trình nghiên cứu và hoàn thiện tiểu luận. Sự hướng dẫn quý báu của thầy là nguồn động lực và định hướng quan trọng giúp em hoàn thành tốt tiểu luận này.
+
+\textbf{Em cũng xin gửi lời cảm ơn} đến quý thầy cô trong khoa Công Nghệ Thông Tin, những người đã truyền đạt kiến thức nền tảng và tạo điều kiện thuận lợi để em có thể áp dụng vào quá trình thực tập và hoàn thiện tiểu luận.
+
+Mặc dù đã cố gắng hoàn thiện bài viết trong khả năng của mình, nhưng chắc chắn không thể tránh khỏi những thiếu sót. Em rất mong nhận được sự góp ý từ quý thầy cô để bài viết được hoàn thiện hơn.
+
+Một lần nữa, em xin chân thành cảm ơn và luôn mong nhận được sự đóng góp của Quý thầy cô. Em xin kính chúc các thầy cô trong Khoa Công nghệ Thông tin dồi dào sức khỏe, niềm tin để tiếp tục thực hiện sứ mệnh cao đẹp của mình là truyền đạt kiến thức cho thế hệ mai sau.
+
+Em xin chân thành cảm ơn!
+
+\parindent=0pt
+\parskip=0pt
+\vspace{0.5cm}
+\hfill\begin{minipage}[t]{7cm}
+  \fontsize{13}{17}\selectfont
+  \begin{flushright}
+    \textbf{Nguyễn Thị Huyền}\\
+    MSSV: 22T1020161\\
+    Lớp: TIN4024.009\\
+    Huế, tháng 04 năm 2026
+  \end{flushright}
+\end{minipage}
+
+\newpage
+
+% =============================================================================
+% DANH MỤC TỪ VIẾT TẮT
+% =============================================================================
+\thispagestyle{empty}
+\vspace*{0.4cm}
+\begin{center}
+  \fontsize{17}{21}\selectfont\bfseries DANH MỤC CÁC TỪ VIẾT TẮT
+\end{center}
+\vspace{0.5cm}
+
+\noindent
+\begingroup
+\renewcommand{\arraystretch}{1.2}%
+\begin{tabularx}{\textwidth}{@{}C{2.5cm}X@{}}
+  \toprule
+  \textbf{Ký hiệu} & \textbf{Giải thích} \\
+  \midrule
+  \textbf{API}   & Application Programming Interface --- Giao diện lập trình ứng dụng \\
+  \textbf{DHT}    & Digital Humidity and Temperature --- Cảm biến nhiệt độ và độ ẩm số \\
+  \textbf{GPIO}   & General Purpose Input/Output --- Chân vào/ra đa mục đích \\
+  \textbf{IoT}    & Internet of Things --- Internet vạn vật \\
+  \textbf{JSON}   & JavaScript Object Notation --- Định dạng chuỗi dữ liệu khóa-giá trị \\
+  \textbf{LED}    & Light-Emitting Diode --- Điốt phát quang \\
+  \textbf{MQTT}   & Message Queuing Telemetry Transport --- Giao thức truyền thông pub/sub \\
+  \textbf{MQTT Broker} & Phần mềm trung gian nhận và phân phối message theo topic \\
+  \textbf{NRD}    & Node-RED Dashboard --- Giao diện Dashboard của Node-RED \\
+  \textbf{Pub/Sub} & Publisher/Subscriber --- Mô hình gửi/nhận message qua topic \\
+  \textbf{TLS}    & Transport Layer Security --- Giao thức bảo mật tầng truyền tải \\
+  \bottomrule
+\end{tabularx}
+\endgroup
+
+\newpage
+
+% =============================================================================
+% MỤC LỤC
+% =============================================================================
+\pagenumbering{gobble}
+\thispagestyle{empty}
+\vspace*{0.35\baselineskip}
+{\setstretch{1}\normalsize
+  \tableofcontents
+}
+\newpage
+
+% =============================================================================
+% BẮT ĐẦU ĐÁNH SỐ TRANG
+% =============================================================================
+\pagenumbering{arabic}
+\thispagestyle{fancy}
+\fontsize{13}{19.5}\selectfont
+
+% =============================================================================
+% PHẦN MỞ ĐẦU
+% =============================================================================
+\section*{MỞ ĐẦU}
+\addcontentsline{toc}{section}{Mở đầu}
+\label{sec:modau}
+
+Ngày nay, Internet vạn vật (Internet of Things — IoT) đang ngày càng phát triển mạnh mẽ và được ứng dụng rộng rãi trong nhiều lĩnh vực khác nhau: từ điều khiển tự động trong công nghiệp, giám sát sức khỏe cá nhân, đến nông nghiệp thông minh (Smart Farming). Theo định nghĩa, IoT là mô hình cho phép các thiết bị vật lý (cảm biến, vi điều khiển) kết nối với nhau và với internet, từ đó thu thập dữ liệu, trao đổi thông tin và thực hiện các hành động điều khiển mà không cần sự can thiệp trực tiếp của con người.
+
+Trong bối cảnh biến đổi khí hậu ngày càng gay gắt, việc sản xuất nông nghiệp đối mặt với nhiều thách thức: nắng nóng kéo dài, hạn hán cục bộ, nguồn nước ngày càng khan hiếm. Trồng cây trong nhà kính hoặc trên sân thượng đang trở thành xu hướng tại các đô thị lớn, nơi không gian đất canh tác bị thu hẹp. Tuy nhiên, việc tưới tiêu thủ công không chỉ tốn nhiều thời gian mà còn không đảm bảo cây luôn được cung cấp nước đúng lúc, đúng liều lượng.
+
+Xuất phát từ thực tiễn đó, tiểu luận này tập trung thiết kế và triển khai một hệ thống tưới cây tự động đơn giản, sử dụng công nghệ IoT, với các mục tiêu cụ thể sau:
+
+\begin{itemize}
+  \item Xây dựng hệ thống IoT giám sát nhiệt độ và độ ẩm không khí theo thời gian thực.
+  \item Truyền dữ liệu cảm biến lên cloud thông qua giao thức MQTT (Message Queuing Telemetry Transport).
+  \item Cung cấp giao diện Dashboard trực quan trên trình duyệt web để giám sát và điều khiển hệ thống từ xa.
+  \item Triển khai chế độ tưới tự động dựa trên ngưỡng độ ẩm, đồng thời cho phép điều khiển bằng tay qua Dashboard.
+\end{itemize}
+
+Hệ thống được xây dựng với ba thành phần chính: (1) thiết bị đầu cuối dựa trên vi điều khiển ESP32 kết nối với cảm biến DHT22; (2) tầng trung gian là MQTT Broker HiveMQ Cloud qua giao thức bảo mật TLS (port 8883); (3) tầng ứng dụng là Node-RED Dashboard cung cấp giao diện giám sát và điều khiển trên trình duyệt web.
+
+Tiểu luận được tổ chức theo cấu trúc như sau: Phần 1 trình bày tổng quan về IoT và ứng dụng trong nông nghiệp thông minh; Phần 2 giới thiệu các công nghệ được sử dụng (ESP32, MQTT, Node-RED, DHT22); Phần 3 mô tả thiết kế và triển khai hệ thống; Phần 4 phân tích kết quả đạt được; Phần 5 trình bày kết luận, nhận xét, đánh giá và kiến nghị.
+
+% =============================================================================
+% PHẦN 1: TỔNG QUAN VỀ IoT VÀ ỨNG DỤNG TRONG NÔNG NGHIỆP
+% =============================================================================
+\section{Tổng quan về IoT và ứng dụng trong nông nghiệp thông minh}
+\label{sec:phan1}
+
+\subsection{Khái niệm về Internet of Things (IoT)}
+
+Internet of Things (IoT) là một hệ thống các thiết bị vật lý được nhúng cảm biến, phần mềm và kết nối mạng, cho phép thu thập và trao đổi dữ liệu tự động. Khái niệm này được Kevin Ashton đề xuất lần đầu vào năm 1999 trong bối cảnh chuỗi cung ứng. Từ đó đến nay, IoT đã phát triển vượt bậc cả về quy mô lẫn phạm vi ứng dụng.
+
+Một hệ thống IoT thông thường gồm bốn thành phần cốt lõi: (1) \textbf{Lớp nhận thức (Perception Layer)} — bao gồm các cảm biến và thiết bị thu thập dữ liệu từ môi trường vật lý như nhiệt độ, độ ẩm, ánh sáng; (2) \textbf{Lớp truyền dẫn (Network Layer)} — đảm bảo kết nối dữ liệu giữa các thiết bị qua Wi-Fi, Bluetooth, Zigbee, LoRa hoặc các giao thức truyền thông khác; (3) \textbf{Lớp xử lý (Processing Layer)} — nơi dữ liệu được lưu trữ, phân tích và ra quyết định, có thể ở edge (thiết bị) hoặc cloud; (4) \textbf{Lớp ứng dụng (Application Layer)} — cung cấp giao diện tương tác với người dùng như Dashboard, ứng dụng di động.
+
+\subsection{Vai trò của IoT trong nông nghiệp thông minh}
+
+Nông nghiệp thông minh (Smart Farming) là ứng dụng tiên tiến nhất của IoT trong lĩnh vực nông nghiệp. Theo FAO (Tổ chức Lương thực và Nông nghiệp Liên Hợp Quốc), IoT trong nông nghiệp có thể giúp tăng năng suất lên tới 70\% trong khi giảm tiêu thụ nước tới 50\%. Các ứng dụng phổ biến bao gồm: giám sát điều kiện thời tiết và đất đai, tưới tiêu chính xác, theo dõi sức khỏe vật nuôi, quản lý chuỗi cung ứng nông sản.
+
+Đặc biệt trong bối cảnh đô thị hóa, hệ thống trồng cây trong nhà kính hoặc trên ban công, sân thượng ngày càng phổ biến tại các thành phố lớn. Việc tự động hóa tưới tiêu không chỉ giúp tiết kiệm thời gian mà còn đảm bảo cây nhận được lượng nước phù hợp, tránh tình trạng tưới quá nhiều gây úng rễ hoặc tưới quá ít khiến cây khô héo.
+
+\subsection{Các thành phần chính của một hệ thống IoT giám sát môi trường}
+
+Một hệ thống IoT giám sát môi trường cơ bản bao gồm: vi điều khiển hoặc máy tính nhúng (Edge Device), cảm biến môi trường (Environment Sensor), giao thức truyền thông (Communication Protocol), cloud broker hoặc server trung gian, và giao diện hiển thị dữ liệu (Dashboard/User Interface). Mô hình ba tầng là phổ biến nhất: tầng thiết bị (Device Layer), tầng mạng (Network Layer), và tầng ứng dụng (Application Layer). Trong đề tài này, hệ thống sử dụng mô hình ba tầng với ESP32 (Device), HiveMQ Cloud (Network/Middleware), và Node-RED Dashboard (Application).
+
+% =============================================================================
+% PHẦN 2: CÁC CÔNG NGHỆ SỬ DỤNG
+% =============================================================================
+\section{Các công nghệ sử dụng trong hệ thống}
+\label{sec:phan2}
+
+\subsection{Vi điều khiển ESP32}
+
+ESP32 là vi điều khiển do Espressif Systems phát triển, nổi bật với khả năng tích hợp Wi-Fi 802.11 b/g/n và Bluetooth BR/EDD dual-mode trên cùng một chip. Về phần cứng, ESP32 sử dụng CPU dual-core Xtensa LX6 với tần số lên tới 240 MHz, có SRAM 520 KB, hỗ trợ GPIO đa chức năng, ADC 12-bit, DAC, SPI, I2C, UART. Việc lập trình ESP32 có thể thực hiện qua Arduino IDE hoặc PlatformIO (trên VS Code), với hệ sinh thái thư viện phong phú.
+
+Trong đề tài này, ESP32 đảm nhiệm ba chức năng chính: (1) kết nối Wi-Fi để truyền dữ liệu; (2) giao tiếp với cảm biến DHT22 qua chân GPIO 4 để đọc nhiệt độ và độ ẩm; (3) điều khiển LED (mô phỏng máy bơm) qua chân GPIO 5. So với ESP8266, ESP32 có ưu thế về bộ nhớ lớn hơn, xử lý nhanh hơn, và hỗ trợ đa luồng (multi-threading) nhờ kiến trúc dual-core.
+
+Sơ đồ chân kết nối cơ bản trên ESP32 DevKit C v4:
+
+\begin{table}[H]
+  \centering
+  \caption{Bảng kết nối chân GPIO trên ESP32}
+  \label{tbl:gpio}
+  \begin{tabular}{|L{4cm}|C{4cm}|C{4.5cm}|}
+    \hline
+    \textbf{Chân ESP32} & \textbf{Nối đến} & \textbf{Chức năng} \\
+    \hline
+    3V3 & DHT22 VCC & Nguồn 3.3V cho cảm biến \\
+    \hline
+    GND & DHT22 GND, LED Cathode & Chân nối đất chung \\
+    \hline
+    GPIO 4 & DHT22 DATA & Bus dữ liệu 1-wire \\
+    \hline
+    GPIO 5 & LED Anode (qua R220) & Điều khiển bật/tắt LED (mô phỏng bơm) \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Cảm biến DHT22 (AM2302)}
+
+DHT22 là cảm biến đo nhiệt độ và độ ẩm không khí số, được sản xuất bởi Aosong Electronics. So với phiên bản DHT11, DHT22 có độ chính xác cao hơn đáng kể, phù hợp hơn cho các ứng dụng đòi hỏi số liệu tin cậy.
+
+Thông số kỹ thuật của DHT22: dải đo nhiệt độ từ $-40^\circ$C đến $+80^\circ$C với sai số $\pm0.5^\circ$C; dải đo độ ẩm từ 0\% đến 100\% RH với sai số $\pm2\%$ RH; điện áp hoạt động từ 3.3V đến 5.5V; giao tiếp qua giao thức 1-wire (Single-Wire). DHT22 trả dữ liệu dạng số 40-bit: 16 bit đầu cho độ ẩm (hundreds), 16 bit tiếp cho nhiệt độ, và 8 bit cuối là checksum để kiểm tra lỗi truyền.
+
+Cảm biến DHT22 được lựa chọn trong đề tài này thay vì DHT11 vì độ chính xác cao hơn, giá thành hợp lý, và vẫn đủ đơn giản để tích hợp trong một hệ thống IoT cơ bản.
+
+\subsection{Giao thức MQTT}
+
+MQTT (Message Queuing Telemetry Transport) là giao thức truyền thông nhẹ, được thiết kế đặc biệt cho các thiết bị IoT có băng thông thấp, năng lượng hạn chế hoặc kết nối không ổn định. MQTT hoạt động theo mô hình publisher/subscriber (pub/sub), trong đó thiết bị gửi (publisher) đẩy dữ liệu lên một topic trên MQTT Broker, và các thiết bị nhận (subscriber) đăng ký nhận topic tương ứng. Mô hình này tách biệt người gửi và người nhận, giúp hệ thống dễ mở rộng.
+
+MQTT sử dụng cơ chế QoS (Quality of Service) với ba mức: QoS 0 (At most once) — message gửi một lần, không xác nhận; QoS 1 (At least once) — gửi ít nhất một lần, có xác nhận, đảm bảo message đến; QoS 2 (Exactly once) — đảm bảo message đến đúng một lần, phù hợp cho các ứng dụng yêu cầu độ tin cậy cao. Trong đề tài này, QoS 0 được sử dụng cho cả việc gửi dữ liệu cảm biến (farm/sensor) và điều khiển (farm/control), phù hợp với tần suất dữ liệu không quá cao.
+
+HiveMQ Cloud là dịch vụ MQTT Broker dạng cloud do HiveMQ cung cấp, hỗ trợ giao thức bảo mật TLS (Transport Layer Security) trên cổng 8883, đảm bảo dữ liệu truyền giữa thiết bị và broker được mã hóa end-to-end. HiveMQ Cloud có gói miễn phí (Free Tier) cho phép kết nối tối đa 100 thiết bị, đủ cho các ứng dụng demo và học tập.
+
+Cấu hình MQTT trong đề tài:
+
+\begin{itemize}
+  \item Broker: \codebreak{b1c8f2cc5cd4416fb74b671a407dc0ff.s1.eu.hivemq.cloud}
+  \item Port: \textbf{8883} (TLS)
+  \item Protocol: MQTT v3.1.1
+  \item Topic gửi dữ liệu cảm biến: \code{farm/sensor}
+  \item Topic nhận lệnh điều khiển: \code{farm/control}
+\end{itemize}
+
+\subsection{Node-RED và Node-RED Dashboard}
+
+Node-RED là công cụ lập trình trực quan theo mô hình flow-based, được phát triển bởi IBM Emerging Technology Services. Node-RED cho phép người dùng kết nối các node (đơn vị xử lý) với nhau bằng các đường dây (wire) để tạo thành flow xử lý dữ liệu. Ưu điểm nổi bật của Node-RED là giao diện kéo-thả trực quan, dễ học, dễ sử dụng, và có kho node (node palette) phong phú hỗ trợ hàng nghìn giao thức và dịch vụ khác nhau.
+
+Node-RED Dashboard là một module mở rộng của Node-RED, cung cấp các thành phần giao diện người dùng (UI widgets) như: gauge (đồng hồ đo), chart (biểu đồ line), text (văn bản), switch (công tắc), button (nút bấm), slider (thanh trượt), toast (thông báo popup). Dashboard được phục vụ qua một web server tích hợp, cho phép truy cập hoàn toàn qua trình duyệt web tại địa chỉ \url{http://localhost:1880/ui}.
+
+Trong đề tài này, Node-RED Dashboard được sử dụng để: hiển thị giá trị nhiệt độ và độ ẩm hiện tại qua gauge; vẽ biểu đồ line theo thời gian thực qua chart; cảnh báo khi nhiệt độ vượt ngưỡng hoặc độ ẩm thấp qua toast; cho phép bật/tắt máy bơm thủ công qua button; bật chế độ tưới tự động qua switch.
+
+% =============================================================================
+% PHẦN 3: THIẾT KẾ VÀ TRIỂN KHAI HỆ THỐNG
+% =============================================================================
+\section{Thiết kế và triển khai hệ thống}
+\label{sec:phan3}
+
+\subsection{Thiết kế tổng thể}
+
+Hệ thống được thiết kế theo mô hình ba tầng, mỗi tầng đảm nhiệm một chức năng riêng biệt và giao tiếp với tầng trên/dưới qua giao diện xác định.
+
+Tầng thứ nhất là \textbf{tầng thiết bị đầu cuối (Edge/Device Layer)}: ESP32 kết nối với cảm biến DHT22 qua chân GPIO 4, đọc nhiệt độ và độ ẩm môi trường mỗi 5 giây, xử lý dữ liệu cục bộ, và truyền qua Wi-Fi lên MQTT Broker. Tầng thứ hai là \textbf{tầng trung gian (Middleware Layer)}: HiveMQ Cloud nhận message từ ESP32 qua topic \code{farm/sensor} và phân phối cho các subscriber. Tầng thứ ba là \textbf{tầng ứng dụng (Application Layer)}: Node-RED nhận dữ liệu, xử lý theo logic, hiển thị lên Dashboard và gửi lệnh điều khiển xuống ESP32 qua topic \code{farm/control}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.88\linewidth]{so-do-kien-truc-he-thong.png}
+  \caption{Sơ đồ kiến trúc tổng thể hệ thống IoT tưới cây tự động}
+  \label{fig:kien-truc}
+\end{figure}
+
+\subsection{Lưu đồ thuật toán trên ESP32}
+
+ESP32 thực hiện chu trình hoạt động như sau: khởi tạo Serial (115200 baud), kết nối Wi-Fi, khởi tạo cảm biến DHT22, cấu hình MQTT (TLS), thiết lập LED OUTPUT. Trong vòng lặp chính (\code{loop()}), ESP32 liên tục kiểm tra trạng thái Wi-Fi (tự reconnect nếu mất), kiểm tra kết nối MQTT (thử reconnect mỗi 5 giây nếu mất), và mỗi 5 giây đọc dữ liệu DHT22, đóng gói JSON, publish lên topic \code{farm/sensor}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\linewidth]{luu-do-thuat-toan.png}
+  \caption{Lưu đồ thuật toán trên ESP32}
+  \label{fig:luudo}
+\end{figure}
+
+\subsection{Xây dựng flow xử lý dữ liệu trên Node-RED}
+
+Node-RED xử lý dữ liệu từ ESP32 theo flow chính sau: MQTT message từ topic \code{farm/sensor} được nhận bởi node \textbf{mqtt in}, sau đó được tách thành nhiều nhánh xử lý song song nhờ cơ chế phân phối của Node-RED.
+
+Nhánh thứ nhất (\textbf{Gauge nhiệt độ}): message được chuyển qua node function trích giá trị \code{msg.payload.temperature}, chuyển thành số thực, rồi truyền tới node \textbf{ui\_gauge} để hiển thị kim đồng hồ đo nhiệt độ với ba vùng màu (xanh: bình thường, vàng: trung gian, đỏ: nguy hiểm).
+
+Nhánh thứ hai (\textbf{Gauge độ ẩm}): tương tự, trích giá trị \code{msg.payload.humidity}, truyền tới node \textbf{ui\_gauge} (dạng donut) hiển thị độ ẩm không khí.
+
+Nhánh thứ ba (\textbf{Chart nhiệt độ}): trích giá trị nhiệt độ, gán topic \code{Nhiệt độ °C}, truyền tới node \textbf{ui\_chart} (line chart) để vẽ đồ thị theo thời gian thực, tự động xóa điểm cũ sau 1 giờ (\code{removeOlderUnit: 3600}).
+
+Nhánh thứ tư (\textbf{Chart độ ẩm}): trích giá trị độ ẩm, gán topic \code{Độ ẩm \%}, truyền tới node \textbf{ui\_chart} để vẽ đồ thị.
+
+Nhánh thứ năm (\textbf{Cảnh báo nhiệt độ cao}): switch node kiểm tra \code{payload.temperature > 35}. Nếu đúng, function node tạo message cảnh báo, truyền tới node \textbf{ui\_toast} hiển thị thông báo ở góc dưới bên trái Dashboard trong 8 giây.
+
+Nhánh thứ sáu (\textbf{Cảnh báo độ ẩm thấp}): switch node kiểm tra \code{payload.humidity < 40}. Nếu đúng, function node tạo message cảnh báo kèm gợi ý tưới, truyền tới toast.
+
+Nhánh thứ bảy (\textbf{Tưới tự động}): switch node kiểm tra độ ẩm $<$ 40\% đồng thời flow variable \code{manual == true} (chế độ tự động bật). Nếu thỏa điều kiện, change node tạo JSON \code{\{"pump":true,"duration":5\}} gửi tới mqtt out topic \code{farm/control}.
+
+Nhánh thứ tám (\textbf{Cảnh báo nguy hiểm}): switch node kiểm tra độ ẩm $<$ 20\% (ngưỡng cực kỳ thấp), hiển thị cảnh báo đỏ trên Dashboard.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{so-do-flow-nodered.png}
+  \caption{Sơ đồ flow xử lý dữ liệu trên Node-RED}
+  \label{fig:flow}
+\end{figure}
+
+\subsection{Triển khai hệ thống}
+
+\textbf{Bước 1 — Cài đặt phần mềm:} Cài đặt PlatformIO IDE cho VS Code để biên dịch và nạp firmware cho ESP32. Cài Node.js (phiên bản 18.x LTS trở lên), sau đó cài Node-RED qua lệnh \code{npm install -g node-red}. Cài module node-red-dashboard qua lệnh \code{npm install -g node-red-dashboard} hoặc qua giao diện Manage Palette trong Node-RED.
+
+\textbf{Bước 2 — Cấu hình MQTT Broker trên HiveMQ Cloud:} Truy cập \url{https://www.hivemq.com/cloud/}, tạo tài khoản và cấp phát một cluster miễn phí. Lấy thông tin hostname, port (8883), username và password để cấu hình trong firmware ESP32 và Node-RED. Lưu ý: thông tin xác thực MQTT được ẩn trong báo cáo này vì lý do bảo mật.
+
+\textbf{Bước 3 — Nạp firmware cho ESP32:} Sao chép mã nguồn (xem Phụ lục A) vào PlatformIO, chỉnh sửa thông tin Wi-Fi và MQTT, nhấn Upload. Trên môi trường Wokwi, chỉ cần chạy mô phỏng mà không cần phần cứng thật.
+
+\textbf{Bước 4 — Import flow vào Node-RED:} Truy cập \url{http://127.0.0.1:1880}, vào Menu $\rightarrow$ Import, paste nội dung file node-red-flow.txt (xem Phụ lục B), nhấn Deploy để chạy flow.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{nodered-flow-full.png}
+  \caption{Giao diện editor Node-RED với flow đầy đủ}
+  \label{fig:nr-flow}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{nodered-dashboard-full.png}
+  \caption{Giao diện Dashboard Node-RED: gauge, chart và điều khiển bơm}
+  \label{fig:nr-dash}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.88\linewidth]{mach-vat-ly-wokwi.png}
+  \caption{Mạch mô phỏng Wokwi: ESP32 DevKit C v4 + DHT22 + LED}
+  \label{fig:wokwi}
+\end{figure}
+
+% =============================================================================
+% PHẦN 4: KẾT QUẢ THỰC HIỆN
+% =============================================================================
+\section{Kết quả thực hiện}
+\label{sec:phan4}
+
+\subsection{Kết quả giám sát nhiệt độ và độ ẩm}
+
+Hệ thống hoạt động ổn định với chu kỳ đọc dữ liệu 5 giây. Mỗi lần đọc, DHT22 đo nhiệt độ và độ ẩm không khí, ESP32 đóng gói thành chuỗi JSON và publish lên topic \code{farm/sensor}. JSON payload có cấu trúc:
+
+\begin{lstlisting}[style=jcode, caption={JSON payload gửi lên topic farm/sensor}, label={lst:json}]
+{
+  "device": "ESP32-01",
+  "temperature": 25.3,
+  "humidity": 55.0,
+  "timestamp": 12345678
+}
+\end{lstlisting}
+
+Node-RED nhận JSON, parse và phân luồng tới các node hiển thị. Gauge nhiệt độ hiển thị giá trị với kim chỉ vị trí tương ứng trên thang 0–100$^\circ$C, tự động đổi màu theo ngưỡng (xanh: dưới 33, vàng: 33–67, đỏ: trên 67). Biểu đồ line vẽ điểm mới mỗi 5 giây, tự động xóa điểm cũ sau 1 giờ (\code{removeOlderPoints: 10}, \code{removeOlderUnit: 3600}), đảm bảo biểu đồ không bị quá tải.
+
+\subsection{Kết quả cảnh báo}
+
+Khi nhiệt độ vượt ngưỡng 35$^\circ$C, hệ thống tự động hiển thị toast thông báo \code{⚠️ Nhiệt độ cao: XX.X°C} tại góc dưới bên trái Dashboard trong 8 giây. Tương tự, khi độ ẩm không khí giảm xuống dưới 40\%, toast \code{🌵 Độ ẩm thấp: XX\% — cân nhắc tưới} được hiển thị. Trường hợp độ ẩm cực kỳ thấp (dưới 20\% — ngưỡng nguy hiểm), cảnh báo màu đỏ được hiển thị trên Dashboard kèm thông báo \code{🔔 CẢNH BÁO: độ ẩm rất thấp (XX\%) — cần tưới ngay}.
+
+Ngưỡng cảnh báo được lựa chọn dựa trên điều kiện khí hậu Việt Nam: nhiệt độ trên 35$^\circ$C được coi là cao, có thể gây stress nhiệt cho cây trồng; độ ẩm không khí dưới 40\% kết hợp với nhiệt độ cao cho thấy không khí khô hanh, cần tưới bổ sung.
+
+\subsection{Kết quả điều khiển từ Dashboard}
+
+Người dùng có thể bật máy bơm (LED mô phỏng) bằng hai cách:
+
+\textbf{Cách 1 — Bật/tắt thủ công:} Nhấn nút \textbf{Máy bơm} trên Dashboard. Node-RED gửi JSON \code{\{"pump":true,"duration":5\}} lên topic \code{farm/control}. ESP32 nhận lệnh, LED bật trong 100ms rồi tắt (xác nhận đã nhận lệnh). Trên thực tế, thay LED bằng relay điều khiển máy bơm 220V sẽ tưới nước trong 5 giây.
+
+\textbf{Cách 2 — Tưới tự động:} Bật switch \textbf{Tưới tự động} trên Dashboard. Khi độ ẩm $<$ 40\%, hệ thống tự động gửi lệnh bật bơm mà không cần can thiệp thủ công. Tính năng này đảm bảo cây luôn được tưới kịp thời khi độ ẩm giảm xuống dưới ngưỡng an toàn.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{serial-monitor.png}
+  \caption{Serial Monitor: log dữ liệu cảm biến và trạng thái MQTT trên PlatformIO}
+  \label{fig:serial}
+\end{figure}
+
+\subsection{Kết quả trên Wokwi (mô phỏng)}
+
+Trên nền tảng mô phỏng Wokwi, hệ thống chạy hoàn toàn tương tự như trên phần cứng thật. DHT22 được cấu hình với giá trị mặc định: nhiệt độ 25$^\circ$C, độ ẩm 55\%. LED xanh sáng lên mỗi khi ESP32 publish dữ liệu thành công, cung cấp phản hồi trực quan về trạng thái hoạt động. Serial Monitor hiển thị log đầy đủ: kết nối Wi-Fi thành công, MQTT connected, dữ liệu cảm biến và thông báo publish.
+
+\begin{table}[H]
+  \centering
+  \caption{Tổng hợp các chức năng đã triển khai}
+  \label{tbl:chucnang}
+  \begin{tabular}{|L{4cm}|C{3cm}|C{4.5cm}|}
+    \hline
+    \textbf{Chức năng} & \textbf{Trạng thái} & \textbf{Ghi chú} \\
+    \hline
+    Đọc DHT22 mỗi 5 giây & Hoàn thành & GPIO 4, fallback random khi lỗi \\
+    \hline
+    Truyền MQTT (TLS port 8883) & Hoàn thành & WiFiClientSecure + PubSubClient \\
+    \hline
+    Hiển thị Gauge nhiệt độ & Hoàn thành & 3 vùng màu, min=0, max=100 \\
+    \hline
+    Hiển thị Gauge độ ẩm & Hoàn thành & dạng donut, min=0, max=100 \\
+    \hline
+    Biểu đồ line thời gian thực & Hoàn thành & dot=true, removeOlderUnit=3600 \\
+    \hline
+    Toast cảnh báo nhiệt độ cao & Hoàn thành & Ngưỡng $>$ 35$^\circ$C, 8 giây \\
+    \hline
+    Toast cảnh báo độ ẩm thấp & Hoàn thành & Ngưỡng $<$ 40\%, 8 giây \\
+    \hline
+    Cảnh báo nguy hiểm (độ ẩm $<$ 20\%) & Hoàn thành & Hiển thị đỏ trên Dashboard \\
+    \hline
+    Bật bơm thủ công (button) & Hoàn thành & Gửi JSON lên farm/control \\
+    \hline
+    Tưới tự động (switch) & Hoàn thành & Bật bơm khi ẩm $<$ 40\% \\
+    \hline
+    Reconnect Wi-Fi tự động & Hoàn thành & Kiểm tra trong loop() \\
+    \hline
+    Reconnect MQTT non-blocking & Hoàn thành & Thử lại mỗi 5 giây \\
+    \hline
+  \end{tabular}
+\end{table}
+
+% =============================================================================
+% PHẦN 5: KẾT LUẬN, NHẬN XÉT, ĐÁNH GIÁ VÀ KIẾN NGHỊ
+% =============================================================================
+\section{Kết luận, nhận xét, đánh giá và kiến nghị}
+\label{sec:phan5}
+
+\subsection{Kết luận}
+
+Qua quá trình nghiên cứu và triển khai, tiểu luận đã hoàn thành các mục tiêu đề ra ban đầu. Hệ thống tưới cây tự động sử dụng IoT đã được thiết kế và triển khai thành công với các kết quả cụ thể sau:
+
+Thứ nhất, hệ thống IoT ba tầng hoàn chỉnh đã được xây dựng: tầng thiết bị (ESP32 + DHT22) kết nối với tầng trung gian (HiveMQ Cloud TLS) và tầng ứng dụng (Node-RED Dashboard), hoạt động ổn định trong điều kiện thực tế.
+
+Thứ hai, dữ liệu nhiệt độ và độ ẩm được thu thập và truyền lên cloud mỗi 5 giây qua giao thức MQTT, với JSON payload được định dạng chuẩn, dễ xử lý và mở rộng.
+
+Thứ ba, giao diện Dashboard trực quan cho phép giám sát nhiệt độ và độ ẩm theo thời gian thực qua gauge và biểu đồ line, cung cấp cái nhìn tổng quan về điều kiện môi trường trồng cây.
+
+Thứ tư, hệ thống cảnh báo đa cấp (toast, cảnh báo đỏ) hoạt động chính xác khi nhiệt độ hoặc độ ẩm vượt ngưỡng, giúp người dùng phản ứng kịp thời.
+
+Thứ năm, chế độ tưới tự động dựa trên ngưỡng độ ẩm và khả năng điều khiển thủ công qua Dashboard mang lại sự linh hoạt cao trong vận hành.
+
+Thứ sáu, toàn bộ hệ thống đã được mô phỏng thành công trên Wokwi, cho phép kiểm thử mà không cần phần cứng thật.
+
+Hệ thống có thể được ứng dụng thực tế trong việc giám sát và tưới cây trong nhà kính, trồng rau thủy canh, trồng cây trên ban công hoặc sân thượng đô thị.
+
+\subsection{Nhận xét}
+
+\textbf{Ưu điểm:} Hệ thống được xây dựng với chi phí phần cứng thấp (chỉ cần ESP32, DHT22 và LED), sử dụng các công cụ miễn phí và mã nguồn mở (PlatformIO, Node-RED, HiveMQ Cloud). Giao diện Dashboard trực quan, dễ sử dụng, truy cập được từ mọi thiết bị có trình duyệt web. Giao thức MQTT tiêu tốn ít băng thông và năng lượng, phù hợp cho các thiết bị IoT chạy pin. Việc sử dụng TLS đảm bảo dữ liệu truyền được mã hóa, tránh bị nghe lén.
+
+\textbf{Hạn chế:} Hệ thống hiện tại chỉ đo độ ẩm không khí (humidity) chứ chưa đo độ ẩm đất — thông số quan trọng hơn để quyết định tưới hay không tưới. LED chỉ là mô phỏng, chưa kết nối relay và máy bơm thực sự 220V. Khả năng xử lý bảo mật TLS hiện tại sử dụng \code{setInsecure()} (bỏ qua xác thực chứng chỉ), phù hợp cho môi trường demo nhưng chưa đạt tiêu chuẩn production. Chưa có cơ chế lưu trữ dữ liệu lịch sử (database) ngoài biểu đồ real-time trên Dashboard.
+
+\textbf{Kinh nghiệm rút ra:} Việc tách biệt logic xử lý vào các node function chuyên biệt trong Node-RED giúp flow dễ đọc, dễ sửa lỗi và mở rộng. Sử dụng timer non-blocking cho MQTT reconnect tránh được hiện tượng ESP32 bị treo khi mất kết nối. Cơ chế fallback random khi DHT22 trả NaN giúp hệ thống không bị crash khi cảm biến hoạt động không bình thường.
+
+\subsection{Đánh giá}
+
+Theo đánh giá cá nhân, hệ thống đã đạt được các tiêu chí cơ bản của một hệ thống IoT giám sát và điều khiển: thu thập dữ liệu đáng tin cậy, truyền dữ liệu an toàn qua TLS, hiển thị trực quan, cảnh báo kịp thời, và điều khiển được thiết bị từ xa. Kiến thức về ESP32, MQTT, Node-RED và IoT nói chung đã được củng cố và nâng cao đáng kể qua quá trình thực hiện đề tài.
+
+Tuy nhiên, so với các hệ thống IoT chuyên nghiệp, hệ thống này còn nhiều hạn chế về bảo mật, độ chính xác cảm biến, và khả năng mở rộng. Đây là bước khởi đầu, tạo nền tảng để phát triển thêm trong tương lai.
+
+\subsection{Kiến nghị}
+
+Dựa trên kết quả nghiên cứu và hạn chế của hệ thống hiện tại, các hướng phát triển tiếp theo được đề xuất như sau:
+
+Thứ nhất, bổ sung cảm biến độ ẩm đất (soil moisture sensor) để đo trực tiếp độ ẩm trong đất, giúp quyết định tưới chính xác hơn. Có thể sử dụng cảm biến Capacitive Soil Moisture với độ bền cao hơn so với loại điện trở.
+
+Thứ hai, thay LED bằng relay 5V và máy bơm nước mini 12V để hệ thống thực sự tưới cây. Khi đó, firmware cần mở rộng để điều khiển thời gian tưới (ví dụ: bật bơm trong 10 giây rồi tắt).
+
+Thứ ba, nâng cấp bảo mật TLS bằng cách sử dụng chứng chỉ CA hợp lệ thay vì \code{setInsecure()}, đảm bảo hệ thống an toàn khi triển khai thực tế.
+
+Thứ tư, triển khai lưu trữ dữ liệu dài hạn bằng InfluxDB hoặc MySQL để phân tích xu hướng theo ngày, tuần, tháng, và xuất báo cáo.
+
+Thứ năm, phát triển ứng dụng di động (Android/iOS) thay thế Dashboard trên trình duyệt, tăng tính tiện dụng cho người dùng cuối.
+
+Thứ sáu, triển khai cập nhật firmware từ xa qua OTA (Over-The-Air) để thuận tiện cho việc bảo trì và nâng cấp mà không cần kết nối vật lý với ESP32.
+
+% =============================================================================
+% PHỤ LỤC
+% =============================================================================
+\newpage
+\pagenumbering{gobble}
+
+\begin{center}
+  {\large\bfseries CÁC PHỤ LỤC}\\
+  \textit{(Không tính vào số trang của bản tiểu luận)}
+\end{center}
+\vspace{0.5cm}
+
+% ----- PHỤ LỤC A -----
+\subsection*{PHỤ LỤC A. Mã nguồn chương trình ESP32}
+\addcontentsline{toc}{subsection}{Phụ lục A. Mã nguồn chương trình ESP32}
+\label{sec:pl-a}
+
+\textbf{Lưu ý:} Trước khi nạp firmware, cần cập nhật các thông tin sau trong code: \code{WIFI_SSID} và \code{WIFI_PASSWORD} (tên và mật khẩu Wi-Fi); \code{MQTT_USERNAME} và \code{MQTT_PASSWORD} (tài khoản HiveMQ Cloud). Thông tin xác thực MQTT đã được ẩn trong tài liệu này vì lý do bảo mật.
+
+\IfFileExists{main-src.txt}{%
+  \lstinputlisting[
+    style=ccode,
+    caption={Firmware ESP32 — main.cpp},
+    label={lst:pl-arduino}
+  ]{main-src.txt}%
+}{%
+  \textbf{Lỗi:} Không tìm thấy \file{main-src.txt}. Đặt file này cùng thư mục với \file{main.tex}.
+}
+
+% ----- PHỤ LỤC B -----
+\subsection*{PHỤ LỤC B. Mã nguồn Node-RED (JSON Flow)}
+\addcontentsline{toc}{subsection}{Phụ lục B. Mã nguồn Node-RED (JSON Flow)}
+\label{sec:pl-b}
+
+\textbf{Các bước import flow vào Node-RED:}
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+  \item Truy cập Node-RED tại \url{http://127.0.0.1:1880}.
+  \item Nhấn Menu $\rightarrow$ Import.
+  \item Chọn thẻ Clipboard, paste toàn bộ nội dung JSON bên dưới.
+  \item Nhấn \textbf{Import} để thêm flow.
+  \item Nhấn \textbf{Deploy} (nút đỏ góc phải) để chạy flow.
+\end{enumerate}
+\textbf{Lưu ý:} Sau khi import, kiểm tra và cập nhật cấu hình node \textbf{mqtt-broker}: hostname, port (8883), username, password phải khớp với tài khoản HiveMQ Cloud đang sử dụng.
+
+\IfFileExists{node-red-flow.txt}{%
+  \lstinputlisting[
+    style=jcode,
+    caption={Node-RED Flow (JSON) — node-red.json},
+    label={lst:pl-nodered}
+  ]{node-red-flow.txt}%
+}{%
+  \textbf{Lỗi:} Không tìm thấy \file{node-red-flow.txt}. Đặt file này cùng thư mục với \file{main.tex}.
+}
+
+% ----- PHỤ LỤC C -----
+\subsection*{PHỤ LỤC C. Mã nguồn sơ đồ Wokwi (JSON)}
+\addcontentsline{toc}{subsection}{Phụ lục C. Mã nguồn sơ đồ Wokwi (JSON)}
+\label{sec:pl-c}
+
+\textbf{Các bước mở sơ đồ mạch trên Wokwi:}
+\begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
+  \item Truy cập \url{https://wokwi.com/}.
+  \item Đăng nhập (hoặc tạo tài khoản mới).
+  \item Tạo project mới hoặc import file JSON bên dưới.
+  \item Nhấn Play để chạy mô phỏng.
+\end{enumerate}
+
+\IfFileExists{wokwi-diagram.txt}{%
+  \lstinputlisting[
+    style=jcode,
+    caption={Sơ đồ mạch Wokwi (JSON) — diagram.json},
+    label={lst:pl-wokwi}
+  ]{wokwi-diagram.txt}%
+}{%
+  \textbf{Lỗi:} Không tìm thấy \file{wokwi-diagram.txt}. Đặt file này cùng thư mục với \file{main.tex}.
+}
+
+% =============================================================================
+% REFERENCES
+% =============================================================================
+\newpage
+\section*{References}
+\label{sec:tailieu}
+
+\begin{thebibliography}{99}
+  \fontsize{13}{17}\selectfont
+
+  \bibitem{esp8266} ESP8266 Community Forum. \textit{ESP8266 Arduino Core Documentation}. Truy cập: \url{https://arduino-esp8266.readthedocs.io/}.
+
+  \bibitem{nodered} Node-RED. \textit{Node-RED Documentation}. IBM \& others. Truy cập: \url{https://nodered.org/docs/}.
+
+  \bibitem{hivemq} HiveMQ. \textit{HiveMQ Cloud}. Truy cập: \url{https://www.hivemq.com/cloud/}.
+
+  \bibitem{u8g2} olikraus. \textit{U8g2 Library Reference}. Truy cập: \url{https://github.com/olikraus/u8g2}.
+
+  \bibitem{dht} Adafruit. \textit{DHT sensor library for Arduino}. Truy cập: \url{https://github.com/adafruit/DHT-sensor-library}.
+
+  \bibitem{pubsubclient} Nick O'Leary. \textit{PubSubClient for Arduino}. Truy cập: \url{https://github.com/knolleary/pubsubclient}.
+
+  \bibitem{nodereddash} Node-RED. \textit{node-red-dashboard}. Truy cập: \url{https://flows.nodered.org/node/node-red-dashboard}.
+
+\end{thebibliography}
+
+% =============================================================================
+\end{document}

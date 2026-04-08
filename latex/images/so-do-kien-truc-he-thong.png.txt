@@ -1,0 +1,18 @@
+% =============================================================================
+%  FILE: so-do-kien-truc-he-thong.png
+%  MO TA: So do kien truc tong the 3 tang cua he thong IoT tuoi cay
+%  GO: Ve bang PowerPoint / draw.io / Lucidchart / Figma
+%       Muc luc: Muc 3.1 (Thiet ke va trien khai > Thiet ke tong the)
+%       Caption: "So do kien truc tong the he thong IoT tuoi cay tu dong"
+%       Label: fig:kien-truc
+%  KICH THUOC DE XUAT: 880 x 500 px, dinh dang .png
+% =============================================================================
+%
+% Huong dan ve so do kien truc:
+%   - 3 tang: Tang 1 (ESP32 + DHT22 + LED) → Tang 2 (HiveMQ Cloud)
+%     → Tang 3 (Node-RED Dashboard)
+%   - Muc ten topic: farm/sensor (ESP → Broker), farm/control (NRD → ESP)
+%   - Dung PowerPoint, draw.io, Lucidchart hoac Figma de ve
+%
+% Sau khi co anh, dat vao: latex/images/so-do-kien-truc-he-thong.png
+% Roi bo comment % o dong \includegraphics trong main.tex
