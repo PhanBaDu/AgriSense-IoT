@@ -34,7 +34,10 @@
         "b8e99199386b9667",
         "lowLightSwitch",
         "relayStatusSwitch",
-        "luxChartFn"
+        "luxChartFn",
+        "b91420f0802c3665",
+        "b24a110f89916cc1",
+        "luxGaugeFn"
       ]
     ]
   },
@@ -43,7 +46,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Gauge: nhiệt độ",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar t = parseFloat(p.temperature);\nif (isNaN(t)) return null;\nmsg.payload = t;\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar t = parseFloat(p.temperature);\nif (isNaN(t)) return null;\nmsg.payload = Number(t.toFixed(1));\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 340,
@@ -60,7 +63,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Gauge: độ ẩm KK",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar h = parseFloat(p.humidity);\nif (isNaN(h)) return null;\nmsg.payload = h;\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar h = parseFloat(p.humidity);\nif (isNaN(h)) return null;\nmsg.payload = Number(h.toFixed(1));\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 340,
@@ -76,7 +79,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Gauge: độ ẩm đất",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar s = parseFloat(p.soilMoisture);\nif (isNaN(s)) return null;\nmsg.payload = s;\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar s = parseFloat(p.soilMoisture);\nif (isNaN(s)) return null;\nmsg.payload = Number(s.toFixed(1));\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 340,
@@ -92,7 +95,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Gauge: ánh sáng",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar lux = parseFloat(p.lightLux);\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = lux;\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar lux = parseFloat(p.lightLux);\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = Number(lux.toFixed(1));\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 340,
@@ -225,7 +228,7 @@
     "height": "3",
     "name": "Hiển thị nhiệt độ",
     "label": "",
-    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">🌡 Nhiệt độ không khí</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.temperature}}<span style=\"font-size:24px\">°C</span></span></div></div>",
+    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">🌡 Nhiệt độ không khí</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.temperature.toFixed(1)}}<span style=\"font-size:24px\">°C</span></span></div></div>",
     "layout": "row-center",
     "className": "",
     "style": false,
@@ -246,7 +249,7 @@
     "height": "3",
     "name": "Hiển thị độ ẩm KK",
     "label": "",
-    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">💧 Độ ẩm không khí</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.humidity}}<span style=\"font-size:24px\">%</span></span></div></div>",
+    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">💧 Độ ẩm không khí</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.humidity.toFixed(1)}}<span style=\"font-size:24px\">%</span></span></div></div>",
     "layout": "row-center",
     "className": "",
     "style": false,
@@ -267,7 +270,7 @@
     "height": "3",
     "name": "Hiển thị độ ẩm đất",
     "label": "",
-    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">🌱 Độ ẩm đất</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.soilMoisture}}<span style=\"font-size:24px\">%</span></span></div></div>",
+    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">🌱 Độ ẩm đất</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.soilMoisture.toFixed(1)}}<span style=\"font-size:24px\">%</span></span></div></div>",
     "layout": "row-center",
     "className": "",
     "style": false,
@@ -283,7 +286,7 @@
     "type": "ui_text",
     "z": "28972163d1638f7e",
     "name": "Hiển thị ánh sáng",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nvar color = lux < 1000 ? '#b71c1c' : lux < 3000 ? '#e65100' : '#1b5e20';\nmsg.payload = '<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">☀️ Cường độ ánh sáng</div><span style=\"font-size:36px;font-weight:700;color:' + color + ';line-height:1.1\">' + lux + '<span style=\"font-size:20px\"> lux</span></span></div></div>';\nmsg.topic = '';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nvar color = lux < 1000 ? '#b71c1c' : lux < 3000 ? '#e65100' : '#1b5e20';\nmsg.payload = '<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">☀️ Cường độ ánh sáng</div><span style=\"font-size:36px;font-weight:700;color:' + color + ';line-height:1.1\">' + lux.toFixed(1) + '<span style=\"font-size:20px\"> lux</span></span></div></div>';\nmsg.topic = '';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 340,
@@ -345,7 +348,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Toast text: nhiệt",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar t = p && p.temperature != null ? Number(p.temperature) : NaN;\nif (isNaN(t)) return null;\nmsg.payload = '⚠️ Nhiệt độ cao: ' + t + '°C — cân nhắc bật quạt!';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar t = p && p.temperature != null ? Number(p.temperature) : NaN;\nif (isNaN(t)) return null;\nmsg.payload = '⚠️ Nhiệt độ cao: ' + t.toFixed(1) + '°C — cân nhắc bật quạt!';\nmsg.topic = '';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 560,
@@ -363,7 +366,7 @@
     "position": "bottom left",
     "displayTime": "8",
     "outputs": 0,
-    "className": "",
+    "className": "alert-temp",
     "name": "Thông báo nhiệt độ",
     "x": 760,
     "y": 560,
@@ -400,7 +403,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Toast text: đất khô",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar s = p && p.soilMoisture != null ? Number(p.soilMoisture) : NaN;\nif (isNaN(s)) return null;\nmsg.payload = '🌵 Đất khô: ' + s + '% — cần tưới!';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar s = p && p.soilMoisture != null ? Number(p.soilMoisture) : NaN;\nif (isNaN(s)) return null;\nmsg.payload = '🌵 Đất khô: ' + s.toFixed(1) + '% — cần tưới!';\nmsg.topic = '';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 560,
@@ -418,7 +421,7 @@
     "position": "bottom left",
     "displayTime": "8",
     "outputs": 0,
-    "className": "",
+    "className": "alert-soil",
     "name": "Thông báo đất khô",
     "x": 760,
     "y": 640,
@@ -506,7 +509,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Hiện trạng bơm",
-    "func": "var p = msg.payload;\nvar s = p && p.soilMoisture != null ? Number(p.soilMoisture) : '?';\nvar pump = p && p.relayStatus === 'ON' ? 'ON 🟢' : 'OFF 🔴';\nvar soilColor = s < 20 ? '#b71c1c' : s < 30 ? '#e65100' : '#1b5e20';\nmsg.payload = '<span style=\"font-size:15px;line-height:1.4;color:' + soilColor + '\">🚿 Cần tưới — Đất: ' + s + '% | Bơm: ' + pump + '</span>';\nreturn msg;",
+    "func": "var p = msg.payload;\nvar s = p && p.soilMoisture != null ? Number(p.soilMoisture).toFixed(1) : '?';\nvar pump = p && p.relayStatus === 'ON' ? 'ON 🟢' : 'OFF 🔴';\nvar soilColor = s < 20 ? '#b71c1c' : s < 30 ? '#e65100' : '#1b5e20';\nmsg.payload = '<span style=\"font-size:15px;line-height:1.4;color:' + soilColor + '\">🚿 Cần tưới — Đất: ' + s + '% | Bơm: ' + pump + '</span>';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 560,
@@ -568,7 +571,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Cảnh báo BUZZER",
-    "func": "var s = msg.payload.soilMoisture;\nmsg.payload = '🔔 CẢNH BÁO: Đất khô nghiêm trọng (' + (s != null ? s : '?') + '%) — Bật BUZZER trên thiết bị!';\nreturn msg;",
+    "func": "var s = msg.payload.soilMoisture;\nmsg.payload = '🔔 CẢNH BÁO: Đất khô nghiêm trọng (' + (s != null ? Number(s).toFixed(1) : '?') + '%) — Bật BUZZER trên thiết bị!';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 560,
@@ -604,7 +607,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Chart: nhiệt độ (số)",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar t = parseFloat(p.temperature);\nif (isNaN(t)) return null;\nmsg.payload = t;\nmsg.topic = 'Nhiệt độ °C';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar t = NaN;\nif (typeof p === 'number') { t = p; }\nelse if (p && p.temperature !== undefined) { t = parseFloat(p.temperature); }\nif (isNaN(t)) return null;\nmsg.payload = Number(t.toFixed(1));\nmsg.topic = 'Nhiệt độ °C';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 760,
@@ -664,7 +667,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Chart: độ ẩm đất (số)",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar s = parseFloat(p.soilMoisture);\nif (isNaN(s)) return null;\nmsg.payload = s;\nmsg.topic = 'Độ ẩm đất %';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar s = NaN;\nif (typeof p === 'number') { s = p; }\nelse if (p && (p.soilMoisture !== undefined)) { s = parseFloat(p.soilMoisture); }\nelse if (p && (p.humidity !== undefined)) { s = parseFloat(p.humidity); } // Fallback nếu nhầm\nif (isNaN(s)) return null;\nmsg.payload = Number(s.toFixed(1));\nmsg.topic = 'Độ ẩm đất %';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 760,
@@ -724,7 +727,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Chart: ánh sáng (số)",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar lux = parseFloat(p.lightLux);\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = lux;\nmsg.topic = 'Ánh sáng lux';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = NaN;\nif (typeof p === 'number') { lux = p; }\nelse if (p && p.lightLux !== undefined) { lux = parseFloat(p.lightLux); }\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = Number(lux.toFixed(1));\nmsg.topic = 'Ánh sáng lux';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 760,
@@ -806,9 +809,7 @@
     "wires": [
       [
         "lowLightToastFn",
-        [
-          "lowLightMediumToastFn"
-        ]
+        "lowLightMediumToastFn"
       ]
     ]
   },
@@ -817,7 +818,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Toast thiếu sáng nghiêm trọng",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = '⚠️ Thiếu sáng nghiêm trọng: ' + lux + ' lux — cây khó quang hợp!';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = 'Thiếu sáng nghiêm trọng: ' + lux + ' lux — cây khó quang hợp!';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 560,
@@ -835,7 +836,7 @@
     "position": "bottom left",
     "displayTime": "8",
     "outputs": 0,
-    "className": "",
+    "className": "alert-light",
     "name": "Thông báo thiếu sáng",
     "x": 760,
     "y": 1060,
@@ -846,7 +847,7 @@
     "type": "function",
     "z": "28972163d1638f7e",
     "name": "Toast sáng yếu",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = '💡 Ánh sáng yếu: ' + lux + ' lux — cân nhắc bổ sung đèn.';\nreturn msg;",
+    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = '💡 Ánh sáng yếu: ' + lux.toFixed(1) + ' lux — cân nhắc bổ sung đèn.';\nmsg.topic = '';\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "x": 560,
@@ -1014,7 +1015,9 @@
     "x": 340,
     "y": 1400,
     "wires": [
-      []
+      [
+        "mqttOutAutoMode"
+      ]
     ]
   },
   {
@@ -1136,5 +1139,75 @@
       "node-red-dashboard": "3.6.6",
       "node-red-contrib-influxdb": "0.7.1"
     }
+  },
+  {
+    "id": "globalAlertCss",
+    "type": "ui_template",
+    "z": "28972163d1638f7e",
+    "group": "grp-khongkhai",
+    "name": "Global Alert CSS",
+    "order": 10,
+    "width": 0,
+    "height": 0,
+    "format": "<style>\n/* Nhuộm màu cho Toast */\nmd-toast.alert-temp .md-toast-content { background-color: #ff9800 !important; color: white !important; }\nmd-toast.alert-soil .md-toast-content { background-color: #795548 !important; color: white !important; }\nmd-toast.alert-light .md-toast-content { background-color: #fbc02d !important; color: #3e2723 !important; }\n</style>",
+    "storeOutMessages": false,
+    "fwdInMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "global",
+    "x": 80,
+    "y": 40,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "mqttOutAutoMode",
+    "type": "mqtt out",
+    "z": "28972163d1638f7e",
+    "name": "MQTT out: config auto",
+    "topic": "iot/farm/config",
+    "qos": "0",
+    "retain": "false",
+    "broker": "d4179fb10b941343",
+    "x": 560,
+    "y": 1400,
+    "wires": []
+  },
+  {
+    "id": "autoModeDisplayFn",
+    "type": "function",
+    "z": "28972163d1638f7e",
+    "name": "Hiển thị trạng thái auto",
+    "func": "var autoOn = flow.get('manual');\nvar isOn = autoOn === true;\nvar color = isOn ? '#1b5e20' : '#757575';\nmsg.payload = '<div style=\"text-align:center\"><div style=\"font-size:12px;opacity:0.8;margin-bottom:4px\">🔧 Chế độ tưới</div><span style=\"font-size:22px;font-weight:700;color:' + color + '\">' + (isOn ? 'TỰ ĐỘNG ✔' : 'TẮT ✘') + '</span></div>';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "x": 340,
+    "y": 1460,
+    "wires": [
+      [
+        "autoModeDisplayUi"
+      ]
+    ]
+  },
+  {
+    "id": "autoModeDisplayUi",
+    "type": "ui_text",
+    "z": "28972163d1638f7e",
+    "group": "grp-dieukhien",
+    "order": 5,
+    "width": "6",
+    "height": "3",
+    "name": "Trạng thái auto mode",
+    "label": "",
+    "format": "{{msg.payload}}",
+    "layout": "row-center",
+    "className": "",
+    "style": false,
+    "font": "",
+    "fontSize": "",
+    "color": "#000000",
+    "x": 340,
+    "y": 1520,
+    "wires": []
   }
 ]
