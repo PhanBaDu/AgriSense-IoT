@@ -1,141 +1,127 @@
 # 1. Đề tài
 
-> **Thiết kế và triển khai hệ thống IoT giám sát đất và không khí, điều khiển tưới tiêu theo thời gian thực**
+> **Thiết kế và triển khai hệ thống IoT giám sát môi trường nông nghiệp và điều khiển máy bơm tự động**
 
 ---
 
 # 2. Mục tiêu hệ thống
 
-Xây dựng hệ thống IoT có khả năng:
+Xây dựng hệ thống IoT thông minh giúp tối ưu hóa việc giám sát và chăm sóc cây trồng:
 
-- **Giám sát:**
-  - Độ ẩm đất (soil moisture)
-  - Nhiệt độ và độ ẩm không khí (DHT22)
-  - Cường độ ánh sáng (BH1750)
-- **Điều khiển:**
-  - Bật/tắt máy bơm qua relay (GPIO 5)
-  - Bật/tắt chế độ tưới tự động
-- **Hiển thị:**
-  - Dashboard thời gian thực (Node-RED Dashboard)
-  - Lưu trữ dữ liệu lịch sử (InfluxDB)
-- **Cảnh báo:**
-  - Buzzer khi đất quá khô (< 20%)
-  - Toast khi đất khô cần tưới (< 30%)
-  - Toast khi cường độ ánh sáng thấp (< 1000 lux)
-  - Toast khi nhiệt độ cao (> 35°C)
+- **Giám sát thời gian thực:**
+  - Độ ẩm đất (thông qua Potentiometer mô phỏng)
+  - Nhiệt độ và độ ẩm không khí (Cảm biến DHT22)
+  - Cường độ ánh sáng (Cảm biến báo mức sáng BH1750)
+- **Điều khiển và Tự động hóa:**
+  - Điều khiển máy bơm nước qua module Relay.
+  - Tích hợp chế độ tưới tự động (Auto Mode) hoạt động độc lập ngay trên thiết bị vi điều khiển ESP32 nhằm đảm bảo tính phản hồi tức thời.
+- **Trực quan hóa dữ liệu:**
+  - Dashboard Node-RED cung cấp giao diện hiển thị các chỉ số hiện tại và biểu đồ tương tác đồ họa.
+- **Cảnh báo thông minh:**
+  - Cảnh báo nhắc nhở dạng Toast UI khi các chỉ số vượt ngưỡng an toàn (Nét bật: Nhiệt độ cao, Đất khô, Thiếu sáng).
+  - Còi báo động (Buzzer) phát âm phím vật lý nhằm cảnh báo sự kiện hệ thống rơi vào mức độ nguy hiểm (chẳng hạn thiếu nước trầm trọng).
 
 ---
 
 # 3. Kiến trúc hệ thống
 
-Hệ thống gồm 3 lớp:
+Hệ thống hoạt động dựa trên mô hình hệ thống IoT 3 lớp tiêu chuẩn:
 
-### 1. Device Layer
-- ESP32 đọc dữ liệu từ:
-  - **DHT22** — nhiệt độ + độ ẩm không khí (GPIO 4)
-  - **Potentiometer** — mô phỏng độ ẩm đất (GPIO 34, ADC)
-  - **BH1750** — cường độ ánh sáng (I2C: SDA=21, SCL=22)
-- Điều khiển:
-  - **Relay** — máy bơm nước (GPIO 5)
-  - **Buzzer** — cảnh báo (GPIO 27)
+### 1. Device Layer (Lớp thiết bị)
+- Phụ trách thu thập dữ liệu và vận hành phần cứng:
+  - Vi điều khiển trung tâm: **ESP32** (Sử dụng Wokwi)
+  - Cảm biến môi trường: **DHT22** (Nhiệt độ, Độ ẩm không khí), **BH1750** (Cường độ ánh sáng giao tiếp I2C).
+  - Cảm biến đất: **Potentiometer** giả lập đo đạc thông qua ADC.
+  - Cơ cấu chấp hành và cảnh báo: **Relay module** điều khiển bơm nước và loa **Buzzer** cảnh báo.
 
-### 2. Network Layer
-- **MQTT (HiveMQ Cloud)** — TLS/SSL port 8883
-  - Topic `iot/farm/env` — gửi dữ liệu cảm biến
-  - Topic `iot/farm/control` — nhận lệnh điều khiển bơm
-- **InfluxDB** — lưu trữ dữ liệu lịch sử
+### 2. Network Layer (Lớp truyền tải mạng)
+- Cơ chế liên lạc đa điểm **MQTT** qua giao thức bảo mật mã hoá **TLS/SSL** (port 8883) kết nối tới Broker **HiveMQ Cloud**.
+  - Đầu phát dữ liệu (Publish): `iot/farm/env`
+  - Đăng ký nhận lệnh điều khiển máy (Subscribe): `iot/farm/control`
+  - Đăng ký nhận lệnh thay đổi cấu hình (Subscribe): `iot/farm/config`
 
-### 3. Application Layer
-- **Node-RED + Dashboard** — giám sát + điều khiển + cảnh báo
-- **InfluxDB** — lưu trữ và phân tích dữ liệu
+### 3. Application Layer (Lớp ứng dụng quản trị)
+- Dạng luồng xử lý chính: **Node-RED**. Hứng luồng dữ liệu (messages) từ Broker, rẽ nhánh đưa ra các chỉ báo/giao diện người dùng trực quan trên **Node-RED Dashboard** và phát lệnh xử lý logic xuống ESP32.
 
 ---
 
-# 4. Phần cứng (Wokwi)
+# 4. Sơ đồ Phần cứng (Wokwi)
 
-| Linh kiện | Chân ESP32 | Vai trò |
-|-----------|-----------|---------|
-| ESP32 DevKit C v4 | — | Vi điều khiển chính |
-| DHT22 | GPIO 4 | Đo nhiệt độ + độ ẩm không khí |
-| Potentiometer | GPIO 34 (ADC) | Giả lập độ ẩm đất |
-| BH1750 | GPIO 21 (SDA), 22 (SCL) | Đo cường độ ánh sáng (I2C) |
-| Relay module | GPIO 5 | Điều khiển máy bơm 12V |
-| Buzzer | GPIO 27 | Cảnh báo khi đất quá khô |
+| Linh kiện | Chân kết nối ESP32 | Vai trò |
+|-----------|--------------------|---------|
+| **ESP32 DevKit C v4** | — | Vi điều khiển xử lý trung tâm. |
+| **DHT22** | GPIO 4 | Đo nhiệt độ và độ ẩm không khí. |
+| **Potentiometer** | GPIO 34 (ADC) | Biến trở giả lập độ ẩm đất. |
+| **BH1750** | GPIO 21 (SDA), 22 (SCL) | Cảm biến cường độ sáng giao tiếp I2C. |
+| **Relay Module** | GPIO 26 | Đóng ngắt máy bơm nước (HIGH/LOW). |
+| **Buzzer** | GPIO 27 | Chuông phát tín hiệu báo động khi phát cảnh báo tại khu vực trồng. |
 
 ---
 
-# 5. MQTT Topics
+# 5. Cấu trúc bản tin MQTT
 
+Các luồng dữ liệu trao đổi bằng định dạng JSON nhằm tối ưu việc phân tích thông số hệ thống.
+
+**1. Gửi dữ liệu cảm biến (ESP32 -> Node-RED)**
+Topic: `iot/farm/env`
 ```json
-// Gửi dữ liệu cảm biến (ESP32 -> Node-RED + InfluxDB)
-iot/farm/env
 {
   "device": "AgriSense-01",
-  "temperature": 25.5,
-  "humidity": 60.2,
-  "soilMoisture": 45.0,
-  "lightLux": 1500.0,
+  "temperature": 32.5,
+  "humidity": 65.2,
+  "soilMoisture": 25.0,
+  "lightLux": 1200.5,
   "relayStatus": "OFF",
-  "timestamp": 123456
+  "timestamp": 123456789
 }
+```
 
-// Nhận lệnh điều khiển (Node-RED -> ESP32)
-iot/farm/control
+**2. Nhận lệnh điều khiển bơm (Node-RED -> ESP32)**
+Topic: `iot/farm/control`
+```json
+// Bật bơm trong một mốc thời gian tự động tắt (ví dụ 5 giây)
 {
   "pump": true,
   "duration": 5
 }
 ```
 
----
-
-# 6. Ngưỡng cảnh báo
-
-| Ngưỡng | Hành động |
-|--------|-----------|
-| Độ ẩm đất < 30% | Toast "Đất khô — cần tưới" + buzzer bíp 2 lần |
-| Độ ẩm đất < 20% | Cảnh báo BUZZER nghiêm trọng + buzzer bíp 5 lần |
-| Nhiệt độ > 35°C | Toast "Nhiệt độ cao — cân nhắc bật quạt" |
-| Ánh sáng < 1000 lux | Toast "Thiếu sáng nghiêm trọng — cây khó quang hợp" |
-| Ánh sáng 1000-3000 lux | Toast "Ánh sáng yếu — cân nhắc bổ sung đèn" |
+**3. Lệnh cấu hình hệ thống, tưới tự động (Node-RED -> ESP32)**
+Topic: `iot/farm/config`
+```json
+// Chuyển đổi trạng thái chế độ tưới thông minh (Auto Mode)
+{
+  "auto": true
+}
+```
 
 ---
 
-# 7. Dashboard Node-RED
+# 6. Logic vận hành & Ngưỡng cảnh báo
 
-Giao diện gồm 4 nhóm chính:
+Hệ thống có logic vận hành tự duy trì và cảnh báo chủ động tại vùng trồng:
 
-1. **Đất & Tưới** (12 cột):
-   - Gauge độ ẩm đất (donut, 3 màu)
-   - Biểu đồ line độ ẩm đất
-   - Hiển thị big number độ ẩm đất
-   - Trạng thái tưới
-   - Cảnh báo BUZZER
-
-2. **Không khí** (16 cột):
-   - Hiển thị big number nhiệt độ
-   - Hiển thị big number độ ẩm KK
-   - Gauge nhiệt độ (gage)
-   - Gauge độ ẩm KK (donut)
-   - Biểu đồ line nhiệt độ
-
-3. **Ánh sáng** (6 cột):
-   - Hiển thị big number ánh sáng (màu đổi theo ngưỡng)
-   - Gauge ánh sáng (donut, 3 màu)
-   - Biểu đồ line ánh sáng
-
-4. **Điều khiển** (12 cột):
-   - Hiển thị trạng thái relay (BẬT/TẮT)
-   - Nút "Bật bơm" (xanh)
-   - Nút "Tắt bơm" (đỏ)
-   - Công tắc "Tưới tự động"
+| Tình trạng biến động | Ngưỡng phát hiện | Thao tác của hệ thống |
+|----------------------|------------------|-----------------------|
+| **Đất hơi khô** | Độ ẩm < 30% | Nhắc nhở Toast trên Dashboard "Đất khô — cần tưới". Kích hoạt ESP32 rung còi bíp 2 lần (dùng timer). Có thể kích hoạt bơm tự động nếu Mode Auto đang bật. |
+| **Đất khô nguy khốn**| Độ ẩm < 20% | Hiện cảnh báo ruy-băng đỏ trên màn hình thao tác. ESP32 sẽ hú còi kịch liệt (bíp 5 lần) báo độ nghiêm trọng. |
+| **Nhiệt độ nóng bức**| Nhiệt độ > 35°C | Cửa sổ thông báo (Toast UI) khuyến nghị áp dụng các biện pháp làm mát phòng trồng. |
+| **Ngưỡng thiếu sáng** | Ánh sáng < 1000 lux | Báo động thiếu sáng. Hiển thị UI Gauge báo đỏ để báo nguy cơ cho quá trình quang hợp của cây. |
 
 ---
 
-# 8. InfluxDB — Lưu trữ dữ liệu lịch sử
+# 7. Giao diện Dashboard Node-RED
 
-- **Measurement**: `agrisense`
-- **Fields**: `temperature`, `humidity`, `soil_moisture`, `light_lux`, `pump_on`
-- **Tags**: `device = AgriSense-01`
-- **Bucket**: `agrisense`, Retention Policy: `autogen`
-- Dữ liệu được gửi mỗi 5 giây cùng lúc với MQTT publish
+Gồm 4 cụm điều hướng chính, tối đa hóa trải nghiệm điều khiển:
+
+1. **Vùng Đất & Hệ thống Tưới:**
+   - Gauge Donut màu sắc tương hỗ cho độ ẩm đất, biểu đồ lịch sử 1 giờ dạng Line.
+   - Trạng thái bơm tức thời (Bật/Tắt đồng bộ).
+   - Bảng mạch cảnh báo nguy cấp.
+2. **Vùng Không Khí Sinh Cảnh:**
+   - Khối số học sinh động hiện Nhiệt độ trực quan (đơn vị °C) và Độ Ẩm Không khí.
+   - Đồ thị quá trình dao động nhiệt ẩm.
+3. **Vùng Đo Lường Ánh Sáng:**
+   - Gauge Donut biến màu ranh giới (xanh, vàng, đỏ) thông qua dải lux tự nhiên. Hiển thị lớn chỉ số lux với hệ thống cảnh báo đa diện.
+4. **Bảng Trình Điều Khiển Thiết Bị:**
+   - Cung cấp nút thao tác chủ động điều lệnh để ép cấp hoặc ngừng cấp nguồn nước (Manual Pump). Phím switch chuyên đổi kích hoạt Logic (Auto/Manual). Mọi thao tác này sẽ sinh ra gói tin JSON và nhả vào MQTT Topic `control` tương thích.

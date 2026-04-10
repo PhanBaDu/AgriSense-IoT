@@ -1,1109 +1,239 @@
-[
-  {
-    "id": "28972163d1638f7e",
-    "type": "tab",
-    "label": "AgriSense",
-    "disabled": false,
-    "info": ""
-  },
-
-  // ============================================================
-  // MQTT IN — nhận dữ liệu cảm biến
-  // ============================================================
-  {
-    "id": "bd7b79c3fbf5417a",
-    "type": "mqtt in",
-    "z": "28972163d1638f7e",
-    "name": "Nhận cảm biến",
-    "topic": "iot/farm/env",
-    "qos": "0",
-    "datatype": "json",
-    "broker": "d4179fb10b941343",
-    "nl": false,
-    "rap": false,
-    "inputs": 0,
-    "x": 80,
-    "y": 220,
-    "wires": [
+{
+  "version": 1,
+  "author": "AgriSense IoT",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 91.24,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -220.5,
+      "left": 263.4,
+      "attrs": {
+        "temperature": "25",
+        "humidity": "55"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_dht",
+      "top": -185,
+      "left": 220,
+      "attrs": {
+        "value": "10000"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": -193.3,
+      "left": -86.6,
+      "attrs": {
+        "value": "50000"
+      }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "buzzer1",
+      "top": 136.8,
+      "left": -103.8,
+      "attrs": {
+        "volume": "0.1"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_buzzer",
+      "top": 312,
+      "left": -29.35,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-bh1750",
+      "id": "bh1750_1",
+      "top": -20,
+      "left": 450,
+      "attrs": {
+        "lux": "1500"
+      }
+    },
+    {
+      "type": "wokwi-relay-module",
+      "id": "relay1",
+      "top": 269,
+      "left": 259.2,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "esp:3V3",
+      "dht1:VCC",
+      "red",
       [
-        "f8a1gaugefn01",
-        "f8a1gaugefn02",
-        "f8a1gaugefn03",
-        "luxGaugeFn",
-        "9e2f992ea37b88e9",
-        "ef65ccde2a9dc727",
-        "ef65ccde2a9dc728",
-        "luxDisplayFn",
-        "a31199f64a6ad255",
-        "b8e99199386b9667",
-        "lowLightSwitch",
-        "relayStatusSwitch",
-        "luxChartFn",
-        "influxFn"
+        "v-67.2",
+        "h182.55"
+      ]
+    ],
+    [
+      "esp:GND.2",
+      "dht1:GND",
+      "black",
+      []
+    ],
+    [
+      "esp:3V3",
+      "r_dht:1",
+      "red",
+      [
+        "v-67.2",
+        "h163.2",
+        "v-57.6"
+      ]
+    ],
+    [
+      "r_dht:2",
+      "dht1:DATA",
+      "orange",
+      [
+        "h9.6",
+        "v9.6"
+      ]
+    ],
+    [
+      "dht1:DATA",
+      "esp:4",
+      "yellow",
+      [
+        "h57.6"
+      ]
+    ],
+    [
+      "esp:3V3",
+      "pot1:VCC",
+      "red",
+      [
+        "h0.15",
+        "v-67.2",
+        "h-143.2"
+      ]
+    ],
+    [
+      "esp:GND.2",
+      "pot1:GND",
+      "black",
+      [
+        "v-38.4",
+        "h-249.6"
+      ]
+    ],
+    [
+      "pot1:SIG",
+      "esp:34",
+      "blue",
+      [
+        "h-0.4",
+        "v144"
+      ]
+    ],
+    [
+      "esp:27",
+      "r_buzzer:1",
+      "orange",
+      [
+        "h-95.85",
+        "v153.6"
+      ]
+    ],
+    [
+      "r_buzzer:2",
+      "buzzer1:2",
+      "orange",
+      []
+    ],
+    [
+      "esp:GND.2",
+      "buzzer1:1",
+      "black",
+      [
+        "h76.8",
+        "v-57.6",
+        "h-384",
+        "v249.6"
+      ]
+    ],
+    [
+      "esp:3V3",
+      "bh1750_1:VCC",
+      "red",
+      []
+    ],
+    [
+      "esp:GND.2",
+      "bh1750_1:GND",
+      "black",
+      []
+    ],
+    [
+      "esp:21",
+      "bh1750_1:SDA",
+      "green",
+      []
+    ],
+    [
+      "esp:22",
+      "bh1750_1:SCL",
+      "purple",
+      []
+    ],
+    [
+      "esp:26",
+      "relay1:IN",
+      "green",
+      [
+        "h-38.25",
+        "v230.6"
+      ]
+    ],
+    [
+      "esp:5V",
+      "relay1:VCC",
+      "red",
+      [
+        "h-28.65",
+        "v124.8"
+      ]
+    ],
+    [
+      "esp:GND.2",
+      "relay1:GND",
+      "black",
+      [
+        "h38.4",
+        "v307.6"
       ]
     ]
-  },
-
-  // ============================================================
-  // FUNCTION: Gauge nhiệt độ
-  // ============================================================
-  {
-    "id": "f8a1gaugefn01",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Gauge: nhiệt độ",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar t = parseFloat(p.temperature);\nif (isNaN(t)) return null;\nmsg.payload = t;\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 80,
-    "wires": [["f8a1gaugeui01", "b91420f0802c3665"]]
-  },
-
-  // ============================================================
-  // FUNCTION: Gauge độ ẩm KK
-  // ============================================================
-  {
-    "id": "f8a1gaugefn02",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Gauge: độ ẩm KK",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar h = parseFloat(p.humidity);\nif (isNaN(h)) return null;\nmsg.payload = h;\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 160,
-    "wires": [["f8a1gaugeui02"]]
-  },
-
-  // ============================================================
-  // FUNCTION: Gauge độ ẩm đất
-  // ============================================================
-  {
-    "id": "f8a1gaugefn03",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Gauge: độ ẩm đất",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar s = parseFloat(p.soilMoisture);\nif (isNaN(s)) return null;\nmsg.payload = s;\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 260,
-    "wires": [["f8a1gaugeui03"]]
-  },
-
-  // ============================================================
-  // FUNCTION: Gauge ánh sáng (lux)
-  // ============================================================
-  {
-    "id": "luxGaugeFn",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Gauge: ánh sáng",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar lux = parseFloat(p.lightLux);\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = lux;\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 360,
-    "wires": [["luxGaugeUi"]]
-  },
-
-  // ============================================================
-  // GAUGE: nhiệt độ (gage, 3 màu)
-  // ============================================================
-  {
-    "id": "f8a1gaugeui01",
-    "type": "ui_gauge",
-    "z": "28972163d1638f7e",
-    "name": "Gauge nhiệt độ",
-    "group": "grp-khongkhai",
-    "order": 3,
-    "width": "5",
-    "height": "4",
-    "gtype": "gage",
-    "title": "Nhiệt độ (°C)",
-    "label": "°C",
-    "format": "{{payload}}",
-    "min": 0,
-    "max": 100,
-    "colors": ["#00b050", "#e6e600", "#ca3838"],
-    "seg1": "33",
-    "seg2": "67",
-    "diff": false,
-    "className": "",
-    "x": 580,
-    "y": 80,
-    "wires": []
-  },
-
-  // ============================================================
-  // GAUGE: độ ẩm KK (donut)
-  // ============================================================
-  {
-    "id": "f8a1gaugeui02",
-    "type": "ui_gauge",
-    "z": "28972163d1638f7e",
-    "name": "Gauge độ ẩm KK",
-    "group": "grp-khongkhai",
-    "order": 4,
-    "width": "5",
-    "height": "4",
-    "gtype": "donut",
-    "title": "Độ ẩm KK (%)",
-    "label": "%",
-    "format": "{{payload}}",
-    "min": 0,
-    "max": 100,
-    "colors": ["#00b050", "#ff9900", "#ca3838"],
-    "seg1": "33",
-    "seg2": "67",
-    "diff": false,
-    "className": "",
-    "x": 800,
-    "y": 80,
-    "wires": []
-  },
-
-  // ============================================================
-  // GAUGE: độ ẩm đất (donut, 3 màu)
-  // ============================================================
-  {
-    "id": "f8a1gaugeui03",
-    "type": "ui_gauge",
-    "z": "28972163d1638f7e",
-    "name": "Gauge độ ẩm đất",
-    "group": "grp-dat-tuoi",
-    "order": 2,
-    "width": "6",
-    "height": "5",
-    "gtype": "donut",
-    "title": "Độ ẩm đất (%)",
-    "label": "%",
-    "format": "{{payload}}",
-    "min": 0,
-    "max": 100,
-    "colors": ["#ca3838", "#ff9900", "#00b050"],
-    "seg1": "30",
-    "seg2": "60",
-    "diff": false,
-    "className": "",
-    "x": 580,
-    "y": 260,
-    "wires": []
-  },
-
-  // ============================================================
-  // GAUGE: ánh sáng (donut)
-  // ============================================================
-  {
-    "id": "luxGaugeUi",
-    "type": "ui_gauge",
-    "z": "28972163d1638f7e",
-    "name": "Gauge ánh sáng",
-    "group": "grp-anhsang",
-    "order": 2,
-    "width": "6",
-    "height": "5",
-    "gtype": "donut",
-    "title": "Ánh sáng (lux)",
-    "label": "lux",
-    "format": "{{payload}}",
-    "min": 0,
-    "max": 5000,
-    "colors": ["#ca3838", "#e6e600", "#00b050"],
-    "seg1": "1000",
-    "seg2": "3000",
-    "diff": false,
-    "className": "",
-    "x": 580,
-    "y": 360,
-    "wires": []
-  },
-
-  // ============================================================
-  // HIỂN THỊ BIG NUMBER: nhiệt độ
-  // ============================================================
-  {
-    "id": "9e2f992ea37b88e9",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-khongkhai",
-    "order": 1,
-    "width": "10",
-    "height": "3",
-    "name": "Hiển thị nhiệt độ",
-    "label": "",
-    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">🌡 Nhiệt độ không khí</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.temperature}}<span style=\"font-size:24px\">°C</span></span></div></div>",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "#000000",
-    "x": 340,
-    "y": 20,
-    "wires": []
-  },
-
-  // ============================================================
-  // HIỂN THỊ BIG NUMBER: độ ẩm KK
-  // ============================================================
-  {
-    "id": "ef65ccde2a9dc727",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-khongkhai",
-    "order": 1,
-    "width": "6",
-    "height": "3",
-    "name": "Hiển thị độ ẩm KK",
-    "label": "",
-    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">💧 Độ ẩm không khí</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.humidity}}<span style=\"font-size:24px\">%</span></span></div></div>",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "#000000",
-    "x": 600,
-    "y": 20,
-    "wires": []
-  },
-
-  // ============================================================
-  // HIỂN THỊ BIG NUMBER: độ ẩm đất
-  // ============================================================
-  {
-    "id": "ef65ccde2a9dc728",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-dat-tuoi",
-    "order": 1,
-    "width": "6",
-    "height": "3",
-    "name": "Hiển thị độ ẩm đất",
-    "label": "",
-    "format": "<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">🌱 Độ ẩm đất</div><span style=\"font-size:42px;font-weight:700;line-height:1.1\">{{msg.payload.soilMoisture}}<span style=\"font-size:24px\">%</span></span></div></div>",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "#000000",
-    "x": 340,
-    "y": 200,
-    "wires": []
-  },
-
-  // ============================================================
-  // HIỂN THỊ BIG NUMBER: ánh sáng
-  // ============================================================
-  {
-    "id": "luxDisplayFn",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "name": "Hiển thị ánh sáng",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nvar color = lux < 1000 ? '#b71c1c' : lux < 3000 ? '#e65100' : '#1b5e20';\nmsg.payload = '<div style=\"display:flex;align-items:center;justify-content:center;height:100%\"><div style=\"text-align:center\"><div style=\"font-size:13px;opacity:0.8;margin-bottom:6px\">☀️ Cường độ ánh sáng</div><span style=\"font-size:36px;font-weight:700;color:' + color + ';line-height:1.1\">' + lux + '<span style=\"font-size:20px\"> lux</span></span></div></div>';\nmsg.topic = '';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 420,
-    "wires": [["luxDisplayUi"]]
-  },
-
-  {
-    "id": "luxDisplayUi",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-anhsang",
-    "order": 1,
-    "width": "6",
-    "height": "3",
-    "name": "Hiển thị ánh sáng",
-    "label": "",
-    "format": "{{msg.payload}}",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "#000000",
-    "x": 340,
-    "y": 480,
-    "wires": []
-  },
-
-  // ============================================================
-  // SWITCH: nhiệt độ > 35°C
-  // ============================================================
-  {
-    "id": "a31199f64a6ad255",
-    "type": "switch",
-    "z": "28972163d1638f7e",
-    "name": "Nhiệt độ > 35°C",
-    "property": "payload.temperature",
-    "propertyType": "msg",
-    "rules": [{"t": "gt", "v": "35", "vt": "num"}],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 1,
-    "x": 340,
-    "y": 560,
-    "wires": [["f9a1toastfn01"]]
-  },
-
-  // ============================================================
-  // FUNCTION: toast nhiệt độ
-  // ============================================================
-  {
-    "id": "f9a1toastfn01",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Toast text: nhiệt",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar t = p && p.temperature != null ? Number(p.temperature) : NaN;\nif (isNaN(t)) return null;\nmsg.payload = '⚠️ Nhiệt độ cao: ' + t + '°C — cân nhắc bật quạt!';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 560,
-    "y": 560,
-    "wires": [["425f5a8bf7c2a0b5"]]
-  },
-
-  {
-    "id": "425f5a8bf7c2a0b5",
-    "type": "ui_toast",
-    "z": "28972163d1638f7e",
-    "position": "bottom left",
-    "displayTime": "8",
-    "outputs": 0,
-    "className": "",
-    "name": "Thông báo nhiệt độ",
-    "x": 760,
-    "y": 560,
-    "wires": []
-  },
-
-  // ============================================================
-  // SWITCH: độ ẩm đất < 30% (khô)
-  // ============================================================
-  {
-    "id": "b8e99199386b9667",
-    "type": "switch",
-    "z": "28972163d1638f7e",
-    "name": "Đất < 30% (khô)",
-    "property": "payload.soilMoisture",
-    "propertyType": "msg",
-    "rules": [{"t": "lt", "v": "30", "vt": "num"}],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 1,
-    "x": 340,
-    "y": 640,
-    "wires": [["f9a1toastfn02", "dbb4a8c895814460"]]
-  },
-
-  // ============================================================
-  // FUNCTION: toast đất khô
-  // ============================================================
-  {
-    "id": "f9a1toastfn02",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Toast text: đất khô",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar s = p && p.soilMoisture != null ? Number(p.soilMoisture) : NaN;\nif (isNaN(s)) return null;\nmsg.payload = '🌵 Đất khô: ' + s + '% — cần tưới!';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 560,
-    "y": 640,
-    "wires": [["e9272ea0978a6ed1"]]
-  },
-
-  {
-    "id": "e9272ea0978a6ed1",
-    "type": "ui_toast",
-    "z": "28972163d1638f7e",
-    "position": "bottom left",
-    "displayTime": "8",
-    "outputs": 0,
-    "className": "",
-    "name": "Thông báo đất khô",
-    "x": 760,
-    "y": 640,
-    "wires": []
-  },
-
-  // ============================================================
-  // SWITCH: chế độ tưới tự động → bật bơm
-  // ============================================================
-  {
-    "id": "dbb4a8c895814460",
-    "type": "switch",
-    "z": "28972163d1638f7e",
-    "name": "Tưới tự động?",
-    "property": "manual",
-    "propertyType": "flow",
-    "rules": [{"t": "eq", "v": "true", "vt": "bool"}],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 1,
-    "x": 560,
-    "y": 680,
-    "wires": [["df4e79c154d58a50"]]
-  },
-
-  {
-    "id": "df4e79c154d58a50",
-    "type": "change",
-    "z": "28972163d1638f7e",
-    "name": "Bật bơm 5s",
-    "rules": [{"t": "set", "p": "payload", "pt": "msg", "to": "{\"pump\":true,\"duration\":5}", "tot": "json"}],
-    "action": "",
-    "property": "",
-    "from": "",
-    "to": "",
-    "reg": false,
-    "x": 760,
-    "y": 680,
-    "wires": [["mqttOutPump"]]
-  },
-
-  // ============================================================
-  // SWITCH: độ ẩm đất < 30% → hiện trạng bơm
-  // ============================================================
-  {
-    "id": "01e7a8e29907dd5c",
-    "type": "switch",
-    "z": "28972163d1638f7e",
-    "name": "Đất < 30% (trạng thái)",
-    "property": "payload.soilMoisture",
-    "propertyType": "msg",
-    "rules": [{"t": "lt", "v": "30", "vt": "num"}],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 1,
-    "x": 340,
-    "y": 760,
-    "wires": [["c90822af4a63eb54"]]
-  },
-
-  {
-    "id": "c90822af4a63eb54",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Hiện trạng bơm",
-    "func": "var p = msg.payload;\nvar s = p && p.soilMoisture != null ? Number(p.soilMoisture) : '?';\nvar pump = p && p.relayStatus === 'ON' ? 'ON 🟢' : 'OFF 🔴';\nvar soilColor = s < 20 ? '#b71c1c' : s < 30 ? '#e65100' : '#1b5e20';\nmsg.payload = '<span style=\"font-size:15px;line-height:1.4;color:' + soilColor + '\">🚿 Cần tưới — Đất: ' + s + '% | Bơm: ' + pump + '</span>';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 560,
-    "y": 760,
-    "wires": [["22c86325ecbf70be"]]
-  },
-
-  {
-    "id": "22c86325ecbf70be",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-dat-tuoi",
-    "order": 4,
-    "width": "12",
-    "height": "3",
-    "name": "Trạng thái tưới",
-    "label": "",
-    "format": "{{msg.payload}}",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "#1b5e20",
-    "x": 560,
-    "y": 820,
-    "wires": []
-  },
-
-  // ============================================================
-  // SWITCH: độ ẩm đất < 20% → cảnh báo nguy hiểm
-  // ============================================================
-  {
-    "id": "e57427a9f993e160",
-    "type": "switch",
-    "z": "28972163d1638f7e",
-    "name": "Đất < 20% (nguy hiểm)",
-    "property": "payload.soilMoisture",
-    "propertyType": "msg",
-    "rules": [{"t": "lt", "v": "20", "vt": "num"}],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 1,
-    "x": 340,
-    "y": 900,
-    "wires": [["673687e437ae8622"]]
-  },
-
-  {
-    "id": "673687e437ae8622",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Cảnh báo BUZZER",
-    "func": "var s = msg.payload.soilMoisture;\nmsg.payload = '🔔 CẢNH BÁO: Đất khô nghiêm trọng (' + (s != null ? s : '?') + '%) — Bật BUZZER trên thiết bị!';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 560,
-    "y": 900,
-    "wires": [["ac643c3a74928b73"]]
-  },
-
-  {
-    "id": "ac643c3a74928b73",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-dat-tuoi",
-    "order": 5,
-    "width": "12",
-    "height": "2",
-    "name": "Cảnh báo Buzzer",
-    "format": "<span style=\"font-size:14px;line-height:1.4;color:#b71c1c;font-weight:600\">{{msg.payload}}</span>",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "",
-    "x": 560,
-    "y": 960,
-    "wires": []
-  },
-
-  // ============================================================
-  // CHART: nhiệt độ
-  // ============================================================
-  {
-    "id": "b91420f0802c3665",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Chart: nhiệt độ (số)",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar t = parseFloat(p.temperature);\nif (isNaN(t)) return null;\nmsg.payload = t;\nmsg.topic = 'Nhiệt độ °C';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 760,
-    "y": 80,
-    "wires": [["cc5a9fcda823fb39"]]
-  },
-
-  {
-    "id": "cc5a9fcda823fb39",
-    "type": "ui_chart",
-    "z": "28972163d1638f7e",
-    "name": "Biểu đồ nhiệt độ",
-    "group": "grp-khongkhai",
-    "order": 5,
-    "width": "11",
-    "height": "4",
-    "label": "chart",
-    "chartType": "line",
-    "legend": "false",
-    "xformat": "HH:mm:ss",
-    "interpolate": "linear",
-    "nodata": "",
-    "dot": true,
-    "ymin": "",
-    "ymax": "",
-    "removeOlder": 1,
-    "removeOlderPoints": "10",
-    "removeOlderUnit": "3600",
-    "cutout": 0,
-    "useOneColor": false,
-    "useUTC": false,
-    "colors": ["#e74c3c", "#aec7e8", "#ff7f0e", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
-    "outputs": 1,
-    "useDifferentColor": false,
-    "className": "",
-    "x": 1000,
-    "y": 80,
-    "wires": [[]]
-  },
-
-  // ============================================================
-  // CHART: độ ẩm đất
-  // ============================================================
-  {
-    "id": "b24a110f89916cc1",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Chart: độ ẩm đất (số)",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar s = parseFloat(p.soilMoisture);\nif (isNaN(s)) return null;\nmsg.payload = s;\nmsg.topic = 'Độ ẩm đất %';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 760,
-    "y": 260,
-    "wires": [["2c3a97d97ea9da30"]]
-  },
-
-  {
-    "id": "2c3a97d97ea9da30",
-    "type": "ui_chart",
-    "z": "28972163d1638f7e",
-    "name": "Biểu đồ độ ẩm đất",
-    "group": "grp-dat-tuoi",
-    "order": 6,
-    "width": "6",
-    "height": "4",
-    "label": "chart",
-    "chartType": "line",
-    "legend": "false",
-    "xformat": "HH:mm:ss",
-    "interpolate": "linear",
-    "nodata": "",
-    "dot": true,
-    "ymin": "0",
-    "ymax": "100",
-    "removeOlder": 1,
-    "removeOlderPoints": "10",
-    "removeOlderUnit": "3600",
-    "cutout": 0,
-    "useOneColor": false,
-    "useUTC": false,
-    "colors": ["#8B4513", "#aec7e8", "#2ca02c", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
-    "outputs": 1,
-    "useDifferentColor": false,
-    "className": "",
-    "x": 1000,
-    "y": 260,
-    "wires": [[]]
-  },
-
-  // ============================================================
-  // FUNCTION: chart ánh sáng (số)
-  // ============================================================
-  {
-    "id": "luxChartFn",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Chart: ánh sáng (số)",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || typeof p !== 'object') return null;\nvar lux = parseFloat(p.lightLux);\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = lux;\nmsg.topic = 'Ánh sáng lux';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 760,
-    "y": 360,
-    "wires": [["luxChartUi"]]
-  },
-
-  {
-    "id": "luxChartUi",
-    "type": "ui_chart",
-    "z": "28972163d1638f7e",
-    "name": "Biểu đồ ánh sáng",
-    "group": "grp-anhsang",
-    "order": 3,
-    "width": "6",
-    "height": "4",
-    "label": "chart",
-    "chartType": "line",
-    "legend": "false",
-    "xformat": "HH:mm:ss",
-    "interpolate": "linear",
-    "nodata": "",
-    "dot": true,
-    "ymin": "0",
-    "ymax": "5000",
-    "removeOlder": 1,
-    "removeOlderPoints": "10",
-    "removeOlderUnit": "3600",
-    "cutout": 0,
-    "useOneColor": false,
-    "useUTC": false,
-    "colors": ["#f9ca24", "#aec7e8", "#2ca02c", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
-    "outputs": 1,
-    "useDifferentColor": false,
-    "className": "",
-    "x": 1000,
-    "y": 360,
-    "wires": [[]]
-  },
-
-  // ============================================================
-  // SWITCH: ánh sáng < 1000 lux → thiếu sáng
-  // ============================================================
-  {
-    "id": "lowLightSwitch",
-    "type": "switch",
-    "z": "28972163d1638f7e",
-    "name": "Thiếu sáng (< 1000 lux)",
-    "property": "payload.lightLux",
-    "propertyType": "msg",
-    "rules": [
-      {"t": "lt", "v": "1000", "vt": "num"},
-      {"t": "lt", "v": "3000", "vt": "num"}
-    ],
-    "checkall": "false",
-    "repair": false,
-    "outputs": 2,
-    "x": 340,
-    "y": 1100,
-    "wires": [["lowLightToastFn", ["lowLightMediumToastFn"]]]
-  },
-
-  {
-    "id": "lowLightToastFn",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Toast thiếu sáng nghiêm trọng",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = '⚠️ Thiếu sáng nghiêm trọng: ' + lux + ' lux — cây khó quang hợp!';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 560,
-    "y": 1060,
-    "wires": [["lowLightToastUi"]]
-  },
-
-  {
-    "id": "lowLightToastUi",
-    "type": "ui_toast",
-    "z": "28972163d1638f7e",
-    "position": "bottom left",
-    "displayTime": "8",
-    "outputs": 0,
-    "className": "",
-    "name": "Thông báo thiếu sáng",
-    "x": 760,
-    "y": 1060,
-    "wires": []
-  },
-
-  {
-    "id": "lowLightMediumToastFn",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Toast sáng yếu",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar lux = p && p.lightLux != null ? Number(p.lightLux) : NaN;\nif (isNaN(lux) || lux < 0) return null;\nmsg.payload = '💡 Ánh sáng yếu: ' + lux + ' lux — cân nhắc bổ sung đèn.';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 560,
-    "y": 1120,
-    "wires": [["lowLightMediumToastUi"]]
-  },
-
-  {
-    "id": "lowLightMediumToastUi",
-    "type": "ui_toast",
-    "z": "28972163d1638f7e",
-    "position": "bottom left",
-    "displayTime": "6",
-    "outputs": 0,
-    "className": "",
-    "name": "Thông báo sáng yếu",
-    "x": 760,
-    "y": 1120,
-    "wires": []
-  },
-
-  // ============================================================
-  // HIỂN THỊ TRẠNG THÁI RELAY
-  // ============================================================
-  {
-    "id": "relayStatusSwitch",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "Trạng thái relay",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar r = p && p.relayStatus === 'ON';\nmsg.payload = '<div style=\"text-align:center\"><div style=\"font-size:12px;opacity:0.8;margin-bottom:4px\">⚡ Máy bơm</div><span style=\"font-size:28px;font-weight:700;color:' + (r ? '#1b5e20' : '#757575') + '\">' + (r ? 'BẬT 🟢' : 'TẮT ⬜') + '</span></div>';\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 1240,
-    "wires": [["relayStatusUi"]]
-  },
-
-  {
-    "id": "relayStatusUi",
-    "type": "ui_text",
-    "z": "28972163d1638f7e",
-    "group": "grp-dieukhien",
-    "order": 4,
-    "width": "6",
-    "height": "3",
-    "name": "Trạng thái relay",
-    "label": "",
-    "format": "{{msg.payload}}",
-    "layout": "row-center",
-    "className": "",
-    "style": false,
-    "font": "",
-    "fontSize": "",
-    "color": "#000000",
-    "x": 340,
-    "y": 1300,
-    "wires": []
-  },
-
-  // ============================================================
-  // NÚT ĐIỀU KHIỂN BƠM
-  // ============================================================
-  {
-    "id": "9782277746682320",
-    "type": "ui_button",
-    "z": "28972163d1638f7e",
-    "name": "Bật bơm",
-    "group": "grp-dieukhien",
-    "order": 1,
-    "width": "4",
-    "height": "2",
-    "passthru": false,
-    "label": "Bật bơm",
-    "tooltip": "",
-    "color": "#ffffff",
-    "bgcolor": "#2e7d32",
-    "className": "",
-    "icon": "fa-tint",
-    "payload": "{\"pump\":true,\"duration\":5}",
-    "payloadType": "json",
-    "topic": "iot/farm/control",
-    "topicType": "str",
-    "x": 120,
-    "y": 1200,
-    "wires": [["mqttOutPump"]]
-  },
-
-  {
-    "id": "a1234567890abcdef",
-    "type": "ui_button",
-    "z": "28972163d1638f7e",
-    "name": "Tắt bơm",
-    "group": "grp-dieukhien",
-    "order": 2,
-    "width": "4",
-    "height": "2",
-    "passthru": false,
-    "label": "Tắt bơm",
-    "tooltip": "",
-    "color": "#ffffff",
-    "bgcolor": "#c62828",
-    "className": "",
-    "icon": "fa-power-off",
-    "payload": "{\"pump\":false,\"duration\":0}",
-    "payloadType": "json",
-    "topic": "iot/farm/control",
-    "topicType": "str",
-    "x": 120,
-    "y": 1320,
-    "wires": [["mqttOutPump"]]
-  },
-
-  {
-    "id": "9269adf2dde7a036",
-    "type": "ui_switch",
-    "z": "28972163d1638f7e",
-    "name": "Tưới tự động",
-    "label": "Tưới tự động",
-    "tooltip": "Bật để ESP32 tự bật bơm khi đất khô",
-    "group": "grp-dieukhien",
-    "order": 3,
-    "width": "8",
-    "height": "2",
-    "passthru": true,
-    "decouple": "false",
-    "topic": "",
-    "topicType": "str",
-    "onvalue": "true",
-    "onvalueType": "bool",
-    "offvalue": "false",
-    "offvalueType": "bool",
-    "animate": true,
-    "className": "",
-    "x": 120,
-    "y": 1400,
-    "wires": [["f0dd0c472d5d7e77"]]
-  },
-
-  {
-    "id": "f0dd0c472d5d7e77",
-    "type": "change",
-    "z": "28972163d1638f7e",
-    "name": "Set flow.manual",
-    "rules": [{"t": "set", "p": "manual", "pt": "flow", "to": "payload", "tot": "msg"}],
-    "action": "",
-    "property": "",
-    "from": "",
-    "to": "",
-    "reg": false,
-    "x": 340,
-    "y": 1400,
-    "wires": [[]]
-  },
-
-  // ============================================================
-  // MQTT OUT — gửi lệnh điều khiển bơm
-  // ============================================================
-  {
-    "id": "52d4228c218a253a",
-    "type": "mqtt out",
-    "z": "28972163d1638f7e",
-    "name": "Gửi lệnh bơm",
-    "topic": "iot/farm/control",
-    "qos": "0",
-    "retain": "false",
-    "broker": "d4179fb10b941343",
-    "x": 960,
-    "y": 1300,
-    "wires": []
-  },
-
-  {
-    "id": "mqttOutPump",
-    "type": "mqtt out",
-    "z": "28972163d1638f7e",
-    "name": "MQTT out: bơm",
-    "topic": "iot/farm/control",
-    "qos": "0",
-    "retain": "false",
-    "broker": "d4179fb10b941343",
-    "x": 960,
-    "y": 1200,
-    "wires": []
-  },
-
-  // ============================================================
-  // INFLUXDB OUT — lưu dữ liệu lịch sử
-  // ============================================================
-  {
-    "id": "influxFn",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "InfluxDB: build point",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar t  = parseFloat(p.temperature)  || 0;\nvar h  = parseFloat(p.humidity)     || 0;\nvar s  = parseFloat(p.soilMoisture) || 0;\nvar lux = parseFloat(p.lightLux)     || 0;\nvar pump = p.relayStatus === 'ON' ? 1 : 0;\nmsg.measurement = 'agrisense';\nmsg.fields = {\n  temperature: t,\n  humidity: h,\n  soil_moisture: s,\n  light_lux: lux,\n  pump_on: pump\n};\nmsg.tags = { device: 'AgriSense-01' };\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 1500,
-    "wires": [["influxdbOut"]]
-  },
-
-  {
-    "id": "influxdbOut",
-    "type": "influxdb out",
-    "z": "28972163d1638f7e",
-    "influxdb": "influxdb-conf",
-    "name": "InfluxDB",
-    "measurement": "agrisense",
-    "x": 580,
-    "y": 1500,
-    "wires": []
-  },
-
-  {
-    "id": "influxdb-conf",
-    "type": "influxdb-conf",
-    "z": "28972163d1638f7e",
-    "hostname": "localhost",
-    "port": "8086",
-    "path": "/write?db=agrisense&rp=autogen",
-    "protocol": "http",
-    "rejectUnauthorized": false
-  },
-
-  // ============================================================
-  // MQTT BROKER CONFIG
-  // ============================================================
-  {
-    "id": "d4179fb10b941343",
-    "type": "mqtt-broker",
-    "name": "HiveMQ Cloud",
-    "broker": "b1c8f2cc5cd4416fb74b671a407dc0ff.s1.eu.hivemq.cloud",
-    "port": "8883",
-    "tls": "",
-    "clientid": "",
-    "autoConnect": true,
-    "usetls": true,
-    "protocolVersion": 4,
-    "keepalive": 60,
-    "cleansession": true,
-    "autoUnsubscribe": true,
-    "birthTopic": "",
-    "birthQos": "0",
-    "birthRetain": "false",
-    "birthPayload": "",
-    "birthMsg": {},
-    "closeTopic": "",
-    "closeQos": "0",
-    "closeRetain": "false",
-    "closePayload": "",
-    "closeMsg": {},
-    "willTopic": "",
-    "willQos": "0",
-    "willRetain": "false",
-    "willPayload": "",
-    "willMsg": {},
-    "userProps": "",
-    "sessionExpiry": ""
-  },
-
-  // ============================================================
-  // UI GROUPS
-  // ============================================================
-  {
-    "id": "grp-khongkhai",
-    "type": "ui_group",
-    "name": "Không khí",
-    "tab": "tab-agrisense",
-    "order": 2,
-    "disp": true,
-    "width": "16",
-    "collapse": false,
-    "className": ""
-  },
-  {
-    "id": "grp-dat-tuoi",
-    "type": "ui_group",
-    "name": "Đất & Tưới",
-    "tab": "tab-agrisense",
-    "order": 1,
-    "disp": true,
-    "width": "12",
-    "collapse": false,
-    "className": ""
-  },
-  {
-    "id": "grp-anhsang",
-    "type": "ui_group",
-    "name": "Ánh sáng",
-    "tab": "tab-agrisense",
-    "order": 3,
-    "disp": true,
-    "width": "6",
-    "collapse": false,
-    "className": ""
-  },
-  {
-    "id": "grp-dieukhien",
-    "type": "ui_group",
-    "name": "Điều khiển",
-    "tab": "tab-agrisense",
-    "order": 4,
-    "disp": true,
-    "width": "12",
-    "collapse": false,
-    "className": ""
-  },
-
-  // ============================================================
-  // UI TAB
-  // ============================================================
-  {
-    "id": "tab-agrisense",
-    "type": "ui_tab",
-    "name": "AgriSense",
-    "icon": "fa-leaf",
-    "order": 1
-  },
-
-  // ============================================================
-  // CONFIG
-  // ============================================================
-  {
-    "id": "b71f21b1ed76d1c3",
-    "type": "global-config",
-    "env": [],
-    "modules": {
-      "node-red-dashboard": "3.6.6",
-      "node-red-contrib-influxdb": "0.7.1"
-    }
-  }
-]
+  ],
+  "dependencies": {}
+}
