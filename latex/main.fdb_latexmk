@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1775813627.85876 "/Users/phanbadu/Documents/PlatformIO/Projects/AgriSense IoT/latex/main.tex" "main.pdf" "main" 1775813627.91519 2
-  "/Users/phanbadu/Documents/PlatformIO/Projects/AgriSense IoT/latex/main.tex" 1775813627.0664 51228 1681962dd515075fdea7a0f65e197743 ""
+["pdflatex"] 1775814281.15795 "/Users/phanbadu/Documents/PlatformIO/Projects/AgriSense IoT/latex/main.tex" "main.pdf" "main" 1775814281.20666 2
+  "/Users/phanbadu/Documents/PlatformIO/Projects/AgriSense IoT/latex/main.tex" 1775814280.78213 54278 2e8a379958ab0e28cca5e40705cfddf1 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1576625341 40635 c40361e206be584d448876bba8a64a3b ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/generic/bitset/bitset.sty" 1576016050 33961 6b5c75130e435b2bfdb9f480a09a39f9 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/generic/iftex/iftex.sty" 1734129479 7984 7dbb9280f03c0a315425f1b4f35d43ee ""
@@ -84,8 +84,8 @@
   "images/logo.png" 1775800472.20322 7013 b96cecd867322a573052758cd2ace96c ""
   "images/mach-vat-ly-wokwi.png" 1775800472.20774 17767 af78207df1101afba424d85f1fb7c10d ""
   "images/so-do-kien-truc-he-thong.png" 1775800472.21506 36132 766a6c79de1e878dc1f8c2bb81cfc19a ""
-  "main.aux" 0 -1 0 "pdflatex"
-  "main.tex" 1775813627.0664 51228 1681962dd515075fdea7a0f65e197743 ""
+  "main.aux" 1775814273.15711 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "main.tex" 1775814280.78213 54278 2e8a379958ab0e28cca5e40705cfddf1 ""
   "main.toc" 0 -1 0 ""
   (generated)
   "main.aux"

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 13:05
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 16:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -8,8 +8,8 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/base/size12.clo
-File: size12.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count271
 \c@section=\count272
@@ -107,37 +107,53 @@ Package fontspec Info:
 (fontspec)             Roman/BI/OT:script=latn;language=dflt;mapping=tex-text;"
 
 
- (/usr/local/texlive/2026basic/texmf-dist/tex/latex/koma-script/scrextend.sty
-Package: scrextend 2026/02/02 v3.49.2 KOMA-Script package (extend other classes
- with features of KOMA-Script classes)
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/koma-script/scrkbase.sty
-Package: scrkbase 2026/02/02 v3.49.2 KOMA-Script package (KOMA-Script-dependent
- basics and keyval usage)
 
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/koma-script/scrbase.sty
-Package: scrbase 2026/02/02 v3.49.2 KOMA-Script package (KOMA-Script-independen
-t basics and keyval usage)
+Package fontspec Info: 
+(fontspec)             Font family 'Arial(0)' created for font 'Arial' with
+(fontspec)             options [Ligatures=TeX].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"Arial/OT:script=latn;language=dflt;mapping=tex-text;
+"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"Arial/B/OT:script=latn;language=dflt;mapping=tex-tex
+t;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"Arial/I/OT:script=latn;language=dflt;mapping=tex-tex
+t;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"Arial/BI/OT:script=latn;language=dflt;mapping=tex-te
+xt;"
 
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/koma-script/scrlfile.sty
-Package: scrlfile 2026/02/02 v3.49.2 KOMA-Script package (file load hooks)
 
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/koma-script/scrlfile-hook.st
-y
-Package: scrlfile-hook 2026/02/02 v3.49.2 KOMA-Script package (using LaTeX hook
-s)
- (/usr/local/texlive/2026basic/texmf-dist/tex/latex/koma-script/scrlogo.sty
-Package: scrlogo 2026/02/02 v3.49.2 KOMA-Script package (logo)
-))) (/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/keyval.sty
+Package fontspec Info: 
+(fontspec)             Font family 'CourierNew(0)' created for font 'Courier
+(fontspec)             New' with options
+(fontspec)             [WordSpace={1,0,0},HyphenChar=None,PunctuationSpace=Word
+Space].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Courier
+(fontspec)             New/OT:script=latn;language=dflt;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"Courier
+(fontspec)             New/B/OT:script=latn;language=dflt;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.: <->"Courier
+(fontspec)             New/I/OT:script=latn;language=dflt;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"Courier
+(fontspec)             New/BI/OT:script=latn;language=dflt;"
+
+ (/usr/local/texlive/2026basic/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks17
 )
-Applying: [2021/05/01] Usage of raw or classic option list on input line 254.
-Already applied: [0000/00/00] Usage of raw or classic option list on input line
- 370.
-)))
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/geometry/geometry.sty
-Package: geometry 2020/01/02 v5.9 Page Geometry
-
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
@@ -521,12 +537,21 @@ Package tocbibind Info: The document has section divisions on input line 50.
 
 Package tocbibind Note: Using section or other style headings.
 
-) (/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+) (/usr/local/texlive/2026basic/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
+)
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks29
+\verbatim@line=\toks30
+\verbatim@in@stream=\read2
+)
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/utilities/pgfutil-comm
 on.tex
-\pgfutil@everybye=\toks29
+\pgfutil@everybye=\toks31
 \pgfutil@tempdima=\dimen197
 \pgfutil@tempdimb=\dimen198
 )
@@ -547,12 +572,12 @@ Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code
 .tex
-\pgfkeys@pathtoks=\toks30
-\pgfkeys@temptoks=\toks31
+\pgfkeys@pathtoks=\toks32
+\pgfkeys@temptoks=\toks33
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibra
 ryfiltered.code.tex
-\pgfkeys@tmptoks=\toks32
+\pgfkeys@tmptoks=\toks34
 ))
 \pgf@x=\dimen199
 \pgf@y=\dimen256
@@ -565,14 +590,14 @@ ryfiltered.code.tex
 \pgf@xd=\dimen263
 \pgf@yd=\dimen264
 \w@pgf@writea=\write3
-\r@pgf@reada=\read2
+\r@pgf@reada=\read3
 \c@pgf@counta=\count334
 \c@pgf@countb=\count335
 \c@pgf@countc=\count336
 \c@pgf@countd=\count337
-\t@pgf@toka=\toks33
-\t@pgf@tokb=\toks34
-\t@pgf@tokc=\toks35
+\t@pgf@toka=\toks35
+\t@pgf@tokb=\toks36
+\t@pgf@tokc=\toks37
 \pgf@sys@id@count=\count338
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
@@ -616,9 +641,9 @@ e.tex
 \pgfmath@dimen=\dimen265
 \pgfmath@count=\count342
 \pgfmath@box=\box68
-\pgfmath@toks=\toks36
-\pgfmath@stack@operand=\toks37
-\pgfmath@stack@operation=\toks38
+\pgfmath@toks=\toks38
+\pgfmath@stack@operand=\toks39
+\pgfmath@stack@operation=\toks40
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.
 code.tex)
@@ -774,8 +799,8 @@ tex
 Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
 \pgffor@iter=\dimen292
 \pgffor@skip=\dimen293
-\pgffor@stack=\toks39
-\pgffor@toks=\toks40
+\pgffor@stack=\toks41
+\pgffor@toks=\toks42
 ))
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tik
 z.code.tex
@@ -817,31 +842,52 @@ File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 raries/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )))
-Package hyperref Info: Option `unicode' set `true' on input line 143.
-Package hyperref Info: Option `colorlinks' set `true' on input line 143.
- (log/main.aux)
+(/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/frontendlayer/tikz/lib
+raries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/libraries/pgflibraryar
+rows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowinset=\dimen303
+\pgfarrowlength=\dimen304
+\pgfarrowwidth=\dimen305
+\pgfarrowlinewidth=\dimen306
+)
+(/usr/local/texlive/2026basic/texmf-dist/tex/generic/pgf/frontendlayer/tikz/lib
+raries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+Package hyperref Info: Option `unicode' set `true' on input line 150.
+Package hyperref Info: Option `colorlinks' set `true' on input line 150.
+
+
+LaTeX Warning: Unused global option(s):
+    [13pt].
+
+(log/main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 163.
+LaTeX Font Info:    ... okay on input line 163.
 
 Package fontspec Info: 
 (fontspec)             Adjusting the maths setup (use [no-math] to avoid
@@ -849,65 +895,67 @@ Package fontspec Info:
 
 \symlegacymaths=\mathgroup6
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 171.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 171.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 171.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 171.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 171.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 171.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 171.
-LaTeX Font Info:    Redeclaring math accent \check on input line 171.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 171.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 171.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \colon on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 171.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 171.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 171.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 163.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 163.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 163.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 163.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 163.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 163.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 163.
+LaTeX Font Info:    Redeclaring math accent \check on input line 163.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 163.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 163.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \colon on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 163.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 163.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 163.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 171.
+(Font)              `operators' in the math version `normal' on input line 163.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 1
-71.
+63.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 171.
+(Font)              `operators' in the math version `bold' on input line 163.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
-171.
+163.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
-input line 171.
+input line 163.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
 (Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
- 171.
+ 163.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
-171.
+163.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 171.
+(Font)                  OT1/cmss/m/n --> TU/Arial(0)/m/n on input line 163.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 171.
+(Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/m/n on input line 163
+.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
-input line 171.
+input line 163.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
-e 171.
+e 163.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 171.
+(Font)                  OT1/cmss/bx/n --> TU/Arial(0)/b/n on input line 163.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 171.
+(Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/b/n on input line 163
+.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -925,15 +973,15 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * \textheight=731.23584pt
 * \oddsidemargin=13.08827pt
 * \evensidemargin=13.08827pt
-* \topmargin=-54.86449pt
-* \headheight=14.5pt
+* \topmargin=-52.36449pt
+* \headheight=12.0pt
 * \headsep=25.0pt
-* \topskip=12.0pt
+* \topskip=10.0pt
 * \footskip=30.0pt
-* \marginparwidth=35.0pt
-* \marginparsep=10.0pt
+* \marginparwidth=57.0pt
+* \marginparsep=11.0pt
 * \columnsep=10.0pt
-* \skip\footins=11.69997pt plus 5.19942pt minus 2.60054pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
 * \hoffset=0.0pt
 * \voffset=0.0pt
 * \mag=1000
@@ -943,216 +991,97 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 171.
+Package hyperref Info: Link coloring ON on input line 163.
 (log/main.out) (log/main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
 \c@lstlisting=\count356
-*geometry* verbose mode - [ newgeometry ] result:
-* driver: xetex
-* paper: a4paper
-* layout: <same size as paper>
-* layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: 
-* h-part:(L,W,R)=(56.9055pt, 483.69687pt, 56.9055pt)
-* v-part:(T,H,B)=(56.9055pt, 731.23584pt, 56.9055pt)
-* \paperwidth=597.50787pt
-* \paperheight=845.04684pt
-* \textwidth=483.69687pt
-* \textheight=731.23584pt
-* \oddsidemargin=-15.36449pt
-* \evensidemargin=-15.36449pt
-* \topmargin=-54.86449pt
-* \headheight=14.5pt
-* \headsep=25.0pt
-* \topskip=12.0pt
-* \footskip=30.0pt
-* \marginparwidth=35.0pt
-* \marginparsep=10.0pt
-* \columnsep=10.0pt
-* \skip\footins=11.69997pt plus 5.19942pt minus 2.60054pt
-* \hoffset=0.0pt
-* \voffset=0.0pt
-* \mag=1000
-* \@twocolumnfalse
-* \@twosidefalse
-* \@mparswitchfalse
-* \@reversemarginfalse
-* (1in=72.27pt=25.4mm, 1cm=28.453pt)
-
-File: images/logo.png Graphic file (type bmp)
-<images/logo.png>
+File: ./images/logo.png Graphic file (type bmp)
+<./images/logo.png>
  [1
 
-
-] [1
-
-]
+] [2] [3]
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsfonts/umsb.fd) [2]
-(log/main.toc [1])
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsfonts/umsb.fd) [4]
+(log/main.toc)
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
- [2] [1] [2]
-File: images/esp32.png Graphic file (type bmp)
-<images/esp32.png>
-File: images/dht22.png Graphic file (type bmp)
-<images/dht22.png>
-File: images/potentiometer.png Graphic file (type bmp)
-<images/potentiometer.png>
-File: images/led.png Graphic file (type bmp)
-<images/led.png>
-File: images/buzzer.png Graphic file (type bmp)
-<images/buzzer.png>
- [3]
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <13> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 431.
- [4]
-File: images/mach-nguyen-ly-easyeda.png Graphic file (type bmp)
-<images/mach-nguyen-ly-easyeda.png>
- [5]
-File: images/mach-vat-ly-wokwi.png Graphic file (type bmp)
-<images/mach-vat-ly-wokwi.png>
- [6]
-File: images/esp32.png Graphic file (type bmp)
-<images/esp32.png>
- [7]
-File: images/dht22.png Graphic file (type bmp)
-<images/dht22.png>
- [8]
-File: images/potentiometer.png Graphic file (type bmp)
-<images/potentiometer.png>
- [9]
-File: images/led.png Graphic file (type bmp)
-<images/led.png>
-File: images/buzzer.png Graphic file (type bmp)
-<images/buzzer.png>
-File: images/image-3-4.png Graphic file (type bmp)
-<images/image-3-4.png>
- [10] [11]
-Overfull \hbox (2.22888pt too wide) in paragraph at lines 555--556
-[]\TU/TimesNewRoman(0)/b/n/13 Khi nhiệt độ $\OML/cmm/m/it/12 >$ \TU/TimesNewRom
-an(0)/b/n/13 35$[]$C: \TU/TimesNewRoman(0)/m/n/13 Hệ thống hiển thị Toast cảnh 
-báo nhiệt độ cao trên Dashboard. 
+ [1] [1]
+LaTeX Font Info:    Calculating math sizes for size <13> on input line 327.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <13> not available
+(Font)              size <12> substituted on input line 327.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <6.5> not available
+(Font)              size <6> substituted on input line 327.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <13> not available
+(Font)              size <12> substituted on input line 327.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <6.5> not available
+(Font)              size <6> substituted on input line 327.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <13> not available
+(Font)              size <12> substituted on input line 327.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <6.5> not available
+(Font)              size <6> substituted on input line 327.
+
+[2]
+Overfull \hbox (56.39459pt too wide) in paragraph at lines 328--329
+\TU/TimesNewRoman(0)/m/n/13 tự động, gửi lệnh qua MQTT topic \TU/CourierNew(0)/
+m/n/13 iot/farm/control \TU/TimesNewRoman(0)/m/n/13 (bơm) và \TU/CourierNew(0)/
+m/n/13 iot/farm/config
+ []
+
+File: ./images/so-do-kien-truc-he-thong.png Graphic file (type bmp)
+<./images/so-do-kien-truc-he-thong.png>
+[3]
+File: ./images/mach-vat-ly-wokwi.png Graphic file (type bmp)
+<./images/mach-vat-ly-wokwi.png>
+ [4] [5] [6]
+Overfull \hbox (546.61456pt too wide) in paragraph at lines 450--451
+[]\TU/TimesNewRoman(0)/m/n/13 Hàm \TU/CourierNew(0)/m/n/13 publishSensorData() 
+\TU/TimesNewRoman(0)/m/n/13 đóng gói JSON: \TU/CourierNew(0)/m/n/13 \{"device",
+"temperature","humidity","soilMoisture","lightLux","relayStatus","timestamp"\}\
+TU/TimesNewRoman(0)/m/n/13 . 
  []
 
 
-Overfull \hbox (25.19922pt too wide) in paragraph at lines 561--562
-[]\TU/TimesNewRoman(0)/b/n/13 Tưới thủ công: \TU/TimesNewRoman(0)/m/n/13 Người 
-dùng nhấn nút trên Dashboard, Node-RED gửi JSON \TU/lmtt/m/n/13 \{"pump":
+Overfull \hbox (14.8373pt too wide) in paragraph at lines 451--452
+[]\TU/CourierNew(0)/m/n/13 mqttClient.publish("iot/farm/env", buffer) $\OMS/cms
+y/m/n/12 !$ \TU/TimesNewRoman(0)/m/n/13 HiveMQ Cloud. 
  []
 
-[12] [13]
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-)
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-)
-Overfull \hbox (3.06201pt too wide) in paragraph at lines 614--615
-\TU/TimesNewRoman(0)/m/n/13 Mở cửa sổ dòng lệnh (Terminal) và thực hiện cài đặt
- Node-RED cùng giao diện Dashboard
- []
+[7]
+Missing character: There is no 🌵 (U+1F335) in font Courier New/OT:script=latn;l
+anguage=dflt;!
+Missing character: There is no ⚠ (U+26A0) in font Courier New/OT:script=latn;la
+nguage=dflt;!
+Missing character: There is no ️ (U+FE0F) in font Courier New/OT:script=latn;la
+nguage=dflt;!
+Missing character: There is no ⚠ (U+26A0) in font Courier New/OT:script=latn;la
+nguage=dflt;!
+Missing character: There is no ️ (U+FE0F) in font Courier New/OT:script=latn;la
+nguage=dflt;!
+Missing character: There is no 💡 (U+1F4A1) in font Courier New/OT:script=latn;l
+anguage=dflt;!
 
-[14]
-File: images/nodered-flow-full.png Graphic file (type bmp)
-<images/nodered-flow-full.png>
-File: images/nodered-dashboard-full-1.png Graphic file (type bmp)
-<images/nodered-dashboard-full-1.png>
-File: images/nodered-dashboard-full-2.png Graphic file (type bmp)
-<images/nodered-dashboard-full-2.png>
- [15]
-Overfull \hbox (11.33295pt too wide) in paragraph at lines 670--671
-[]\TU/TimesNewRoman(0)/b/n/13 Cảnh báo đất khô: \TU/TimesNewRoman(0)/m/n/13 Khi
- độ ẩm xuống dưới 30%, Dashboard hiển thị Toast notification
- []
-
-[16] [17] [18]
-Underfull \hbox (badness 1189) in paragraph at lines 738--739
-[]\TU/TimesNewRoman(0)/m/n/13 Node-RED. \TU/TimesNewRoman(0)/m/it/13 Node-RED D
-ocumentation\TU/TimesNewRoman(0)/m/n/13 . IBM & others. Truy cập: [][]$[][][][]
-[] [] [] []
+Overfull \hbox (174.18906pt too wide) in paragraph at lines 476--477
+[]\TU/TimesNewRoman(0)/m/n/13 Node-RED gửi JSON \TU/CourierNew(0)/m/n/13 \{"pum
+p":true,"duration":5\} \TU/TimesNewRoman(0)/m/n/13 hoặc \TU/CourierNew(0)/m/n/1
+3 \{"pump":false,"duration":0\}
  []
 
 
-Underfull \hbox (badness 2529) in paragraph at lines 742--743
-[]\TU/TimesNewRoman(0)/m/n/13 Seeed Studio. \TU/TimesNewRoman(0)/m/it/13 Capaci
-tive Soil Moisture Sensor\TU/TimesNewRoman(0)/m/n/13 . Truy cập: [][]$[][][][][
-] [] [] [] [][][][] []
- []
+LaTeX Warning: File `luu-do-thuat-toan.png' not found on input line 487.
 
-
-Underfull \hbox (badness 1292) in paragraph at lines 746--747
-[]\TU/TimesNewRoman(0)/m/n/13 Nick O’Leary. \TU/TimesNewRoman(0)/m/it/13 PubSub
-Client for Arduino\TU/TimesNewRoman(0)/m/n/13 . Truy cập: [][]$[][][][][] [] []
- [] [][][][][][] [] [][][] []
- []
-
-
-Underfull \hbox (badness 4505) in paragraph at lines 748--749
-[]\TU/TimesNewRoman(0)/m/n/13 Node-RED. \TU/TimesNewRoman(0)/m/it/13 node-red-d
-ashboard\TU/TimesNewRoman(0)/m/n/13 . Truy cập: [][]$[][][][][] [] [] [] [][][]
-[][] [] [][][][][][][] [] [][][] []
- []
-
-[1] (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-)
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-)
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstmisc.sty
-File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
-)
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 778.
-
-(./main-src.txt
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <11.86258> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 1.
- [2] [3] [4] [5] [6] [7]) [8]
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-)
-(./node-red-flow.txt [9] [10] [11] [12] [13]
-Missing character: There is no 🌡 (U+1F321) in font [lmmono12-regular]:!
-Missing character: There is no 💧 (U+1F4A7) in font [lmmono12-regular]:!
-[14]
-Missing character: There is no 🌱 (U+1F331) in font [lmmono12-regular]:!
-[15]
-Missing character: There is no ⚠ (U+26A0) in font [lmmono12-regular]:!
-Missing character: There is no ️ (U+FE0F) in font [lmmono12-regular]:!
-[16] [17]
-Missing character: There is no 🌵 (U+1F335) in font [lmmono12-regular]:!
-[18] [19]
-Missing character: There is no 🟢 (U+1F7E2) in font [lmmono12-regular]:!
-Missing character: There is no 🔴 (U+1F534) in font [lmmono12-regular]:!
-Missing character: There is no 🚿 (U+1F6BF) in font [lmmono12-regular]:!
-[20] [21]
-Missing character: There is no 🔔 (U+1F514) in font [lmmono12-regular]:!
-[22] [23] [24] [25] [26] [27] [28] [29] [30]) [31] (./wokwi-diagram.txt
-[32] [33]) [34] (log/main.aux)
- ***********
-LaTeX2e <2025-11-01>
-L3 programming layer <2026-01-19>
- ***********
-
-
-LaTeX Font Warning: Size substitutions with differences
-(Font)              up to 1.0pt have occurred.
-
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 136F537A8BFE92BAC2A01E44B4F36BDE;10698.
- ) 
-Here is how much of TeX's memory you used:
- 27283 strings out of 469709
- 550163 string characters out of 5466023
- 1519097 words of memory out of 5000000
- 55436 multiletter control sequences out of 15000+600000
- 632992 words of font info for 92 fonts, out of 8000000 for 9000
- 319 hyphenation exceptions out of 8191
- 108i,12n,107p,561b,2058s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-Output written on log/main.xdv (57 pages, 1528440 bytes).
+! Unable to load pictur
