@@ -73,25 +73,63 @@
       "attrs": {
         "value": "220"
       }
+    },
+    {
+      "type": "wokwi-bh1750",
+      "id": "bh1750_1",
+      "top": -20,
+      "left": 450,
+      "attrs": {
+        "lux": "1500"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_bh1750",
+      "top": -30,
+      "left": 380,
+      "attrs": {
+        "value": "4700"
+      }
+    },
+    {
+      "type": "wokwi-relay-module",
+      "id": "relay1",
+      "top": 110,
+      "left": -270,
+      "attrs": {}
     }
   ],
   "connections": [
     ["esp:TX", "$serialMonitor:RX", "", []],
     ["esp:RX", "$serialMonitor:TX", "", []],
+
     ["esp:3V3", "dht1:VCC", "red", []],
     ["esp:GND.2", "dht1:GND", "black", []],
     ["esp:3V3", "r_dht:1", "red", []],
     ["r_dht:2", "dht1:SDA", "orange", []],
     ["dht1:SDA", "esp:4", "yellow", []],
+
     ["esp:5", "r_led:1", "green", []],
     ["r_led:2", "led1:A", "green", []],
     ["esp:GND.2", "led1:C", "black", []],
+
     ["esp:3V3", "pot1:VCC", "red", []],
     ["esp:GND.2", "pot1:GND", "black", []],
     ["pot1:SIG", "esp:34", "blue", []],
+
     ["esp:27", "r_buzzer:1", "orange", []],
     ["r_buzzer:2", "buzzer1:plus", "orange", []],
-    ["esp:GND.2", "buzzer1:minus", "black", []]
+    ["esp:GND.2", "buzzer1:minus", "black", []],
+
+    ["esp:3V3", "bh1750_1:VCC", "red", []],
+    ["esp:GND.2", "bh1750_1:GND", "black", []],
+    ["esp:21", "bh1750_1:SDA", "green", []],
+    ["esp:22", "bh1750_1:SCL", "purple", []],
+
+    ["esp:5", "relay1:IN", "green", []],
+    ["esp:3V3", "relay1:VCC", "red", []],
+    ["esp:GND.2", "relay1:GND", "black", []]
   ],
   "dependencies": {}
 }
