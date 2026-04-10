@@ -1,11 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1775827892.23471 "main.xdv" "main.pdf" "main" 1775827893.01601 0
-  "main.xdv" 1775827892.17513 1272336 40714949ea870926201c2b24b8274967 "xelatex"
+["xdvipdfmx"] 1775863803.18996 "main.xdv" "main.pdf" "main" 1775863804.28876 0
+  "main.xdv" 1775863803.13211 1166064 a6fcb736a4f687ba07e67dca50514fef "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1775827891.11168 "main.tex" "main.xdv" "main" 1775827893.0149 0
-  "../src/main.cpp" 1775813205.67229 12597 d272fa40095b5f50452ec0a8fdba1a93 ""
+["xelatex"] 1775863801.91149 "main.tex" "main.xdv" "main" 1775863804.28759 0
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -120,7 +119,6 @@
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/graphics.sty" 1748806692 18363 69bb4f5538964bfea50d1e6d89cbe69f ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/graphicx.sty" 1748806692 8118 43b99e52946c33a23f5f43b52d5cc5ec ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/keyval.sty" 1748806692 2671 d9941f4bf4750e9b0603c9a2ec54693b ""
-  "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/lscape.sty" 1748806692 1822 80a593956421f94e3c084e2349f4ea11 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/mathcolor.ltx" 1667332637 2885 9c645d672ae17285bba324998918efd8 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/rotating.sty" 1748806692 7280 936827f0adb7f9ec1f98fe01cba3482b ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/trig.sty" 1748806692 4023 e66acf578d6b564c4670fb57ff336a7a ""
@@ -146,8 +144,6 @@
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty" 1763671178 206518 095934a0019dcba14af528744bf9b295 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstmisc.sty" 1763671178 77105 002e983b638eadbf04e580642335f689 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstpatch.sty" 1710360531 353 9024412f43e92cd5b21fe9ded82d0610 ""
-  "/usr/local/texlive/2026basic/texmf-dist/tex/latex/pdflscape/pdflscape-nometadata.sty" 1750707802 6572 d45c2321088e3d0226f5e476049fa5ec ""
-  "/usr/local/texlive/2026basic/texmf-dist/tex/latex/pdflscape/pdflscape.sty" 1750707802 2122 fa66f24d79b913f2d7ab2599d50e1aed ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty" 1601326656 1090 bae35ef70b3168089ef166db3e66f5b2 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty" 1673816307 373 00b204b1d7d095b892ad31a7494b0373 ""
   "/usr/local/texlive/2026basic/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty" 1601326656 21013 f4ff83d25bb56552493b030f27c075ae ""
@@ -177,6 +173,9 @@
   "/usr/local/texlive/2026basic/texmf-dist/web2c/texmf.cnf" 1770478701 43630 e9fa012910491fe5ae08a72c3c2997a7 ""
   "/usr/local/texlive/2026basic/texmf-var/web2c/xetex/xelatex.fmt" 1775796956 5411339 0ee59e4aad01e1e1b46c9362f8bdafb0 ""
   "/usr/local/texlive/2026basic/texmf.cnf" 1772405582 628 bbc09d6d38872d53c11bb48dc9b14e88 ""
+  "images/agrisense-kien-truc-tong-the.png" 1775828966.36031 182069 d18ecc55320db1c2b4f06b2ad4ed8a64 ""
+  "images/agrisense-luudo-sensor-mqtt.png" 1775829032.23731 132385 b2a061f5eea5cd1b1d8fe1452641d633 ""
+  "images/agrisense-luudo-setup-loop.png" 1775829073.08764 179103 e0ee125edba7d5503a644c9286f3b117 ""
   "images/bh1750.png" 1775825392.86901 207615 a9475ade93b40334d8ed796b761523dc ""
   "images/buzzer.png" 1775800472.19776 15763 75f15af005cde0d6f9867d1f8c6e62df ""
   "images/dht22.png" 1775800472.19821 3683 fae2f306a515a7c8f72ca8f58c2f9aeb ""
@@ -186,14 +185,15 @@
   "images/mach-vat-ly-wokwi.png" 1775817823.66563 44694 4a24d3fe01a0c0b4adec8ad82fb6788a ""
   "images/node-red-flow.png" 1775827560.62716 219420 c91149e9e7c5e4929091732697efa218 ""
   "images/nodered-dashboard-full.png" 1775818050.07591 145448 5673ac6c3a1a3904f001896732281d6a ""
+  "images/nodered-flow-full.png" 1775818472.65739 206790 6151f571bcaf7bd4648c3688c4a2ac16 ""
   "images/potentiometer.png" 1775825352.50383 14223 65d1081c2e864246ca95271a6f6c4622 ""
   "images/relay.png" 1775825292.1606 15713 df97ed6c6d51bd05ea0db96c23cc9833 ""
   "images/serial-monitor.png" 1775827705.05553 76607 1ec49c6e0ed0bba23bd456432106fcfc ""
   "main-src.txt" 1775821663.84571 8442 1bf3304b3bb2a79be2823170d6964e1b ""
-  "main.aux" 1775827892.17294 25693 8547b50c3398f243de68cf84f400c6a9 "xelatex"
-  "main.out" 1775827892.17472 16417 9a26cdef4f8e126a22b913b512dcaeb5 "xelatex"
-  "main.tex" 1775827884.22951 67093 ad527e57de08792ab99a8a3da81ac861 ""
-  "main.toc" 1775827892.17501 6645 d1b3ce150c08f3f98c44ee75e79f8faa "xelatex"
+  "main.aux" 1775863803.13065 25914 966ca40ad9f6a398a6a26933e9b58aeb "xelatex"
+  "main.out" 1775863803.13178 16598 a9c00c7d5b3c39555d52a8d66a2d1a5e "xelatex"
+  "main.tex" 1775863798.12813 70544 0b076b699da08bdfa0c6d69d2a729b4c ""
+  "main.toc" 1775863803.13203 6747 1f21dbfa6d03b5802888bb05279b4d97 "xelatex"
   "node-red-flow.txt" 1775817631.32644 3393 415cc81bdb989caafaaf898797281911 ""
   "wokwi-diagram.txt" 1775817878.17199 3393 415cc81bdb989caafaaf898797281911 ""
   (generated)

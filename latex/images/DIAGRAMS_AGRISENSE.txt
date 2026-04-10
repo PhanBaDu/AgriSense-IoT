@@ -1,0 +1,55 @@
+================================================================================
+AgriSense IoT — file sơ đồ draw.io (diagrams.net) cho Chương 4
+================================================================================
+
+1) agrisense-kien-truc-tong-the.drawio
+   - Khớp: Hình ~\ref{fig:kien-truc} — "Sơ đồ kiến trúc tổng thể..."
+   - Nguồn nội dung: latex/images/so-do-kien-truc-he-thong.txt, diagram.json,
+     node-red.json (topic iot/farm/env, control, config), src/main.cpp (GPIO).
+
+2) agrisense-luudo-setup-loop.drawio
+   - Khớp: Hình ~\ref{fig:luudo} — setup() và loop().
+
+3) agrisense-luudo-sensor-mqtt.drawio
+   - Khớp: Hình ~\ref{fig:luudo-2} — nhánh 5 giây: readSensors, buzzer, publish.
+
+4) agrisense-wokwi-phancung.drawio
+   - Khớp: Hình ~\ref{fig:res-wokwi} — mô phỏng Wokwi (kết nối phần cứng).
+   - Nguồn: diagram.json (dây màu, R 10k/R 220, chân ESP), src/main.cpp (GPIO).
+   - Ảnh minh họa trong PDF: images/mach-vat-ly-wokwi.png (chụp Wokwi; cùng mạch).
+   - node-red.json: không ảnh hưởng sơ đồ dây (ghi chú trong file draw.io).
+
+5) node-red-flow.drawio (trong latex/images/)
+   - Sơ đồ khối logic flow (không phải ảnh chụp editor).
+   - Ảnh chụp editor đầy đủ: images/nodered-flow-full.png — Hình ~\ref{fig:res-nr-flow}
+     và Hình ~\ref{fig:nr-flow} (cùng file PNG; Ch.5 = cài đặt, Ch.6 = kết quả).
+
+6) agrisense-nodered-flow.drawio
+   - Sơ đồ flow chi tiết theo node-red.json (khớp chính xác từng node + wires).
+   - 12 nhánh song song từ MQTT In → dashboard / điều khiển / cảnh báo.
+   - 4 nhóm Dashboard: Đất & Tưới, Không khí, Ánh sáng, Điều khiển.
+   - Màu: tím MQTT, xanh dương Fn, ngọc Gauge, tím nhạt Chart, cam Toast.
+   - Export PNG: images/agrisense-nodered-flow.png → chèn vào main.tex nếu cần.
+
+Lưu ý: Số "Hình 23/24/25" trong PDF phụ thuộc thứ tự hình toàn văn; nhãn LaTeX
+(\label{fig:kien-truc}, \label{fig:luudo}, \label{fig:luudo-2}) là cố định.
+
+--------------------------------------------------------------------------------
+Cách xuất ảnh cho LaTeX (bên thứ 3 hoặc tự export)
+--------------------------------------------------------------------------------
+- Mở file .drawio tại https://app.diagrams.net/ (hoặc Draw.io Desktop).
+- File → Export as → PNG (hoặc PDF). Nên bật border/transparent tùy nền trang.
+- Đặt tên gợi ý (đã gắn trong main.tex):
+    agrisense-kien-truc-tong-the.png
+    agrisense-luudo-setup-loop.png
+    agrisense-luudo-sensor-mqtt.png
+- Trong main.tex: \includegraphics tại fig:kien-truc, fig:luudo, fig:luudo-2.
+
+--------------------------------------------------------------------------------
+Phong cách (gần Wokwi / sơ đồ kỹ thuật)
+--------------------------------------------------------------------------------
+- Tầng màu: tím UI, xanh lá Node-RED, cam Broker, xanh dương thiết bị
+  (theo so-do-kien-truc-he-thong.txt).
+- Luồng MQTT: tím đậm (#6A1B9A); HTTP Dashboard: xanh ngọc (#00838F).
+
+================================================================================

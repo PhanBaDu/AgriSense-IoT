@@ -1,0 +1,469 @@
+<mxfile host="app.diagrams.net" modified="2026-04-10T08:00:00.000Z" agent="AgriSense-IoT" version="24.0.0">
+  <diagram name="Node-RED Flow - AgriSense IoT" id="nr-flow-full">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="2200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==== TIÊU ĐỀ ==== -->
+        <mxCell id="TTL" value="Sơ đồ luồng Node-RED — AgriSense IoT" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="520" y="10" width="660" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="SUB" value="Nguồn: node-red.json · Dashboard: http://127.0.0.1:1880/ui · Tab: AgriSense (4 nhóm) · Broker: HiveMQ Cloud TLS 8883" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="320" y="50" width="1060" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- ==== LỚP 1: NHẬN DỮ LIỆU MQTT ==== -->
+        <mxCell id="MQTT_IN" value="📡 MQTT In&#xa;iot/farm/env&#xa;QoS 0, JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;strokeWidth=3;fontSize=11;fontColor=#FFFFFF;fontStyle=1;arcSize=20;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="90" width="140" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- MQTT Broker note -->
+        <mxCell id="BROKER" value="HiveMQ Cloud&#xa;9b17b358...s1.eu.hivemq.cloud:8883&#xa;TLS • username HIVEMQ..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="820" y="90" width="240" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Global CSS -->
+        <mxCell id="CSS" value="🌐 Global Alert CSS&#xa;Toast: cam=temp, nâu=soil, vàng=light" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="640" y="20" width="240" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Điểm tách dòng 1 (MQTT → 12 nhánh) -->
+        <mxCell id="S1" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#37474F;strokeColor=#263238;strokeWidth=2;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="705" y="180" width="14" height="14" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_MQ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#37474F;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="MQTT_IN" target="S1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Đường gióng ngang sang phải (8 nhánh phải) -->
+        <mxCell id="LINE_R" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#37474F;strokeWidth=1.5;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="S1" target="S1R">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="S1R" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#37474F;strokeColor=#263238;strokeWidth=2;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1335" y="180" width="14" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================
+             CỘT 1: ĐẤT &amp; TƯỚI (order=1) — x=20, 260, 500, 740
+             ================================================================ -->
+
+        <!-- Gauge Độ ẩm đất -->
+        <mxCell id="F_SOIL" value="Fn: Gauge Độ ẩm đất&#xa;parse payload.soilMoisture" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="220" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1976D2;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="F_SOIL">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="G_SOIL" value="📊 ui_gauge&#xa;Độ ẩm đất (%)&#xa;min=0 max=100&#xa;segment 30/60&#xa;màu: đỏ/cam/xanh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ABC9C;strokeColor=#16A085;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="310" width="160" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FS_GS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1ABC9C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_SOIL" target="G_SOIL">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Hiển thị độ ẩm đất (text lớn) -->
+        <mxCell id="TXT_SOIL" value="Fn: Text Đất&#xa;HTML lớn 🌱" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#388E3C;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="420" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_TS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#388E3C;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="TXT_SOIL">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- Switch Đất < 30% -->
+        <mxCell id="SW_DRY" value="🔀 Switch Đất &lt; 30%&#xa;(khô)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="510" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_SD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E64A19;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="SW_DRY">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="560" y="510"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Toast đất khô -->
+        <mxCell id="F_TSOIL" value="Fn: Toast Đất Khô&#xa;&quot;🌵 Đất khô: X% — cần tưới!&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#F57C00;strokeWidth=2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="600" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SD_FTS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F57C00;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="SW_DRY" target="F_TSOIL">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="T_SOIL" value="🔔 ui_toast&#xa;Đất khô&#xa;8s, bottom-left&#xa;class=alert-soil" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF7043;strokeColor=#BF360C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="690" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FTS_TS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#BF360C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_TSOIL" target="T_SOIL">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Switch Tưới tự động? (flow.manual) -->
+        <mxCell id="SW_AUTO" value="🔀 Switch&#xa;Tưới tự động?&#xa;flow.manual == true" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FFA000;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="790" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SD_SA" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#FFA000;strokeWidth=1.5;endArrow=classic;dashed=1;exitX=0.5;exitY=1;entryX=1;entryY=0;" edge="1" parent="1" source="SW_DRY" target="SW_AUTO">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="100" y="790"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Change: Bật bơm 5s -->
+        <mxCell id="C_PUMP" value="🔧 Change&#xa;Bật bơm 5s&#xa;{&quot;pump&quot;:true,&quot;duration&quot;:5}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;strokeWidth=2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="880" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SA_CP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="SW_AUTO" target="C_PUMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Switch Đất < 20% (nguy hiểm) -->
+        <mxCell id="SW_CRIT" value="🔀 Switch Đất &lt; 20%&#xa;(nguy hiểm)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="970" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_SC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="SW_CRIT">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="560" y="995"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="F_BUZZ" value="Fn: Cảnh báo BUZZER&#xa;&quot;🔔 CẢNH BÁO: Đất khô nghiêm trọng!&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=#B71C1C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1050" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SC_FBZ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B71C1C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="SW_CRIT" target="F_BUZZ">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="T_BUZZ" value="📢 ui_text&#xa;Cảnh báo Buzzer&#xa;đỏ, font 14px" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C62828;strokeColor=#B71C1C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1135" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FBZ_TBZ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B71C1C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_BUZZ" target="T_BUZZ">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Switch trạng thái đất -->
+        <mxCell id="SW_STAT" value="🔀 Switch Đất &lt; 30%&#xa;(trạng thái)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1220" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_SST" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E64A19;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="SW_STAT">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="560" y="1245"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="F_STAT" value="Fn: Hiện trạng bơm&#xa;🚿 Cần tưới — Đất X%&#xa;| Bơm: ON 🟢/OFF 🔴" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#388E3C;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1300" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SST_FST" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#388E3C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="SW_STAT" target="F_STAT">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="T_STAT" value="📝 ui_text&#xa;Trạng thái tưới&#xa;Nhóm Đất &amp; Tưới" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66BB6A;strokeColor=#2E7D32;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1395" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FST_TST" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_STAT" target="T_STAT">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================
+             CỘT 2: KHÔNG KHÍ (order=2) — x=240
+             ================================================================ -->
+
+        <!-- Gauge Nhiệt độ -->
+        <mxCell id="F_TEMP" value="Fn: Gauge Nhiệt độ&#xa;parse payload.temperature" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="240" y="220" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1976D2;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="F_TEMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="G_TEMP" value="📊 ui_gauge&#xa;Nhiệt độ (°C)&#xa;min=0 max=100&#xa;segment 33/67&#xa;màu: xanh/vàng/đỏ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ABC9C;strokeColor=#16A085;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="240" y="310" width="160" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FT_GT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1ABC9C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_TEMP" target="G_TEMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Text lớn nhiệt độ -->
+        <mxCell id="TXT_TEMP" value="Fn: Hiển thị Nhiệt độ&#xa;🌡 Nhiệt độ không khí&#xa;HTML 42px bold" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="420" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_TT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="TXT_TEMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Switch Nhiệt > 35°C -->
+        <mxCell id="SW_TEMP" value="🔀 Switch Nhiệt &gt; 35°C&#xa;(cảnh báo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="240" y="510" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_ST" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="SW_TEMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="F_TTEMP" value="Fn: Toast Nhiệt&#xa;&quot;⚠️ Nhiệt độ cao: X°C&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#F57C00;strokeWidth=2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="600" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_ST_FTT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F57C00;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="SW_TEMP" target="F_TTEMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="T_TEMP" value="🔔 ui_toast&#xa;Nhiệt độ&#xa;8s, bottom-left&#xa;class=alert-temp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF7043;strokeColor=#BF360C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="690" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FTT_TT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#BF360C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_TTEMP" target="T_TEMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Gauge Độ ẩm KK -->
+        <mxCell id="F_HUM" value="Fn: Gauge Độ ẩm KK&#xa;parse payload.humidity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="240" y="790" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FH" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1976D2;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="F_HUM">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="560" y="817"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="G_HUM" value="📊 ui_gauge&#xa;Độ ẩm KK (%)&#xa;donut, min=0 max=100&#xa;segment 33/67&#xa;màu: xanh/cam/đỏ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ABC9C;strokeColor=#16A085;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="240" y="880" width="160" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FH_GH" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1ABC9C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_HUM" target="G_HUM">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Text lớn độ ẩm KK -->
+        <mxCell id="TXT_HUM" value="Fn: Hiển thị Độ ẩm KK&#xa;💧 Độ ẩm không khí&#xa;HTML 42px bold" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="990" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_TH" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="TXT_HUM">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="560" y="1020"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- ================================================================
+             CỘT 3: ÁNH SÁNG (order=3) — x=460
+             ================================================================ -->
+
+        <!-- Gauge Ánh sáng -->
+        <mxCell id="F_LUX" value="Fn: Gauge Ánh sáng&#xa;parse payload.lightLux" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="460" y="220" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1976D2;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="F_LUX">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="G_LUX" value="📊 ui_gauge&#xa;Ánh sáng (lux)&#xa;donut, min=0 max=5000&#xa;segment 1000/3000&#xa;màu: đỏ/vàng/xanh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ABC9C;strokeColor=#16A085;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="460" y="310" width="160" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FL_GL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1ABC9C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_LUX" target="G_LUX">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Text lớn ánh sáng -->
+        <mxCell id="TXT_LUX" value="Fn: Hiển thị Ánh sáng&#xa;☀️ Cường độ ánh sáng&#xa;HTML, màu theo ngưỡng" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="460" y="420" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_TL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="TXT_LUX">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Chart Ánh sáng -->
+        <mxCell id="F_CLUX" value="Fn: Chart Ánh sáng&#xa;topic: &quot;Ánh sáng lux&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#5C6BC0;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="460" y="510" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FCL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5C6BC0;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="F_CLUX">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="CH_LUX" value="📈 ui_chart&#xa;Biểu đồ Ánh sáng&#xa;line, 10 điểm/1h&#xa;y: 0–5000&#xa;màu: vàng" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7986CB;strokeColor=#3949AB;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="460" y="600" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FCL_CHL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3949AB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_CLUX" target="CH_LUX">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Switch Thiếu sáng -->
+        <mxCell id="SW_LUX" value="🔀 Switch Thiếu sáng&#xa;(&lt; 1000 lux)&lt;1000: nghiêm trọng&#xa;&lt;3000: yếu" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FFA000;strokeWidth=2;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="460" y="710" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_SL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#FFA000;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="S1" target="SW_LUX">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Toast thiếu sáng nghiêm trọng -->
+        <mxCell id="F_TLS" value="Fn: Toast Nghiêm trọng&#xa;&quot;Thiếu sáng nghiêm trọng: X lux&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#F57C00;strokeWidth=2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="460" y="810" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SL_FTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F57C00;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="SW_LUX" target="F_TLS">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="T_LS" value="🔔 ui_toast&#xa;Nghiêm trọng&#xa;8s, bottom-left&#xa;class=alert-light" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBC02D;strokeColor=#F9A825;strokeWidth=2;fontSize=9;fontColor=#3E2723;align=center;" vertex="1" parent="1">
+          <mxGeometry x="460" y="900" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FTLS_TLS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_TLS" target="T_LS">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Toast sáng yếu -->
+        <mxCell id="F_TLW" value="Fn: Toast Sáng Yếu&#xa;&quot;💡 Ánh sáng yếu: X lux&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1000" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SL_FTLW" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=1.5;endArrow=classic;dashed=1;exitX=1;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="SW_LUX" target="F_TLW">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="T_LW" value="🔔 ui_toast&#xa;Sáng yếu&#xa;6s, bottom-left" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF176;strokeColor=#F9A825;strokeWidth=2;fontSize=9;fontColor=#3E2723;align=center;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1090" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FTLW_TLW" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_TLW" target="T_LW">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================
+             CỘT PHẢI: CHART NHANH NHẤT — x=680
+             ================================================================ -->
+
+        <!-- Chart Nhiệt độ -->
+        <mxCell id="F_CT" value="Fn: Chart Nhiệt độ&#xa;topic: &quot;Nhiệt độ °C&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#5C6BC0;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="680" y="220" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FCT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5C6BC0;strokeWidth=1.5;endArrow=classic;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="S1" target="F_CT">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="712" y="247"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="CH_T" value="📈 ui_chart&#xa;Biểu đồ Nhiệt độ&#xa;line, 10 điểm/1h&#xa;màu: đỏ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7986CB;strokeColor=#3949AB;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="680" y="310" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FCT_CHT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3949AB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_CT" target="CH_T">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Chart Độ ẩm đất -->
+        <mxCell id="F_CS" value="Fn: Chart Độ ẩm đất&#xa;topic: &quot;Độ ẩm đất %&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#5C6BC0;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="680" y="420" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FCS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5C6BC0;strokeWidth=1.5;endArrow=classic;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="S1" target="F_CS">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="712" y="447"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="CH_S" value="📈 ui_chart&#xa;Biểu đồ Độ ẩm đất&#xa;line, 10 điểm/1h&#xa;y: 0–100&#xa;màu: nâu" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7986CB;strokeColor=#3949AB;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="680" y="510" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FCS_CHS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3949AB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_CS" target="CH_S">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Trạng thái relay -->
+        <mxCell id="F_REL" value="Fn: Trạng thái relay&#xa;BẬT 🟢 / TẮT ⬜&#xa;theo payload.relayStatus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=9;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="680" y="620" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_S1_FREL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;strokeWidth=1.5;endArrow=classic;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="S1" target="F_REL">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="712" y="650"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="T_REL" value="📝 ui_text&#xa;Trạng thái relay&#xa;Nhóm Điều khiển&#xa;⚡ Máy bơm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#42A5F5;strokeColor=#1565C0;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="680" y="720" width="160" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FREL_TREL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_REL" target="T_REL">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================
+             CỘT NGOÀI CÙNG PHẢI: ĐIỀU KHIỂN (NHẬP TỪ UI) — x=900
+             ================================================================ -->
+
+        <mxCell id="CTRL_BG" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;strokeWidth=3;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="900" y="160" width="240" height="640" as="geometry"/>
+        </mxCell>
+        <mxCell id="CTRL_TL" value="ĐIỀU KHIỂN (NHẬP)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontStyle=1;fontColor=#33691E;" vertex="1" parent="1">
+          <mxGeometry x="920" y="165" width="200" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Bật bơm -->
+        <mxCell id="BTN_ON" value="🔘 ui_button&#xa;Bật bơm&#xa;bgcolor: xanh&#xa;payload: {&quot;pump&quot;:true,&quot;duration&quot;:5}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#43A047;strokeColor=#2E7D32;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="210" width="200" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Tắt bơm -->
+        <mxCell id="BTN_OFF" value="🔘 ui_button&#xa;Tắt bơm&#xa;bgcolor: đỏ&#xa;payload: {&quot;pump&quot;:false,&quot;duration&quot;:0}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=#C62828;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="310" width="200" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Tưới tự động switch -->
+        <mxCell id="SW_MA" value="🔘 ui_switch&#xa;Tưới tự động&#xa;Tooltip: Bật để ESP32 tự&#xa;bật bơm khi đất khô&#xa;ON=true OFF=false" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFA000;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="410" width="200" height="74" as="geometry"/>
+        </mxCell>
+
+        <!-- Change: set flow.manual -->
+        <mxCell id="CH_MAN" value="🔧 Change&#xa;Set flow.manual&#xa;= msg.payload (bool)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;strokeWidth=2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="520" width="200" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SWM_CHM" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#388E3C;strokeWidth=1.5;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="SW_MA" target="CH_MAN">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- MQTT Out: config auto -->
+        <mxCell id="MQ_AUTO" value="📡 MQTT Out&#xa;iot/farm/config&#xa;(auto mode)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;strokeColor=#4A148C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="610" width="200" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_CHM_MQA" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="CH_MAN" target="MQ_AUTO">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Hiển thị auto mode -->
+        <mxCell id="F_AUTO" value="Fn: Hiện trạng auto&#xa;TỰ ĐỘNG ✔ / TẮT ✘&#xa;màu theo flow.manual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#388E3C;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="700" width="200" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_SWM_FA" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#388E3C;strokeWidth=1.5;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="SW_MA" target="F_AUTO">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="900" y="447"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="T_AUTO" value="📝 ui_text&#xa;Trạng thái auto mode&#xa;Nhóm Điều khiển" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66BB6A;strokeColor=#388E3C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="790" width="200" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_FA_TA" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#388E3C;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="F_AUTO" target="T_AUTO">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================
+             CỘT MQTT OUT CUỐI (NHẤT) — x=1200
+             ================================================================ -->
+
+        <!-- MQTT Out: bơm -->
+        <mxCell id="MQ_PUMP" value="📡 MQTT Out&#xa;iot/farm/control&#xa;Bật/Tắt bơm&#xa;QoS 0, retain false" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;strokeColor=#4A148C;strokeWidth=2;fontSize=9;fontColor=#FFFFFF;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="240" width="200" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_BON_MQP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=1.5;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="BTN_ON" target="MQ_PUMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_BOF_MQP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=1.5;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;" edge="1" parent="1" source="BTN_OFF" target="MQ_PUMP">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_CP_MQP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=1.5;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;" edge="1" parent="1" source="C_PUMP" target="MQ_PUMP">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="907"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- ESP32 đáp trả -->
+        <mxCell id="ESP" value="ESP32&#xa;iot/farm/env&#xa;(đáp trả MQTT)&#xa;JSON payload" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#E65100;strokeWidth=3;fontSize=10;fontStyle=1;align=center;arcSize=16;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="680" width="200" height="74" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_MQP_ESP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=2;endArrow=classic;dashed=1;" edge="1" parent="1" source="MQ_PUMP" target="ESP">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1310" y="650"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- ESP32 khởi tạo -->
+        <mxCell id="ESP_INIT" value="ESP32 khởi tạo&#xa;iot/farm/config&#xa;(auto mode ban đầu)&#xa;→ flow.manual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#3E2723;align=center;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="780" width="200" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="E_MQA_ESP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=2;endArrow=classic;dashed=1;" edge="1" parent="1" source="MQ_AUTO" target="ESP_INIT">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1020" y="780"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- ================================================================
+             CHÚ THÍCH MÀU NHÓM
+             ================================================================ -->
+        <mxCell id="LEG" value="GIAO DIỆN DASHBOARD&#xa;─────────────────────────────────&#xa;📡 MQTT = tím (#7B1FA2)&#xa;Fn / Change = xanh dương (#1976D2)&#xa;📊 Gauge = ngọc (#1ABC9C)&#xa;📈 Chart = tím nhạt (#7986CB)&#xa;🔔 Toast = cam/đỏ (#FF7043)&#xa;📝 UI Text = xanh lá (#388E3C)&#xa;🔀 Switch = vàng/cam&#xa;─────────────────────────────────&#xa;NHÓM TRONG DASHBOARD:&#xa;1. Đất &amp; Tưới (order=1)&#xa;2. Không khí (order=2)&#xa;3. Ánh sáng (order=3)&#xa;4. Điều khiển (order=4)&#xa;─────────────────────────────────&#xa;Tab: AgriSense (icon: fa-leaf)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#9E9E9E;fontSize=9;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1490" width="320" height="270" as="geometry"/>
+        </mxCell>
+
+        <!-- Ghi chú flow.manual -->
+        <mxCell id="NOTE_MAN" value="Lưu ý: flow.manual (biến flow Node-RED)&#xa;được set bởi switch Tưới tự động.&#xa;Switch &quot;Tưới tự động?&quot; dùng&#xa;flow.manual == true để quyết định&#xa;bật bơm hay không.&#xa;→ Khớp node-red.json:&#xa;  id=dbb4a8c895814460" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontSize=9;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="370" y="1490" width="280" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Note JSON -->
+<![CDATA[        <mxCell id="NOTE_JSON" value="node-red.json — tóm tắt các nhánh:&#xa;─────────────────────────────────&#xa;MQTT in (80,220) → 16 wires&#xa;&#xa;Nhánh 1: Gauge đất → ui_gauge&#xa;Nhánh 2: Gauge nhiệt → ui_gauge + Chart nhiệt → ui_chart&#xa;Nhánh 3: Gauge độ ẩm KK → ui_gauge&#xa;Nhánh 4: Gauge ánh sáng → ui_gauge + Chart ánh sáng → ui_chart&#xa;Nhánh 5: Switch nhiệt >35 → toast&#xa;Nhánh 6: Switch đất &lt;30 → toast đất&#xa;Nhánh 7: + flow.manual? → auto pump&#xa;Nhánh 8: Switch đất &lt;20 → BUZZER&#xa;Nhánh 9: Switch đất &lt;30 status → trạng thái&#xa;Nhánh 10: Switch ánh sáng → 2 toast (nghiêm trọng/yếu)&#xa;&#xa;Điều khiển: 2 button (bật/tắt bơm)&#xa;  + switch auto → flow.manual&#xa;  → MQTT out control / config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3949AB;fontSize=9;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="370" y="1630" width="380" height="240" as="geometry"/>
+        </mxCell>]]>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,107 @@
+<mxfile host="app.diagrams.net" modified="2026-04-10T00:00:00.000Z" agent="AgriSense-IoT" version="24.0.0">
+  <diagram name="Hình 24 - setup và loop" id="fig-luudo">
+    <mxGraphModel dx="900" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="t1" value="Lưu đồ thuật toán ESP32 — Phần setup() và loop() (main.cpp)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=16;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="120" y="16" width="660" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" value="PUBLISH_INTERVAL=5000 ms · MQTT_RETRY_MS=5000 ms · GPIO: DHT=4, Soil=34, I2C 21/22, Relay=26, Buzzer=27" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="80" y="48" width="740" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- SETUP -->
+        <mxCell id="s0" value="Bắt đầu (reset)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="96" width="180" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="Serial.begin(115200)&#xa;In banner AgriSense IoT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="160" width="240" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="pinMode: Relay GPIO26, Buzzer GPIO27&#xa;pinMode(SOIL_PIN, INPUT)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="228" width="280" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="dht.begin()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="360" y="296" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="initBH1750() → lightSensorOK&#xa;(Wire 21/22, mode High-Res)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="352" width="300" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" value="espClient.setInsecure() (TLS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="420" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" value="setupWiFi() — chờ WL_CONNECTED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3949AB;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="476" width="280" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="s7" value="mqttClient.setServer(BROKER, 8883)&#xa;setCallback(mqttCallback)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="280" y="536" width="340" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="s8" value="&quot;Setup complete!&quot; (Serial)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="604" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s9" value="▼ Vào loop() vĩnh viễn ▼" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#EF6C00;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="664" width="300" height="44" as="geometry" />
+        </mxCell>
+
+        <!-- LOOP -->
+        <mxCell id="l0" value="now = millis()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="732" width="220" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="WiFi.status() == WL_CONNECTED ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="788" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1a" value="setupWiFi()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FF8F00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="804" width="120" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" value="MQTT connected ?&#xa;(hoặc đủ MQTT_RETRY_MS → reconnectMQTT)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="300" y="892" width="300" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" value="mqttClient.loop()&#xa;(callback nhận control/config)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1000" width="280" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="pumpRelayState &amp;&amp; now ≥ pumpAutoOffTime ?&#xa;→ tắt bơm, clear timer" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="290" y="1072" width="320" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="l5" value="autoIrrigationEnabled &amp;&amp; đất &lt; 30% &amp;&amp; bơm tắt ?&#xa;→ bật bơm 10s (pumpAutoOffTime)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1180" width="340" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="l6" value="now - lastPublish ≥ PUBLISH_INTERVAL ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1290" width="300" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="l7" value="Khối chi tiết: đọc cảm biến, buzzer, publish MQTT&#xa;→ Hình 25 (fig:luudo-2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="1390" width="380" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="l8" value="Quay lại đầu loop&#xa;(lastPublish giữ nguyên nếu chưa publish)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;fontSize=9;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1300" width="220" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- Edges setup -->
+        <mxCell id="e01" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s0" target="s1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e02" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s1" target="s2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e03" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s2" target="s3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e04" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s3" target="s4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e05" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s4" target="s5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e06" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s5" target="s6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e07" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s6" target="s7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e08" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s7" target="s8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e09" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s8" target="s9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="s9" target="l0"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Loop edges -->
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="l0" target="l1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EF6C00;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="l1" target="l1a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EF6C00;endArrow=classic;exitX=0.5;exitY=0;entryX=1;entryY=0.5;" edge="1" parent="1" source="l1a" target="l1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="720" y="760" /><mxPoint x="620" y="760" /><mxPoint x="620" y="828" /></Array></mxGeometry></mxCell>
+        <mxCell id="e14" value="Có" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="l1" target="l2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="l2" target="l3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="l3" target="l4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="l4" target="l5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="l5" target="l6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e19" value="Có" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="l6" target="l7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e20" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#546E7A;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="l6" target="l8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#546E7A;endArrow=classic;dashed=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="l8" target="l0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="80" y="1326" /><mxPoint x="80" y="752" /><mxPoint x="560" y="752" /></Array></mxGeometry></mxCell>
+        <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;endArrow=classic;dashed=1;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="l7" target="l0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="120" y="1418" /><mxPoint x="120" y="1460" /><mxPoint x="450" y="1460" /><mxPoint x="450" y="712" /></Array></mxGeometry></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

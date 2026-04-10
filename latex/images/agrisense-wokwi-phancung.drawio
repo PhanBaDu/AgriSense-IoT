@@ -1,0 +1,98 @@
+<mxfile host="app.diagrams.net" modified="2026-04-10T00:00:00.000Z" agent="AgriSense-IoT" version="24.0.0">
+  <diagram name="Hình 18 - Wokwi phần cứng" id="fig-wokwi-hw">
+    <mxGraphModel dx="1300" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Mô phỏng sơ đồ kết nối phần cứng — Wokwi (AgriSense IoT)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=17;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="12" width="900" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="Nguồn: diagram.json (Wokwi) · GPIO khớp src/main.cpp (DHT_PIN=4, SOIL_PIN=34, I2C 21/22, RELAY=26, BUZZER=27)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=10;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="120" y="44" width="1060" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- ESP32 -->
+        <mxCell id="esp" value="&lt;b&gt;ESP32 DevKit C v4&lt;/b&gt;&#xa;board-esp32-devkit-c-v4&#xa;&#xa;· Wi-Fi / MQTT (firmware)&#xa;· Serial ↔ Monitor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;strokeWidth=3;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="480" y="320" width="340" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- DHT22 -->
+        <mxCell id="dht" value="&lt;b&gt;DHT22&lt;/b&gt;&#xa;wokwi-dht22&#xa;&#xa;Nhiệt độ / Độ ẩm KK&#xa;&lt;i&gt;1-wire&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="520" y="80" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="r10k" value="R &lt;b&gt;10 kΩ&lt;/b&gt;&#xa;(pull-up DATA)&#xa;r_dht" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#607D8B;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="720" y="100" width="100" height="64" as="geometry" />
+        </mxCell>
+
+        <!-- Pot -->
+        <mxCell id="pot" value="&lt;b&gt;Potentiometer&lt;/b&gt;&#xa;wokwi-potentiometer&#xa;&#xa;SIG → &lt;b&gt;GPIO 34&lt;/b&gt; (ADC)&#xa;Ẩm đất 0–100%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D7CCC8;strokeColor=#5D4037;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="340" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- BH1750 -->
+        <mxCell id="bh" value="&lt;b&gt;BH1750&lt;/b&gt; (I2C)&#xa;wokwi-bh1750&#xa;&#xa;&lt;b&gt;SDA → GPIO 21&lt;/b&gt;&#xa;&lt;b&gt;SCL → GPIO 22&lt;/b&gt;&#xa;Lux 1–65535" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="940" y="300" width="200" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Relay -->
+        <mxCell id="relay" value="&lt;b&gt;Relay module&lt;/b&gt;&#xa;wokwi-relay-module&#xa;&#xa;&lt;b&gt;IN → GPIO 26&lt;/b&gt; (bơm)&#xa;&lt;b&gt;VCC → 5V&lt;/b&gt;&#xa;GND → GND" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="620" width="300" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Buzzer -->
+        <mxCell id="buzz" value="&lt;b&gt;Buzzer&lt;/b&gt;&#xa;wokwi-buzzer&#xa;&#xa;(+ qua &lt;b&gt;R 220Ω&lt;/b&gt;)&#xa;&lt;b&gt;GPIO 27&lt;/b&gt; → R → (+)&#xa;(-) → GND" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="620" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="r220" value="R &lt;b&gt;220Ω&lt;/b&gt;&#xa;r_buzzer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#607D8B;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="360" y="660" width="72" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Power legend -->
+        <mxCell id="leg" value="&lt;b&gt;Chân nguồn chung&lt;/b&gt;&#xa;3V3 → DHT, BH1750, Pot&#xa;5V → Relay VCC&#xa;GND → tất cả module (esp:GND.2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#9E9E9E;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="900" y="620" width="280" height="88" as="geometry" />
+        </mxCell>
+
+        <!-- Edges: color theo diagram.json -->
+        <mxCell id="w1" value="3V3 (đỏ)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="esp" target="dht">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w2" value="GND (đen)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#212121;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="esp" target="dht">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="600" y="280" /><mxPoint x="600" y="280" /></Array></mxGeometry></mxCell>
+        <mxCell id="w3" value="DATA + pull-up 10k&#xa;→ &lt;b&gt;GPIO 4&lt;/b&gt; (vàng)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="dht" target="esp">
+          <mxGeometry x="-0.2" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry></mxCell>
+        <mxCell id="w4" value="3V3 / GND / SIG&#xa;&lt;b&gt;SIG → GPIO 34&lt;/b&gt; (xanh dương)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1976D2;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="pot" target="esp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w5" value="I2C: SDA (lục) SCL (tím)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#388E3C;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="esp" target="bh">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w5b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7B1FA2;strokeWidth=2;endArrow=classic;dashed=1;" edge="1" parent="1" source="esp" target="bh">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6" value="&lt;b&gt;IN → GPIO 26&lt;/b&gt; (lục)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="esp" target="relay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w7" value="5V (đỏ)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;strokeWidth=2;endArrow=classic;dashed=1;fontSize=8;" edge="1" parent="1" source="esp" target="relay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w8" value="GND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#212121;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="esp" target="relay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w9" value="GPIO 27 (cam) → R → Buzzer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EF6C00;strokeWidth=2;endArrow=classic;fontSize=8;" edge="1" parent="1" source="esp" target="r220">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EF6C00;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="r220" target="buzz">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w11" value="GND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#212121;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="esp" target="buzz">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note" value="node-red.json: không ảnh hưởng sơ đồ dây; dữ liệu MQTT từ firmware sau khi khởi tạo Wi-Fi/MQTT trong main.cpp." style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#78909C;fontStyle=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="780" width="900" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,112 @@
+<mxfile host="app.diagrams.net" modified="2026-04-10T00:00:00.000Z" agent="AgriSense-IoT" version="24.0.0">
+  <diagram name="Hình 23 - Kiến trúc tổng thể" id="fig-kien-truc">
+    <mxGraphModel dx="1400" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Sơ đồ kiến trúc tổng thể — AgriSense IoT (Smart Farm)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="200" y="12" width="1000" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="Nguồn: diagram.json (Wokwi) · node-red.json · src/main.cpp" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=10;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="200" y="44" width="1000" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Tầng giao diện -->
+        <mxCell id="layer_ui" value="Giao diện người dùng — Trình duyệt (Dashboard)" style="swimlane;horizontal=0;startSize=28;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="72" width="1240" height="168" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_box" value="Node-RED Dashboard (http://127.0.0.1:1880/ui)&#xa;• Gauge: nhiệt độ, độ ẩm KK, độ ẩm đất, ánh sáng (lux)&#xa;• Chart line thời gian thực · Toast cảnh báo&#xa;• Nút Bật/Tắt bơm · Công tắc Tưới tự động" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="layer_ui">
+          <mxGeometry x="24" y="40" width="1180" height="112" as="geometry" />
+        </mxCell>
+
+        <!-- Tầng Node-RED -->
+        <mxCell id="layer_nrd" value="Tầng ứng dụng — Node-RED (luồng xử lý)" style="swimlane;horizontal=0;startSize=28;fillColor=#E8F5E9;strokeColor=#2E7D32;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="260" width="1240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="nrd_mqtt_in" value="MQTT In&#xa;topic: iot/farm/env" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;fontStyle=1;" vertex="1" parent="layer_nrd">
+          <mxGeometry x="40" y="48" width="140" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="nrd_fn" value="Function / Switch&#xa;Parse JSON · Ngưỡng&#xa;cảnh báo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#2E7D32;fontSize=10;" vertex="1" parent="layer_nrd">
+          <mxGeometry x="220" y="48" width="150" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="nrd_ui" value="ui_gauge · ui_chart&#xa;ui_toast · Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;" vertex="1" parent="layer_nrd">
+          <mxGeometry x="410" y="48" width="160" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="nrd_mqtt_out" value="MQTT Out&#xa;iot/farm/control&#xa;iot/farm/config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;fontStyle=1;" vertex="1" parent="layer_nrd">
+          <mxGeometry x="610" y="48" width="160" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_nrd" source="nrd_mqtt_in" target="nrd_fn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_nrd" source="nrd_fn" target="nrd_ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=2;endArrow=classic;dashed=1;" edge="1" parent="layer_nrd" source="nrd_ui" target="nrd_mqtt_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tầng Broker -->
+        <mxCell id="layer_net" value="Tầng mạng — HiveMQ Cloud (MQTT Broker)" style="swimlane;horizontal=0;startSize=28;fillColor=#FFF3E0;strokeColor=#EF6C00;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="480" width="1240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="broker" value="HiveMQ Cloud&#xa;MQTT v3.1.1 + TLS&#xa;Cổng 8883&#xa;&#xa;Topics:&#xa;• iot/farm/env (ESP32 → Node-RED)&#xa;• iot/farm/control (Node-RED → ESP32)&#xa;• iot/farm/config (Node-RED → ESP32)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#EF6C00;fontSize=11;align=center;" vertex="1" parent="layer_net">
+          <mxGeometry x="420" y="44" width="400" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Tầng thiết bị -->
+        <mxCell id="layer_dev" value="Tầng thiết bị — ESP32 + cảm biến + chấp hành (theo diagram.json / Wokwi)" style="swimlane;horizontal=0;startSize=28;fillColor=#E3F2FD;strokeColor=#1565C0;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="700" width="1240" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="esp" value="ESP32 DevKit&#xa;Wi-Fi STA&#xa;WiFiClientSecure +&#xa;PubSubClient (TLS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#E65100;fontSize=11;fontStyle=1;" vertex="1" parent="layer_dev">
+          <mxGeometry x="520" y="120" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dht" value="DHT22&#xa;GPIO 4&#xa;Nhiệt độ / Độ ẩm KK" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="layer_dev">
+          <mxGeometry x="80" y="100" width="140" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="pot" value="Potentiometer&#xa;GPIO 34 (ADC)&#xa;Ẩm đất 0–100%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D7CCC8;strokeColor=#5D4037;fontSize=10;" vertex="1" parent="layer_dev">
+          <mxGeometry x="80" y="200" width="150" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="bh" value="BH1750 (I2C)&#xa;SDA=21, SCL=22&#xa;Lux" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;" vertex="1" parent="layer_dev">
+          <mxGeometry x="260" y="100" width="150" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="relay" value="Relay module&#xa;GPIO 26 (Pump)&#xa;5V supply" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;" vertex="1" parent="layer_dev">
+          <mxGeometry x="980" y="120" width="150" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="buzz" value="Buzzer&#xa;GPIO 27 + R 220Ω&#xa;Cảnh báo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=10;" vertex="1" parent="layer_dev">
+          <mxGeometry x="980" y="220" width="130" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="ed1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_dev" source="dht" target="esp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ed2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5D4037;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_dev" source="pot" target="esp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ed3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_dev" source="bh" target="esp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ed4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_dev" source="esp" target="relay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ed5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;strokeWidth=2;endArrow=classic;" edge="1" parent="layer_dev" source="esp" target="buzz">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Liên kết giữa các tầng (nối ô cụ thể — tránh anchor swimlane) -->
+        <mxCell id="a_ui_nrd" value="HTTP Dashboard&#xa;127.0.0.1:1880/ui" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00838F;strokeWidth=2;endArrow=classic;dashed=1;fontSize=9;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="ui_box" target="nrd_mqtt_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_nrd_broker" value="MQTT TLS :8883" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6A1B9A;strokeWidth=2;endArrow=classic;fontSize=9;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="nrd_mqtt_out" target="broker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_broker_dev" value="MQTT TLS :8883&#xa;env / control / config" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6A1B9A;strokeWidth=2;endArrow=classic;fontSize=9;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="broker" target="esp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note" value="Chú thích màu: tím = UI · xanh lá = Node-RED · cam = Broker · xanh dương = thiết bị | Đường tím: MQTT" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#455A64;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1068" width="900" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

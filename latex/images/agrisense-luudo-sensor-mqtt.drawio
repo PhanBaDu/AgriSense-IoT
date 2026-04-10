@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" modified="2026-04-10T00:00:00.000Z" agent="AgriSense-IoT" version="24.0.0">
+  <diagram name="Hình 25 - cảm biến cảnh báo MQTT" id="fig-luudo-2">
+    <mxGraphModel dx="920" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="920" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="h1" value="Lưu đồ thuật toán ESP32 — Đọc cảm biến, cảnh báo Buzzer, publish MQTT (trong nhánh 5 giây)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=15;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="80" y="12" width="760" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" value="Khối tương ứng: loop() khi now - lastPublish ≥ PUBLISH_INTERVAL · TOPIC_ENV = iot/farm/env" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="52" width="720" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a0" value="lastPublish = now&#xa;(bắt đầu chu kỳ 5s)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="92" width="240" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="readSensors(temp, hum, soil, lux)&#xa;· DHT22 (fallback random nếu NaN)&#xa;· ADC đất · BH1750 / -1 nếu lỗi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="160" width="360" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="Serial: in khối &quot;AgriSense Sensor Data&quot;&#xa;(nhiệt độ, độ ẩm, đất, sáng, Auto Mode)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#616161;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="290" y="248" width="340" height="52" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a3" value="soilMoisture &lt; 20% ?&#xa;(SOIL_CRITICAL_THRESHOLD)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="320" width="280" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="a3y" value="beepAlert(5,300,200)&#xa;[ALERT] Soil CRITICAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF9A9A;strokeColor=#B71C1C;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="332" width="200" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="soilMoisture &lt; 30% ?&#xa;(SOIL_DRY_THRESHOLD)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#EF6C00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="280" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a4y" value="beepAlert(2,150,150)&#xa;[WARN] Soil is DRY!" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCC80;strokeColor=#E65100;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="448" width="200" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a5" value="lightSensorOK &amp;&amp; lux ≥ 0 &amp;&amp; lux &lt; 1000 ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="300" y="548" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a5y" value="Serial [WARN] Low light&#xa;(chỉ log — toast trên Node-RED)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF59D;strokeColor=#F9A825;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="660" y="560" width="220" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a6" value="mqttClient.connected() ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="660" width="240" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="a6y" value="publishSensorData() → JSON&#xa;topic iot/farm/env&#xa;Đồng bộ GPIO relay" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="652" width="260" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="a6n" value="Serial: [MQTT] Not connected,&#xa;skipping publish..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="660" width="220" height="52" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a7" value="Kết thúc nhánh 5s — quay lại loop()&#xa;(Hình 24)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="780" width="280" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="a0" target="a1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="a1" target="a2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;" edge="1" parent="1" source="a2" target="a3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" value="Có" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="a3" target="a3y"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a3" target="a4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="a4" target="a4y"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a4" target="a5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EF6C00;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a3y" target="a5"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="420" /><mxPoint x="460" y="420" /><mxPoint x="460" y="548" /></Array></mxGeometry></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EF6C00;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a4y" target="a5"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="520" /><mxPoint x="460" y="520" /><mxPoint x="460" y="548" /></Array></mxGeometry></mxCell>
+        <mxCell id="e10" value="Có" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="a5" target="a5y"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1565C0;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a5" target="a6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a5y" target="a6"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="770" y="640" /><mxPoint x="460" y="640" /><mxPoint x="460" y="660" /></Array></mxGeometry></mxCell>
+        <mxCell id="e13" value="Có" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2E7D32;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="a6" target="a6y"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e14" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C62828;endArrow=classic;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="a6" target="a6n"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#546E7A;endArrow=classic;exitX=0.5;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="a6y" target="a7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#546E7A;endArrow=classic;exitX=0.5;exitY=1;entryX=0.75;entryY=0;" edge="1" parent="1" source="a6n" target="a7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
