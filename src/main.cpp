@@ -25,8 +25,8 @@ const char *WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 const char *MQTT_BROKER = "9b17b35859014384af7ef09b30b38c31.s1.eu.hivemq.cloud";
 const int MQTT_PORT = 8883;
 const char *MQTT_CLIENT_ID = "esp32-agrisense-01";
-const char *MQTT_USERNAME = "hivemq.webclient.1775804888289";
-const char *MQTT_PASSWORD = "ZA7rVaqD:?013#Q*mBsn";
+const char *MQTT_USERNAME = "hivemq.webclient.1775805456143";
+const char *MQTT_PASSWORD = "6y28haT$Gi1dpX@JH:L,";
 
 const char *TOPIC_ENV = "iot/farm/env";
 const char *TOPIC_CONTROL = "iot/farm/control";

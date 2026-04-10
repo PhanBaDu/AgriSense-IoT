@@ -34,8 +34,7 @@
         "b8e99199386b9667",
         "lowLightSwitch",
         "relayStatusSwitch",
-        "luxChartFn",
-        "influxFn"
+        "luxChartFn"
       ]
     ]
   },
@@ -1045,43 +1044,6 @@
     "wires": []
   },
   {
-    "id": "influxFn",
-    "type": "function",
-    "z": "28972163d1638f7e",
-    "name": "InfluxDB: build point",
-    "func": "var p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nvar t  = parseFloat(p.temperature)  || 0;\nvar h  = parseFloat(p.humidity)     || 0;\nvar s  = parseFloat(p.soilMoisture) || 0;\nvar lux = parseFloat(p.lightLux)     || 0;\nvar pump = p.relayStatus === 'ON' ? 1 : 0;\nmsg.measurement = 'agrisense';\nmsg.fields = {\n  temperature: t,\n  humidity: h,\n  soil_moisture: s,\n  light_lux: lux,\n  pump_on: pump\n};\nmsg.tags = { device: 'AgriSense-01' };\nreturn msg;",
-    "outputs": 1,
-    "timeout": 0,
-    "x": 340,
-    "y": 1500,
-    "wires": [
-      [
-        "influxdbOut"
-      ]
-    ]
-  },
-  {
-    "id": "influxdbOut",
-    "type": "influxdb out",
-    "z": "28972163d1638f7e",
-    "influxdb": "influxdb-conf",
-    "name": "InfluxDB",
-    "measurement": "agrisense",
-    "x": 580,
-    "y": 1500,
-    "wires": []
-  },
-  {
-    "id": "influxdb-conf",
-    "type": "influxdb-conf",
-    "z": "28972163d1638f7e",
-    "hostname": "localhost",
-    "port": "8086",
-    "path": "/write?db=agrisense&rp=autogen",
-    "protocol": "http",
-    "rejectUnauthorized": false
-  },
-  {
     "id": "d4179fb10b941343",
     "type": "mqtt-broker",
     "name": "HiveMQ Cloud",
@@ -1111,7 +1073,9 @@
     "willPayload": "",
     "willMsg": {},
     "userProps": "",
-    "sessionExpiry": ""
+    "sessionExpiry": "",
+    "username": "hivemq.webclient.1775805456143",
+    "password": "6y28haT$Gi1dpX@JH:L,"
   },
   {
     "id": "grp-khongkhai",

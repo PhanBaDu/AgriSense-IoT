@@ -116,8 +116,8 @@
     ["esp:3V3", "dht1:VCC", "red", []],
     ["esp:GND.2", "dht1:GND", "black", []],
     ["esp:3V3", "r_dht:1", "red", []],
-    ["r_dht:2", "dht1:SDA", "orange", []],
-    ["dht1:SDA", "esp:4", "yellow", []],
+    ["r_dht:2", "dht1:DATA", "orange", []],
+    ["dht1:DATA", "esp:4", "yellow", []],
 
     ["esp:5", "r_led:1", "green", []],
     ["r_led:2", "led1:A", "green", []],
@@ -141,7 +141,7 @@
     ["r_bh1750_scl:2", "bh1750_1:SCL", "purple", []],
 
     ["esp:26", "relay1:IN", "green", []],
-    ["esp:3V3", "relay1:VCC", "red", []],
+    ["esp:5V", "relay1:VCC", "red", []],
     ["esp:GND.2", "relay1:GND", "black", []]
   ],
   "dependencies": {}
