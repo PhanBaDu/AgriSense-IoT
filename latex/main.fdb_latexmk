@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1775826398.28733 "main.xdv" "main.pdf" "main" 1775826398.87493 0
-  "main.xdv" 1775826398.23032 1120736 2717017b8efe99e33e08c4a885f7f02b "xelatex"
+["xdvipdfmx"] 1775827009.91158 "main.xdv" "main.pdf" "main" 1775827010.5008 0
+  "main.xdv" 1775827009.84848 1121032 55a3d951902b7ad6eb33cc71e826ca03 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1775826397.21037 "main.tex" "main.xdv" "main" 1775826398.87389 0
+["xelatex"] 1775827008.82833 "main.tex" "main.xdv" "main" 1775827010.49981 0
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -186,10 +186,10 @@
   "images/potentiometer.png" 1775825352.50383 14223 65d1081c2e864246ca95271a6f6c4622 ""
   "images/relay.png" 1775825292.1606 15713 df97ed6c6d51bd05ea0db96c23cc9833 ""
   "main-src.txt" 1775821663.84571 8442 1bf3304b3bb2a79be2823170d6964e1b ""
-  "main.aux" 1775826398.2288 25318 9ceedd04112e2511ff62f0ad775d3242 "xelatex"
-  "main.out" 1775826398.23004 16417 9a26cdef4f8e126a22b913b512dcaeb5 "xelatex"
-  "main.tex" 1775826390.19709 65912 f8a0441e7911da40e97d7cc5edbf9c9e ""
-  "main.toc" 1775826398.23026 6644 58671b048eb8ff58cef6550aa2dff565 "xelatex"
+  "main.aux" 1775827009.84648 25318 cb2583cfebde4152d605ddf016359be8 "xelatex"
+  "main.out" 1775827009.84804 16417 9a26cdef4f8e126a22b913b512dcaeb5 "xelatex"
+  "main.tex" 1775826996.56805 66025 c5ff9c7ad3802f9427826ed013b10756 ""
+  "main.toc" 1775827009.84838 6644 d3c13f85e15f5e66e597352ce4322eb0 "xelatex"
   "node-red-flow.txt" 1775817631.32644 3393 415cc81bdb989caafaaf898797281911 ""
   "wokwi-diagram.txt" 1775817878.17199 3393 415cc81bdb989caafaaf898797281911 ""
   (generated)

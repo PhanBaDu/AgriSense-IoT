@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 20:06
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 20:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1025,7 +1025,12 @@ LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <13> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 359.
 File: images/dht22.png Graphic file (type bmp)
 <images/dht22.png>
- [2] [3]
+ [2]
+File: images/relay.png Graphic file (type bmp)
+<images/relay.png>
+File: images/buzzer.png Graphic file (type bmp)
+<images/buzzer.png>
+ [3]
 Overfull \hbox (43.15398pt too wide) in paragraph at lines 409--410
 []\TU/TimesNewRoman(0)/m/n/13 Lưu ý: các topic được đặt theo chuẩn để dễ mở rộn
 g. Trên ESP32, client dùng \TU/lmtt/m/n/13 WiFiClientSecure
@@ -1039,14 +1044,14 @@ wRoman(0)/m/n/13 = 8883), \TU/lmtt/m/n/13 PubSubClient \TU/TimesNewRoman(0)/m/n
 /n/13 ). 
  []
 
-
+[4]
 Overfull \hbox (5.81627pt too wide) in paragraph at lines 417--418
 []\TU/TimesNewRoman(0)/m/n/13 Nhánh thứ hai (\TU/TimesNewRoman(0)/b/n/13 Gauge 
 độ ẩm không khí\TU/TimesNewRoman(0)/m/n/13 ): tương tự, trích giá trị \TU/lmtt/
 m/n/13 msg.payload.humidity\TU/TimesNewRoman(0)/m/n/13 ,
  []
 
-[4]
+
 Overfull \hbox (27.13516pt too wide) in paragraph at lines 419--420
 []\TU/TimesNewRoman(0)/m/n/13 Nhánh thứ ba (\TU/TimesNewRoman(0)/b/n/13 Gauge đ
 ộ ẩm đất\TU/TimesNewRoman(0)/m/n/13 ): trích giá trị \TU/lmtt/m/n/13 msg.payloa
@@ -1081,7 +1086,7 @@ Overfull \hbox (39.59378pt too wide) in paragraph at lines 455--456
 [6]
 File: images/nodered-dashboard-full.png Graphic file (type bmp)
 <images/nodered-dashboard-full.png>
- [7]
+ [7] [8]
 File: images/esp32.png Graphic file (type bmp)
 <images/esp32.png>
 File: images/dht22.png Graphic file (type bmp)
@@ -1097,10 +1102,9 @@ File: images/potentiometer.png Graphic file (type bmp)
 <images/potentiometer.png>
 File: images/relay.png Graphic file (type bmp)
 <images/relay.png>
-[8]
 File: images/buzzer.png Graphic file (type bmp)
 <images/buzzer.png>
- [9]
+[9]
 File: images/easyEDA.png Graphic file (type bmp)
 <images/easyEDA.png>
  [10]
@@ -1302,4 +1306,4 @@ Here is how much of TeX's memory you used:
  319 hyphenation exceptions out of 8191
  108i,12n,107p,806b,2058s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (54 pages, 1120736 bytes).
+Output written on main.xdv (54 pages, 1121032 bytes).

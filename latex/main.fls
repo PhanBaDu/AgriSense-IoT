@@ -315,6 +315,12 @@ OUTPUT main.toc
 INPUT ./images/dht22.png
 INPUT ./images/dht22.png
 INPUT ./images/dht22.png
+INPUT ./images/relay.png
+INPUT ./images/relay.png
+INPUT ./images/relay.png
+INPUT ./images/buzzer.png
+INPUT ./images/buzzer.png
+INPUT ./images/buzzer.png
 INPUT ./images/nodered-dashboard-full.png
 INPUT ./images/nodered-dashboard-full.png
 INPUT ./images/nodered-dashboard-full.png
