@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1775825561.56919 "main.xdv" "main.pdf" "main" 1775825562.12827 0
-  "main.xdv" 1775825561.51338 1115616 1e0a39b2b0456d46c84d26840c9a3321 "xelatex"
+["xdvipdfmx"] 1775825974.78798 "main.xdv" "main.pdf" "main" 1775825975.36692 0
+  "main.xdv" 1775825974.73276 1119528 0ab9c25c8b4a2fa39ba23ddcbdb28dfa "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1775825560.54468 "main.tex" "main.xdv" "main" 1775825562.12722 0
+["xelatex"] 1775825973.76627 "main.tex" "main.xdv" "main" 1775825975.36588 0
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -181,14 +181,15 @@
   "images/dht22.png" 1775800472.19821 3683 fae2f306a515a7c8f72ca8f58c2f9aeb ""
   "images/easyEDA.png" 1775822701.81622 366538 97b389e30eaf86d110d961f791a2e078 ""
   "images/esp32.png" 1775800472.20021 16490 ecdd5465ceb979d3f9a690635c9ac0c0 ""
+  "images/logo.png" 1775800472.20322 7013 b96cecd867322a573052758cd2ace96c ""
   "images/nodered-dashboard-full.png" 1775818050.07591 145448 5673ac6c3a1a3904f001896732281d6a ""
   "images/potentiometer.png" 1775825352.50383 14223 65d1081c2e864246ca95271a6f6c4622 ""
   "images/relay.png" 1775825292.1606 15713 df97ed6c6d51bd05ea0db96c23cc9833 ""
   "main-src.txt" 1775821663.84571 8442 1bf3304b3bb2a79be2823170d6964e1b ""
-  "main.aux" 1775825561.51181 25318 b922ae873919d2be3eba4034d723aff4 "xelatex"
-  "main.out" 1775825561.51301 16417 6f35b885ba16c671c4e2f5989b4ded60 "xelatex"
-  "main.tex" 1775825551.98815 65020 eef36b97636e79f05d00b606c88a882c ""
-  "main.toc" 1775825561.51325 6644 b164f50949e336c3d4f928131409627c "xelatex"
+  "main.aux" 1775825974.73138 25318 11ea46542dba681fddaf9092d79047e5 "xelatex"
+  "main.out" 1775825974.73243 16417 9a26cdef4f8e126a22b913b512dcaeb5 "xelatex"
+  "main.tex" 1775825966.37293 65626 afa1e85156db5d22a742be6c78dad490 ""
+  "main.toc" 1775825974.73264 6644 6f6659a6ac5a016fceb3e3da3f24236f "xelatex"
   "node-red-flow.txt" 1775817631.32644 3393 415cc81bdb989caafaaf898797281911 ""
   "wokwi-diagram.txt" 1775817878.17199 3393 415cc81bdb989caafaaf898797281911 ""
   (generated)
