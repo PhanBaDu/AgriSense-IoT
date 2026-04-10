@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 19:45
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 19:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1071,18 +1071,30 @@ Overfull \hbox (39.59378pt too wide) in paragraph at lines 458--459
 /m/n/13 soilMoisture
  []
 
-[5] [6]
+File: images/nodered-dashboard-full.png Graphic file (type bmp)
+<images/nodered-dashboard-full.png>
+[5] [6] [7]
+File: images/esp32.png Graphic file (type bmp)
+<images/esp32.png>
+File: images/dht22.png Graphic file (type bmp)
+<images/dht22.png>
+File: images/bh1750.png Graphic file (type bmp)
+<images/bh1750.png>
+
 Underfull \hbox (badness 10000) in paragraph at lines 527--527
 []\TU/TimesNewRoman(0)/m/n/13 Hình 10: []Cảm biến
  []
 
-[7]
-Underfull \hbox (badness 3260) in paragraph at lines 590--590
-[]\TU/TimesNewRoman(0)/m/n/13 Hình 14: []Sơ đồ nguyên lý phần cứng (EasyEDA): E
-SP32, DHT22, BH1750,
- []
-
-[8] [9] [10]
+File: images/potentiometer.png Graphic file (type bmp)
+<images/potentiometer.png>
+File: images/relay.png Graphic file (type bmp)
+<images/relay.png>
+File: images/buzzer.png Graphic file (type bmp)
+<images/buzzer.png>
+[8] [9]
+File: images/easyEDA.png Graphic file (type bmp)
+<images/easyEDA.png>
+ [10] [11] [12] [13]
 LaTeX Font Info:    Calculating math sizes for size <15.59996> on input line 70
 0.
 
@@ -1160,7 +1172,7 @@ sNewRoman(0)/m/n/13 , mỗi 5s đọc cảm biến, buzzer nếu đất khô, \T
 publishSensorData()
  []
 
-[11] [12]
+[14] [15]
 Overfull \hbox (3.37721pt too wide) in paragraph at lines 765--766
 []\TU/TimesNewRoman(0)/m/n/13 Hệ thống sẽ tự động khởi tạo các linh kiện (ESP32
 , DHT22, BH1750, Potentiometer,
@@ -1174,7 +1186,7 @@ PubSubClient\TU/TimesNewRoman(0)/m/n/13 , \TU/TimesNewRoman(0)/m/it/13 ArduinoJ
 son \TU/TimesNewRoman(0)/m/n/13 và \TU/lmtt/m/n/13 BH1750\_WE
  []
 
-[13] (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
+[16] (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -1185,13 +1197,13 @@ Overfull \hbox (3.06201pt too wide) in paragraph at lines 786--787
  Node-RED cùng giao diện Dashboard
  []
 
-[14] [15] [16] [17] [18
+[17] [18] [19] [20] [21
 
 ]
 Overfull \vbox (319.54326pt too high) has occurred while \output is active []
 
 
-[19] [20
+[22] [23
 
 ]
 Underfull \hbox (badness 1189) in paragraph at lines 1017--1018
@@ -1255,12 +1267,12 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 6F35B885BA16C671C4E2F5989B4DED60;16417.
  ) 
 Here is how much of TeX's memory you used:
- 27410 strings out of 469709
- 551804 string characters out of 5466023
- 1548241 words of memory out of 5000000
- 55559 multiletter control sequences out of 15000+600000
+ 27484 strings out of 469709
+ 553556 string characters out of 5466023
+ 1548648 words of memory out of 5000000
+ 55623 multiletter control sequences out of 15000+600000
  637655 words of font info for 112 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  108i,12n,107p,806b,2058s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (48 pages, 1111612 bytes).
+Output written on main.xdv (51 pages, 1115616 bytes).

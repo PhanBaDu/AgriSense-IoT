@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1775825152.14372 "main.xdv" "main.pdf" "main" 1775825152.23322 0
-  "main.xdv" 1775825152.0879 1111612 d1232a8a5513e8d02fb642270a48eb08 "xelatex"
+["xdvipdfmx"] 1775825561.56919 "main.xdv" "main.pdf" "main" 1775825562.12827 0
+  "main.xdv" 1775825561.51338 1115616 1e0a39b2b0456d46c84d26840c9a3321 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1775825151.08871 "main.tex" "main.xdv" "main" 1775825152.23227 0
+["xelatex"] 1775825560.54468 "main.tex" "main.xdv" "main" 1775825562.12722 0
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -176,11 +176,19 @@
   "/usr/local/texlive/2026basic/texmf-dist/web2c/texmf.cnf" 1770478701 43630 e9fa012910491fe5ae08a72c3c2997a7 ""
   "/usr/local/texlive/2026basic/texmf-var/web2c/xetex/xelatex.fmt" 1775796956 5411339 0ee59e4aad01e1e1b46c9362f8bdafb0 ""
   "/usr/local/texlive/2026basic/texmf.cnf" 1772405582 628 bbc09d6d38872d53c11bb48dc9b14e88 ""
+  "images/bh1750.png" 1775825392.86901 207615 a9475ade93b40334d8ed796b761523dc ""
+  "images/buzzer.png" 1775800472.19776 15763 75f15af005cde0d6f9867d1f8c6e62df ""
+  "images/dht22.png" 1775800472.19821 3683 fae2f306a515a7c8f72ca8f58c2f9aeb ""
+  "images/easyEDA.png" 1775822701.81622 366538 97b389e30eaf86d110d961f791a2e078 ""
+  "images/esp32.png" 1775800472.20021 16490 ecdd5465ceb979d3f9a690635c9ac0c0 ""
+  "images/nodered-dashboard-full.png" 1775818050.07591 145448 5673ac6c3a1a3904f001896732281d6a ""
+  "images/potentiometer.png" 1775825352.50383 14223 65d1081c2e864246ca95271a6f6c4622 ""
+  "images/relay.png" 1775825292.1606 15713 df97ed6c6d51bd05ea0db96c23cc9833 ""
   "main-src.txt" 1775821663.84571 8442 1bf3304b3bb2a79be2823170d6964e1b ""
-  "main.aux" 1775825152.08649 25299 af7c3511102207fec1f71aa7899aa9a5 "xelatex"
-  "main.out" 1775825152.0876 16417 6f35b885ba16c671c4e2f5989b4ded60 "xelatex"
-  "main.tex" 1775825128.78567 64313 25bfee56f629b04e6497a141681563c4 ""
-  "main.toc" 1775825152.08781 6637 369ce77a4e84d1998d97483b6be169aa "xelatex"
+  "main.aux" 1775825561.51181 25318 b922ae873919d2be3eba4034d723aff4 "xelatex"
+  "main.out" 1775825561.51301 16417 6f35b885ba16c671c4e2f5989b4ded60 "xelatex"
+  "main.tex" 1775825551.98815 65020 eef36b97636e79f05d00b606c88a882c ""
+  "main.toc" 1775825561.51325 6644 b164f50949e336c3d4f928131409627c "xelatex"
   "node-red-flow.txt" 1775817631.32644 3393 415cc81bdb989caafaaf898797281911 ""
   "wokwi-diagram.txt" 1775817878.17199 3393 415cc81bdb989caafaaf898797281911 ""
   (generated)
