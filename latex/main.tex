@@ -232,8 +232,6 @@
 \vspace*{0.4cm}
 \begin{center}
   \fontsize{17}{21}\selectfont\bfseries LỜI CẢM ƠN\par
-  \vspace{0.2ex}
-  \rule{0.28\textwidth}{1.8pt}
 \end{center}
 \vspace{0.6cm}
 
@@ -364,7 +362,7 @@ DHT22 đo nhiệt độ và độ ẩm không khí theo giao tiếp 1-wire với
 
 \begin{figure}[H]
   \centering
-  % Ảnh sẽ được dán vào sau
+  \includegraphics[width=0.55\linewidth,height=0.35\textheight,keepaspectratio]{images/dht22.png}
   \caption[Cảm biến DHT22 đo đạc thông số nhiệt độ và độ ẩm không khí]{Cảm biến DHT22 đo đạc thông số nhiệt độ và độ ẩm không khí}
   \label{fig:2_dht22}
 \end{figure}
@@ -447,8 +445,8 @@ Node-RED Dashboard cung cấp các widget: gauge (nhiệt độ, độ ẩm KK, 
 
 \begin{figure}[H]
   \centering
-  % Ảnh sẽ được dán vào sau
-  \caption[Giao diện tổng quan hiển thị dữ liệu trên Node-RED Dashboard]{Giao diện tổng quan hiển thị dữ liệu trên Node-RED Dashboard}
+  \includegraphics[width=\linewidth,height=0.88\textheight,keepaspectratio]{images/nodered-dashboard-full.png}
+  \caption[Giao diện tổng quan hiển thị dữ liệu trên Node-RED Dashboard]{Giao diện Node-RED Dashboard AgriSense: giám sát đất và tưới, không khí, ánh sáng; nút bật/tắt bơm và tưới tự động; ví dụ toast cảnh báo ánh sáng yếu (\texttt{127.0.0.1:1880/ui})}
   \label{fig:dashboard-1}
 \end{figure}
 
@@ -458,8 +456,8 @@ Trên Dashboard: toast khi \code{temperature > 35}°C, khi \code{soilMoisture < 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth,height=0.88\textheight,keepaspectratio]{images/nodered-dashboard-full.png}
-  \caption[Giao diện cảnh báo môi trường trên Node-RED Dashboard]{Giao diện Node-RED Dashboard AgriSense: giám sát đất và tưới, không khí, ánh sáng; nút bật/tắt bơm và tưới tự động; ví dụ toast cảnh báo ánh sáng yếu (\texttt{127.0.0.1:1880/ui})}
+  % Ảnh minh họa riêng cảnh báo (toast) — có thể dán crop từ Dashboard
+  \caption[Giao diện cảnh báo môi trường trên Node-RED Dashboard]{Giao diện cảnh báo môi trường trên Node-RED Dashboard (toast nhiệt độ, độ ẩm đất, ánh sáng)}
   \label{fig:dashboard-2}
 \end{figure}
 
@@ -469,8 +467,8 @@ Hệ thống cung cấp khả năng điều khiển thiết bị chấp hành th
 
 \begin{figure}[H]
   \centering
-  % Ảnh sẽ được dán vào sau
-  \caption[Giao diện nút nhấn và công tắc điều khiển máy bơm từ xa]{Giao diện nút nhấn và công tắc điều khiển máy bơm từ xa}
+  \includegraphics[width=\linewidth,height=0.88\textheight,keepaspectratio]{images/nodered-dashboard-full.png}
+  \caption[Giao diện nút nhấn và công tắc điều khiển máy bơm từ xa]{Giao diện Dashboard AgriSense: khối \textit{Điều khiển} với nút Bật/Tắt bơm và công tắc Tưới tự động (\texttt{127.0.0.1:1880/ui})}
   \label{fig:dieukhien}
 \end{figure}
 
@@ -507,13 +505,13 @@ Hệ thống sử dụng các linh kiện điện tử cơ bản và phổ biế
   \centering
   \begin{minipage}{0.45\textwidth}
     \centering
-    \includegraphics[width=\linewidth,height=0.18\textheight,keepaspectratio]{images/esp32.png}
+    \includegraphics[width=0.78\linewidth,height=0.11\textheight,keepaspectratio]{images/esp32.png}
     \caption[Vi điều khiển ESP32]{Vi điều khiển ESP32}
     \label{fig:esp32}
   \end{minipage}\hfill
   \begin{minipage}{0.45\textwidth}
     \centering
-    \includegraphics[width=\linewidth,height=0.18\textheight,keepaspectratio]{images/dht22.png}
+    \includegraphics[width=0.78\linewidth,height=0.11\textheight,keepaspectratio]{images/dht22.png}
     \caption[Cảm biến DHT22]{Cảm biến DHT22}
     \label{fig:hw-dht22}
   \end{minipage}
@@ -522,19 +520,19 @@ Hệ thống sử dụng các linh kiện điện tử cơ bản và phổ biế
 
   \begin{minipage}{0.31\textwidth}
     \centering
-    \includegraphics[width=\linewidth,height=0.18\textheight,keepaspectratio]{images/bh1750.png}
+    \includegraphics[width=0.78\linewidth,height=0.11\textheight,keepaspectratio]{images/bh1750.png}
     \caption[Cảm biến BH1750]{Cảm biến BH1750}
     \label{fig:hw-bh1750}
   \end{minipage}\hfill
   \begin{minipage}{0.31\textwidth}
     \centering
-    \includegraphics[width=\linewidth,height=0.18\textheight,keepaspectratio]{images/potentiometer.png}
+    \includegraphics[width=0.78\linewidth,height=0.11\textheight,keepaspectratio]{images/potentiometer.png}
     \caption[Biến trở]{Biến trở}
     \label{fig:hw-pot}
   \end{minipage}\hfill
   \begin{minipage}{0.31\textwidth}
     \centering
-    \includegraphics[width=\linewidth,height=0.18\textheight,keepaspectratio]{images/relay.png}
+    \includegraphics[width=0.78\linewidth,height=0.11\textheight,keepaspectratio]{images/relay.png}
     \caption[Module Relay]{Module Relay}
     \label{fig:hw-relay}
   \end{minipage}
@@ -542,7 +540,7 @@ Hệ thống sử dụng các linh kiện điện tử cơ bản và phổ biế
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth,height=0.25\textheight,keepaspectratio]{images/buzzer.png}
+  \includegraphics[width=0.45\linewidth,height=0.14\textheight,keepaspectratio]{images/buzzer.png}
   \caption[Còi Buzzer]{Còi Buzzer}
   \label{fig:hw-buzzer}
 \end{figure}

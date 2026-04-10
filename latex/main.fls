@@ -312,6 +312,12 @@ INPUT ./main.toc
 INPUT ./main.toc
 INPUT main.toc
 OUTPUT main.toc
+INPUT ./images/dht22.png
+INPUT ./images/dht22.png
+INPUT ./images/dht22.png
+INPUT ./images/nodered-dashboard-full.png
+INPUT ./images/nodered-dashboard-full.png
+INPUT ./images/nodered-dashboard-full.png
 INPUT ./images/nodered-dashboard-full.png
 INPUT ./images/nodered-dashboard-full.png
 INPUT ./images/nodered-dashboard-full.png

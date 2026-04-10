@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 19:59
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.10)  10 APR 2026 20:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1011,7 +1011,7 @@ File: images/logo.png Graphic file (type bmp)
 ]
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsfonts/umsa.fd)
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsfonts/umsb.fd)
-Underfull \hbox (badness 1137) in paragraph at lines 289--289
+Underfull \hbox (badness 1137) in paragraph at lines 287--287
 []|\TU/TimesNewRoman(0)/m/n/13 Message Queuing Telemetry Transport — Giao thức 
 truyền thông
  []
@@ -1022,15 +1022,17 @@ truyền thông
 
  [2] [1]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <13> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 361.
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 359.
+File: images/dht22.png Graphic file (type bmp)
+<images/dht22.png>
  [2] [3]
-Overfull \hbox (43.15398pt too wide) in paragraph at lines 411--412
+Overfull \hbox (43.15398pt too wide) in paragraph at lines 409--410
 []\TU/TimesNewRoman(0)/m/n/13 Lưu ý: các topic được đặt theo chuẩn để dễ mở rộn
 g. Trên ESP32, client dùng \TU/lmtt/m/n/13 WiFiClientSecure
  []
 
 
-Overfull \hbox (25.70334pt too wide) in paragraph at lines 411--412
+Overfull \hbox (25.70334pt too wide) in paragraph at lines 409--410
 \TU/TimesNewRoman(0)/m/n/13 với TLS (cổng \TU/lmtt/m/n/13 MQTT_PORT \TU/TimesNe
 wRoman(0)/m/n/13 = 8883), \TU/lmtt/m/n/13 PubSubClient \TU/TimesNewRoman(0)/m/n
 /13 publish/subscribe tương ứng (\TU/lmtt/b/n/13 main.cpp\TU/TimesNewRoman(0)/m
@@ -1038,28 +1040,31 @@ wRoman(0)/m/n/13 = 8883), \TU/lmtt/m/n/13 PubSubClient \TU/TimesNewRoman(0)/m/n
  []
 
 
-Overfull \hbox (5.81627pt too wide) in paragraph at lines 419--420
+Overfull \hbox (5.81627pt too wide) in paragraph at lines 417--418
 []\TU/TimesNewRoman(0)/m/n/13 Nhánh thứ hai (\TU/TimesNewRoman(0)/b/n/13 Gauge 
 độ ẩm không khí\TU/TimesNewRoman(0)/m/n/13 ): tương tự, trích giá trị \TU/lmtt/
 m/n/13 msg.payload.humidity\TU/TimesNewRoman(0)/m/n/13 ,
  []
 
-
-Overfull \hbox (27.13516pt too wide) in paragraph at lines 421--422
+[4]
+Overfull \hbox (27.13516pt too wide) in paragraph at lines 419--420
 []\TU/TimesNewRoman(0)/m/n/13 Nhánh thứ ba (\TU/TimesNewRoman(0)/b/n/13 Gauge đ
 ộ ẩm đất\TU/TimesNewRoman(0)/m/n/13 ): trích giá trị \TU/lmtt/m/n/13 msg.payloa
 d.soilMoisture \TU/TimesNewRoman(0)/m/n/13 từ potentiometer
  []
 
-[4]
-Overfull \hbox (2.61157pt too wide) in paragraph at lines 457--458
+[5]
+File: images/nodered-dashboard-full.png Graphic file (type bmp)
+<images/nodered-dashboard-full.png>
+
+Overfull \hbox (2.61157pt too wide) in paragraph at lines 455--456
 \TU/TimesNewRoman(0)/m/n/13 Trên Dashboard: toast khi \TU/lmtt/m/n/13 temperatu
 re > 35\TU/TimesNewRoman(0)/m/n/13 °C, khi \TU/lmtt/m/n/13 soilMoisture < 30\% 
 \TU/TimesNewRoman(0)/m/n/13 (đất khô),
  []
 
 
-Overfull \hbox (60.39565pt too wide) in paragraph at lines 457--458
+Overfull \hbox (60.39565pt too wide) in paragraph at lines 455--456
 \TU/TimesNewRoman(0)/m/n/13 khi \TU/lmtt/m/n/13 soilMoisture < 20\% \TU/TimesNe
 wRoman(0)/m/n/13 (nguy hiểm), và khi \TU/lmtt/m/n/13 lightLux < 1000 \TU/TimesN
 ewRoman(0)/m/n/13 (thiếu sáng) (\TU/lmtt/b/n/13 node-red.json\TU/TimesNewRoman(
@@ -1067,15 +1072,16 @@ ewRoman(0)/m/n/13 (thiếu sáng) (\TU/lmtt/b/n/13 node-red.json\TU/TimesNewRoma
  []
 
 
-Overfull \hbox (39.59378pt too wide) in paragraph at lines 457--458
+Overfull \hbox (39.59378pt too wide) in paragraph at lines 455--456
 \TU/TimesNewRoman(0)/m/n/13 Trên ESP32: buzzer phát bíp 2 lần khi \TU/lmtt/m/n/
 13 soilMoisture < 30\%\TU/TimesNewRoman(0)/m/n/13 , phát bíp 5 lần khi \TU/lmtt
 /m/n/13 soilMoisture
  []
 
+[6]
 File: images/nodered-dashboard-full.png Graphic file (type bmp)
 <images/nodered-dashboard-full.png>
-[5] [6] [7]
+ [7]
 File: images/esp32.png Graphic file (type bmp)
 <images/esp32.png>
 File: images/dht22.png Graphic file (type bmp)
@@ -1083,7 +1089,7 @@ File: images/dht22.png Graphic file (type bmp)
 File: images/bh1750.png Graphic file (type bmp)
 <images/bh1750.png>
 
-Underfull \hbox (badness 10000) in paragraph at lines 526--526
+Underfull \hbox (badness 10000) in paragraph at lines 524--524
 []\TU/TimesNewRoman(0)/m/n/13 Hình 10: []Cảm biến
  []
 
@@ -1091,9 +1097,10 @@ File: images/potentiometer.png Graphic file (type bmp)
 <images/potentiometer.png>
 File: images/relay.png Graphic file (type bmp)
 <images/relay.png>
+[8]
 File: images/buzzer.png Graphic file (type bmp)
 <images/buzzer.png>
-[8] [9]
+ [9]
 File: images/easyEDA.png Graphic file (type bmp)
 <images/easyEDA.png>
  [10]
@@ -1116,90 +1123,90 @@ File: images/buzzer.png Graphic file (type bmp)
 <images/buzzer.png>
  [16]
 LaTeX Font Info:    Calculating math sizes for size <15.59996> on input line 69
-9.
+7.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <15.59996> not available
-(Font)              size <14.4> substituted on input line 699.
+(Font)              size <14.4> substituted on input line 697.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <15.59996> not available
-(Font)              size <14.4> substituted on input line 699.
+(Font)              size <14.4> substituted on input line 697.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <15.59996> not available
-(Font)              size <14.4> substituted on input line 699.
+(Font)              size <14.4> substituted on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 699.
+(hyperref)                removing `math shift' on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\rightarrow' on input line 699.
+(hyperref)                removing `\rightarrow' on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 699.
+(hyperref)                removing `math shift' on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 699.
+(hyperref)                removing `math shift' on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\rightarrow' on input line 699.
+(hyperref)                removing `\rightarrow' on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 699.
+(hyperref)                removing `math shift' on input line 697.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 704.
+(hyperref)                removing `math shift' on input line 702.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\rightarrow' on input line 704.
+(hyperref)                removing `\rightarrow' on input line 702.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 704.
+(hyperref)                removing `math shift' on input line 702.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 704.
+(hyperref)                removing `math shift' on input line 702.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\rightarrow' on input line 704.
+(hyperref)                removing `\rightarrow' on input line 702.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 704.
+(hyperref)                removing `math shift' on input line 702.
 
 
-Overfull \hbox (0.95396pt too wide) in paragraph at lines 706--707
+Overfull \hbox (0.95396pt too wide) in paragraph at lines 704--705
 \TU/TimesNewRoman(0)/m/n/13 JSON xuống \TU/lmtt/m/n/13 iot/farm/control\TU/Time
 sNewRoman(0)/m/n/13 ; \TU/lmtt/m/n/13 mqttCallback() $\OMS/cmsy/m/n/12 !$ \TU/l
 mtt/m/n/13 handleControlMessage() \TU/TimesNewRoman(0)/m/n/13 bật
  []
 
 [17]
-Overfull \hbox (65.16634pt too wide) in paragraph at lines 708--709
+Overfull \hbox (65.16634pt too wide) in paragraph at lines 706--707
 \TU/TimesNewRoman(0)/m/n/13 Fi/MQTT, \TU/lmtt/m/n/13 checkPumpTimeout()\TU/Time
 sNewRoman(0)/m/n/13 , mỗi 5s đọc cảm biến, buzzer nếu đất khô, \TU/lmtt/m/n/13 
 publishSensorData()
  []
 
 [18] [19]
-Overfull \hbox (3.37721pt too wide) in paragraph at lines 764--765
+Overfull \hbox (3.37721pt too wide) in paragraph at lines 762--763
 []\TU/TimesNewRoman(0)/m/n/13 Hệ thống sẽ tự động khởi tạo các linh kiện (ESP32
 , DHT22, BH1750, Potentiometer,
  []
 
 
-Overfull \hbox (8.82481pt too wide) in paragraph at lines 770--771
+Overfull \hbox (8.82481pt too wide) in paragraph at lines 768--769
 \TU/TimesNewRoman(0)/m/n/13 Wokwi. Các thư viện như \TU/TimesNewRoman(0)/m/it/1
 3 DHT sensor library\TU/TimesNewRoman(0)/m/n/13 , \TU/TimesNewRoman(0)/m/it/13 
 PubSubClient\TU/TimesNewRoman(0)/m/n/13 , \TU/TimesNewRoman(0)/m/it/13 ArduinoJ
@@ -1212,7 +1219,7 @@ File: lstlang1.sty 2025/11/14 1.11b listings language file
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
-Overfull \hbox (3.06201pt too wide) in paragraph at lines 785--786
+Overfull \hbox (3.06201pt too wide) in paragraph at lines 783--784
 \TU/TimesNewRoman(0)/m/n/13 Mở cửa sổ dòng lệnh (Terminal) và thực hiện cài đặt
  Node-RED cùng giao diện Dashboard
  []
@@ -1226,28 +1233,28 @@ Overfull \vbox (319.54326pt too high) has occurred while \output is active []
 [25] [26
 
 ]
-Underfull \hbox (badness 1189) in paragraph at lines 1016--1017
+Underfull \hbox (badness 1189) in paragraph at lines 1014--1015
 []\TU/TimesNewRoman(0)/m/n/13 Node-RED. \TU/TimesNewRoman(0)/m/it/13 Node-RED D
 ocumentation\TU/TimesNewRoman(0)/m/n/13 . IBM & others. Truy cập: [][]$[][][][]
 [] [] [] []
  []
 
 
-Underfull \hbox (badness 2529) in paragraph at lines 1020--1021
+Underfull \hbox (badness 2529) in paragraph at lines 1018--1019
 []\TU/TimesNewRoman(0)/m/n/13 Seeed Studio. \TU/TimesNewRoman(0)/m/it/13 Capaci
 tive Soil Moisture Sensor\TU/TimesNewRoman(0)/m/n/13 . Truy cập: [][]$[][][][][
 ] [] [] [] [][][][] []
  []
 
 
-Underfull \hbox (badness 1292) in paragraph at lines 1024--1025
+Underfull \hbox (badness 1292) in paragraph at lines 1022--1023
 []\TU/TimesNewRoman(0)/m/n/13 Nick O’Leary. \TU/TimesNewRoman(0)/m/it/13 PubSub
 Client for Arduino\TU/TimesNewRoman(0)/m/n/13 . Truy cập: [][]$[][][][][] [] []
  [] [][][][][][] [] [][][] []
  []
 
 
-Underfull \hbox (badness 4505) in paragraph at lines 1026--1027
+Underfull \hbox (badness 4505) in paragraph at lines 1024--1025
 []\TU/TimesNewRoman(0)/m/n/13 Node-RED. \TU/TimesNewRoman(0)/m/it/13 node-red-d
 ashboard\TU/TimesNewRoman(0)/m/n/13 . Truy cập: [][]$[][][][][] [] [] [] [][][]
 [][] [] [][][][][][][] [] [][][] []
@@ -1263,7 +1270,7 @@ File: lstlang1.sty 2025/11/14 1.11b listings language file
 File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 1056.
+nput line 1054.
 
 (./main-src.txt
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <11.86258> not available
@@ -1295,4 +1302,4 @@ Here is how much of TeX's memory you used:
  319 hyphenation exceptions out of 8191
  108i,12n,107p,806b,2058s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (54 pages, 1119528 bytes).
+Output written on main.xdv (54 pages, 1120736 bytes).

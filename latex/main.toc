@@ -5,16 +5,16 @@
 \contentsline {subsection}{\numberline {1.3}Phạm vi và đối tượng nghiên cứu}{2}{subsection.1.3}%
 \contentsline {section}{CHƯƠNG 2: NỘI DUNG THỰC HIỆN}{2}{section*.2}%
 \contentsline {subsection}{\numberline {2.1}Thu thập dữ liệu môi trường (DHT22, độ ẩm đất và cường độ ánh sáng)}{2}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Điều khiển máy bơm qua Relay và cảnh báo Buzzer}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Điều khiển máy bơm qua Relay và cảnh báo Buzzer}{3}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Truyền dữ liệu qua MQTT (HiveMQ Cloud, TLS)}{3}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Xử lý dữ liệu bằng Node-RED}{4}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Hiển thị dữ liệu trên Dashboard}{5}{subsection.2.5}%
-\contentsline {subsection}{\numberline {2.6}Cảnh báo môi trường}{5}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.6}Cảnh báo môi trường}{6}{subsection.2.6}%
 \contentsline {subsection}{\numberline {2.7}Điều khiển máy bơm từ xa qua MQTT}{6}{subsection.2.7}%
 \contentsline {subsection}{\numberline {2.8}Duy trì kết nối và đồng bộ trạng thái bơm}{7}{subsection.2.8}%
-\contentsline {subsection}{\numberline {2.9}Tự động tưới theo ngưỡng độ ẩm đất}{7}{subsection.2.9}%
-\contentsline {section}{CHƯƠNG 3: THIẾT KẾ MẠCH IoT}{7}{section*.3}%
-\contentsline {subsection}{\numberline {3.1}Thành phần phần cứng}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {2.9}Tự động tưới theo ngưỡng độ ẩm đất}{8}{subsection.2.9}%
+\contentsline {section}{CHƯƠNG 3: THIẾT KẾ MẠCH IoT}{8}{section*.3}%
+\contentsline {subsection}{\numberline {3.1}Thành phần phần cứng}{8}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Kết nối phần cứng (GPIO)}{9}{subsection.3.2}%
 \contentsline {subsubsection}{\numberline {3.2.1}Mạch vật lý --- ảnh mô phỏng Wokwi (tương đương mạch thực tế đã nối)}{10}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Sơ đồ mạch nguyên lý (EasyEDA)}{10}{subsubsection.3.2.2}%
